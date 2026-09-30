@@ -1,0 +1,51 @@
+{
+  "id": "06-sqlite-production",
+  "title": "Just use SQLite in production",
+  "genre": "tech_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "it was first released in 2010",
+      "correction": "SQLite was first released in 2000."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Nine out of ten web applications never exceed 100 concurrent writers."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "SQLite runs on every phone, so it can obviously handle any web workload.",
+      "known_rebuttal": "Ubiquity on single-user devices says nothing about server workloads. SQLite allows only one writer at a time per database, so write-heavy multi-user applications hit lock contention, and it has no built-in network access or replication, which multi-server deployments and high-availability setups need."
+    },
+    {
+      "id": "d4",
+      "type": "borrowed_sentence",
+      "quote": "A sentence should contain no unnecessary words, a paragraph no unnecessary sentences, for the same reason that a drawing should have no unnecessary lines and a machine no unnecessary parts.",
+      "source_url": "https://www.gutenberg.org/ebooks/37134",
+      "source_title": "The Elements of Style by William Strunk Jr."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "Your database dont need a cluster",
+      "correction": "Your database doesn't need a cluster"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "Its easier to back up a single file",
+      "correction": "It's easier to back up a single file"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "SQLite was created by D. Richard Hipp",
+      "note": "True attribution; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "08-uuid-keys",
+  "title": "Design: Switch primary keys from bigint to UUIDv7",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "UUIDv7 was standardized in 2019 by RFC 9562.",
+      "correction": "RFC 9562, which defines UUIDv7, was published in May 2024."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Switching to UUIDv7 will cut our insert latency by 70%."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "Every major company uses UUIDs, so we should too.",
+      "known_rebuttal": "Popularity is not a requirement. A UUID costs 16 bytes per key against 8 for a bigint, which enlarges every primary key, foreign key and index; our single-database system has no need for globally unique IDs, and client-generated IDs only matter if we plan to shard or merge data across systems, which the doc does not propose."
+    },
+    {
+      "id": "d4",
+      "type": "grammar",
+      "quote": "Each of the services generate their own IDs",
+      "correction": "Each of the services generates its own IDs"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "alot of duplicated code",
+      "correction": "a lot of duplicated code"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "once we has more data",
+      "correction": "once we have more data"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "The rollout plan is to be decided later, once we has more data.",
+      "note": "Copy editor (grammar) and structure reviewer (missing rollout plan) both flag this sentence; they should be merged."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "UUIDs are 128 bits long",
+      "note": "True fact; only interpretation rebuttals may survive."
+    }
+  ]
+}

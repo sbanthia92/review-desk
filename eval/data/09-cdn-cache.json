@@ -1,0 +1,51 @@
+{
+  "id": "09-cdn-cache",
+  "title": "Design: Cache product pages at the CDN",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Cache-Control was first introduced in HTTP/2",
+      "correction": "Cache-Control was introduced with HTTP/1.1 (RFC 2068, 1997)."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "A one-second delay in page load reduces conversions by 30%"
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "Stale prices for five minutes are harmless because customers rarely notice.",
+      "known_rebuttal": "The displayed price must match the charged price: showing a cached price that differs from checkout creates consumer-protection and chargeback exposure, and flash sales and stock-outs make five-minute staleness visible exactly when traffic peaks. The design needs purge-on-change for price and stock rather than a blanket TTL."
+    },
+    {
+      "id": "d4",
+      "type": "grammar",
+      "quote": "The origin servers is overloaded",
+      "correction": "The origin servers are overloaded"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "load faster then pages",
+      "correction": "load faster than pages"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Cache-Control was first introduced in HTTP/2, and it let's us set a max-age per response",
+      "note": "'let's' should be 'lets', but the sentence carries a wrong fact, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Stale prices for five minutes are harmless because customers rarely notice.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    }
+  ]
+}

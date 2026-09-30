@@ -1,0 +1,57 @@
+{
+  "id": "10-best-league",
+  "title": "The Premier League is the best league in the world, and it isn't close",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Alan Shearer is the Premier League's all-time top scorer with 206 goals",
+      "correction": "Alan Shearer's Premier League record is 260 goals."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Manchester City became the first team to reach 100 points in 2018-19",
+      "correction": "Manchester City reached 100 points in 2017-18."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Premier League players cover 15% more distance per match than players in any other league."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "The Premier League is the best league because it earns the most television money.",
+      "known_rebuttal": "Revenue measures commercial reach, not the quality of the football. European competition is a more direct test, and Spanish clubs have won more Champions League titles than English clubs over the Premier League era; television income also reflects English-language audiences, time zones and marketing as much as the standard of play."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "Our life is frittered away by detail.",
+      "source_url": "https://www.gutenberg.org/ebooks/205",
+      "source_title": "Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "the stadiums is full",
+      "correction": "the stadiums are full"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "a league who's clubs",
+      "correction": "a league whose clubs"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The Premier League was founded in 1992",
+      "note": "True fact; a rebuttal disputing the founding date must be discarded."
+    }
+  ]
+}

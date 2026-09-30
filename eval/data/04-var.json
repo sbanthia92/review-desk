@@ -1,0 +1,57 @@
+{
+  "id": "04-var",
+  "title": "VAR has ruined the matchday",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "the first tournament in Brazil in 1930",
+      "correction": "The first World Cup was held in Uruguay in 1930."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "the Premier League introduced it in the 2016-17 season",
+      "correction": "The Premier League introduced VAR in the 2019-20 season."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Match-going fans now spend an average of 14 minutes per game waiting for VAR checks."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Referees got along fine for 150 years without video, so the game never needed it.",
+      "known_rebuttal": "Longevity is not evidence of accuracy. Officials' error rates on key decisions were measurable and significant, high-profile mistakes such as Thierry Henry's handball against Ireland in 2009 decided qualification, and once every fan could watch broadcast replays, uncorrectable errors eroded trust in results more than review delays do."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "The mass of men lead lives of quiet desperation.",
+      "source_url": "https://www.gutenberg.org/ebooks/205",
+      "source_title": "Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "the atmosphere in the ground have been sucked out",
+      "correction": "the atmosphere in the ground has been sucked out"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "seeing less goals celebrated",
+      "correction": "seeing fewer goals celebrated"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "VAR was used at the 2018 World Cup in Russia",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

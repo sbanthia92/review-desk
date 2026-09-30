@@ -1,0 +1,58 @@
+{
+  "id": "01-leicester-money",
+  "title": "Leicester proved money no longer decides the Premier League",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Claudio Ranieri's side begun the season as 500-1 outsiders with the bookmakers.",
+      "correction": "Leicester were widely quoted at 5000-1 to win the 2015-16 Premier League before the season."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Mid-table clubs now win 40% more points against the top six than they did a decade ago."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "If one club with a modest budget can win the league, then money clearly does not decide who wins.",
+      "known_rebuttal": "One outlier does not overturn a strong correlation: across Premier League seasons, wage spending explains most of the variation in final league position. Leicester's title coincided with unusual collapses by Chelsea and others, and in the seasons since, the title has gone almost exclusively to the highest-spending clubs."
+    },
+    {
+      "id": "d4",
+      "type": "borrowed_sentence",
+      "quote": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "The players was fitter",
+      "correction": "The players were fitter"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "Its time the rest of the league",
+      "correction": "It's time the rest of the league"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Claudio Ranieri's side begun the season as 500-1 outsiders with the bookmakers.",
+      "note": "'begun' should be 'began', but the sentence is a wrong fact, so any copy edit on it must be dropped."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Leicester City won the 2015-16 Premier League title",
+      "note": "True fact; a rebuttal attacking the fact itself must be discarded."
+    }
+  ]
+}
