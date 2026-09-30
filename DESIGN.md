@@ -79,7 +79,7 @@ Workers decrypt the user's key through KMS for the job's duration, call the mode
 
 ## Agents and orchestration
 
-The orchestrator's conflict resolution is the core of the system; most design effort goes there.
+The system is an orchestrator-workers design with agents that react to each other: the orchestrator plans each review, research agents run their own bounded loops, and disagreements trigger re-checks and a short debate before fixed rules settle the result.
 
 | Agent | Job | Input | Output | Model tier |
 | --- | --- | --- | --- | --- |
@@ -93,15 +93,33 @@ The orchestrator's conflict resolution is the core of the system; most design ef
 
 **Shared state: the claim ledger.** Agents do not pass text to each other. They read and write one structured ledger keyed by claim ID. Each entry holds the claim text and span, type, fact-check verdict, sources, rebuttals, and copy edits touching its span. This makes conflicts detectable by span overlap.
 
-**Execution plan**
+**Execution plan (dynamic)**
 
-1. Orchestrator classifies the document and selects a review profile.
+The orchestrator writes a plan for each document instead of following a fixed order; code checks the plan against guardrails.
+
+1. Orchestrator classifies the document and selects a profile.
 2. Claim extractor runs first; everything else depends on the ledger.
-3. Fact-checker, devil's advocate, copy editor, originality and structure run in parallel.
-4. Orchestrator runs conflict resolution over the ledger.
-5. Orchestrator ranks findings and writes the report.
+3. Orchestrator reads the ledger and writes an execution plan: which agents run, which claims get deep research, and each claim's budget. It skips agents that add nothing (originality on a design doc) and adds fact-check depth for number-heavy text.
+4. Code validates the plan against the profile's allowed agents and the job budget; an invalid plan falls back to the profile default.
+5. Planned agents run in parallel.
+6. Reaction round: re-checks and debate (below).
+7. Guardrail rules settle remaining conflicts, then ranking and the report.
 
-**Conflict resolution rules**
+**Research loops**
+
+The fact-checker and devil's advocate run a bounded loop per claim instead of a single search: plan, act (`search`, `fetch_page`, `find_in_page`), assess the source, then refine the query, follow a link to the primary source, or stop.
+
+- **Cap: 3 iterations per claim**, plus per-claim search and token budgets set by the plan.
+- Stop when a primary source directly settles the claim, when two independent sources agree, or at the cap. Hitting the cap gives "unsupported" with its confidence noted, never a guess.
+- Tools are read-only, so a malicious page can waste budget but cannot act.
+- Every step (query, source, finding) is saved as a research trail on the claim's ledger entry.
+
+**Agents react to each other**
+
+- **Re-check:** if the devil's advocate finds evidence contradicting a claim marked verified, the orchestrator sends the claim back to the fact-checker with that evidence. One re-check per claim.
+- **Debate:** for the top 3 claims by importance where the two agents still disagree, each side gets one response to the other's evidence. The orchestrator rules and records its reasoning in the ledger. One round per claim.
+
+**Conflict resolution rules (guardrails, applied after the reaction round)**
 
 - Copy edit touches a span flagged wrong or unsupported → drop the copy edit; the fact finding wins.
 - Devil's advocate attacks a claim the fact-checker verified → keep the rebuttal only if it targets the interpretation, not the fact; otherwise discard.
@@ -109,7 +127,7 @@ The orchestrator's conflict resolution is the core of the system; most design ef
 - Rebuttal with no retrieved source → downgrade to "consider" severity.
 - Severity order: factual error > unsupported claim > strong rebuttal > structure > style.
 
-**Budgets.** Each job has caps on tokens, search calls and wall-clock time. Agents degrade gracefully (for example, check the top 15 claims by importance) rather than fail.
+**Budgets.** Each job has caps on tokens, search calls and wall-clock time. The orchestrator splits the job budget across claims by importance, and research loops stop at 3 iterations regardless. When the budget runs short, lower-importance claims get a single search or are marked unchecked rather than failing the job.
 
 ## Review profiles and report format
 
@@ -244,7 +262,7 @@ Quality is measured on a seeded-error set, and the headline results table goes i
 | Conflict-resolution accuracy | Share of seeded conflicts resolved per the rules |
 | Cost and latency | Tokens, search calls and seconds per job |
 
-**Baselines:** a single-model prompt ("review this and argue the other side") on the same set. The gap over that baseline is the core evidence that the multi-agent design earns its complexity.
+**Baselines:** three variants run on the same set: (1) a single-model prompt ("review this and argue the other side"); (2) a fixed pipeline with one search per claim, a fixed plan and no reaction round; (3) the full system. Each document runs 3 times so results report variance, not just averages. The gap from (1) to (2) shows the multi-agent design earns its complexity; the gap from (2) to (3) shows the research loops, re-checks and debate earn theirs. The dataset also seeds multi-part claims and claims whose top search results are secondary sources, where research loops should matter most.
 
 **Regression:** the eval runs in CI on every change to prompts, agents or the orchestrator.
 
@@ -306,6 +324,7 @@ The biggest risk is retrieval quality; it is prototyped first, in Phase 0.
 | Bring-your-own-key friction | Few outside users | Accept; judge success on the eval and your own usage |
 | Prompt injection via documents | Data leakage or misuse | Agents have no external actions; email only to the verified address |
 | Search API free-tier limits | Jobs throttle or fail | Per-job search budget; degrade gracefully |
+| Research loops and debate raise cost and latency | Slower, pricier reviews | 3-iteration cap, per-claim budgets, async email delivery |
 | Existing critique MCP servers | Looks derivative | Lead the README with evidence-backed results against the baseline |
 
 **Open questions**
