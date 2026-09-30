@@ -3,7 +3,10 @@
 ``Orchestrator.review`` runs one job end to end on the agents in an
 ``AgentRegistry``. It never fails because an agent failed: a raising or
 erroring agent becomes a report note ("fact-check unavailable"), and hitting
-the job's ``max_seconds`` returns partial results with a note.
+the job's ``max_seconds`` returns partial results with a note. The one
+exception is a rejected provider key: if the LLM or search provider raises
+``AuthError`` anywhere in the job, ``review`` raises it at the end instead of
+returning a report degraded to nothing (see ``authwatch``).
 
 All agents share one ``BudgetMeter`` (``ReviewContext.__post_init__`` builds a
 fresh one, so the orchestrator reassigns ``ctx.meter``). Parallel agents read
@@ -33,6 +36,7 @@ from reviewdesk.contracts import (
     Document,
     Evidence,
     ExecutionPlan,
+    LLMClient,
     ModelTier,
     Profile,
     ProgressCallback,
@@ -40,12 +44,14 @@ from reviewdesk.contracts import (
     Rechecker,
     Report,
     ReviewContext,
+    SearchClient,
     SetVerdict,
     Usage,
     Verdict,
 )
 from reviewdesk.orchestrator import prompts
 from reviewdesk.orchestrator.assemble import build_report
+from reviewdesk.orchestrator.authwatch import AuthWatch, WatchedLLM, WatchedSearch
 from reviewdesk.orchestrator.classify import classify
 from reviewdesk.orchestrator.conflicts import Decision, rebuttal_finding_id, resolve_conflicts
 from reviewdesk.orchestrator.labels import agent_rank, label
@@ -93,6 +99,9 @@ class _Job:
     tracker: ProgressTracker
     meter: BudgetMeter
     deadline: float
+    llm: LLMClient
+    search: SearchClient
+    auth: AuthWatch
     ledger: ClaimLedger = field(default_factory=ClaimLedger)
     profile: Profile = Profile.OPINION
     plan: ExecutionPlan | None = None
@@ -155,9 +164,14 @@ class Orchestrator:
         focus: str | None = None,
         style_guide: str | None = None,
     ) -> Report:
-        """Review ``document`` and return the report. Never raises for agent failures."""
+        """Review ``document`` and return the report.
+
+        Never raises for agent failures; raises ``AuthError`` if a provider
+        rejected the key during the job.
+        """
         started = time.monotonic()
         job_budget = budget or self.budget
+        auth = AuthWatch()
         job = _Job(
             document=document,
             budget=job_budget,
@@ -166,12 +180,17 @@ class Orchestrator:
             tracker=ProgressTracker(on_progress),
             meter=BudgetMeter(job_budget),
             deadline=started + job_budget.max_seconds,
+            llm=WatchedLLM(self.registry.llm, auth),
+            search=WatchedSearch(self.registry.search, auth),
+            auth=auth,
         )
         await self._classify(job, profile)
         await self._extract(job)
         plan = await self._plan(job)
         await self._review_parallel(job, plan)
         await self._react(job, plan)
+        if job.auth.error is not None:
+            raise job.auth.error
         report = self._resolve_and_report(job)
         seconds = time.monotonic() - started
         report.usage = report.usage.model_copy(update={"seconds": seconds})
@@ -187,8 +206,8 @@ class Orchestrator:
             document=job.document,
             profile=job.profile,
             ledger=ledger,
-            llm=self.registry.llm,
-            search=self.registry.search,
+            llm=job.llm,
+            search=job.search,
             fetcher=self.registry.fetcher,
             budget=job.budget,
             emit_progress=emit,
@@ -239,7 +258,7 @@ class Orchestrator:
             return None
 
         async def call() -> Any:
-            return await self.registry.llm.complete(
+            return await job.llm.complete(
                 messages, schema=schema, model_tier=tier, tag=tag, max_tokens=max_tokens
             )
 
@@ -297,9 +316,7 @@ class Orchestrator:
     async def _classify(self, job: _Job, profile: Profile) -> None:
         step = ProgressStep.CLASSIFYING
         job.tracker.emit(step, "Classifying the document", 0.0)
-        result = await classify(
-            job.document, profile, self.registry.llm, time_limit=job.remaining()
-        )
+        result = await classify(job.document, profile, job.llm, time_limit=job.remaining())
         job.profile = result.profile
         if result.usage.llm_calls or result.usage.total_tokens:
             job.spend(result.usage)
