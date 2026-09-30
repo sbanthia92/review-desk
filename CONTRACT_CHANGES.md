@@ -39,3 +39,9 @@ Template (copy, fill in, append below the line):
 - **Why:** with an invalid or out-of-credit key every agent degrades and the user gets an empty "ready" report instead of the "invalid key" error DESIGN.md requires.
 - **Workaround in place:** `RegistryPipeline` in `reviewdesk/mcp_local/wiring.py` wraps the registry's `llm` and `search` in proxies that record the first `AuthError` and raise it after `run_review` returns. T11's CLI and T16's workers will need the same unless the orchestrator does it.
 - **Status:** open
+
+## T1 · Declare `httpx2` explicitly
+- **What:** add `httpx2` (the HTTP library `anthropic>=1.10` and `openai>=3.22` are built on, currently 2.13.1) as a direct dependency or dev dependency in `pyproject.toml`.
+- **Why:** the LLM adapter tests replay recorded fixtures through `httpx2.MockTransport` injected into the SDK clients (`respx` only patches `httpx`, which the SDKs no longer use). Adapter code imports `httpx2` only under `TYPE_CHECKING`. Today it resolves only as a transitive dependency.
+- **Workaround in place:** tests import the transitive `httpx2` directly (`tests/providers/llm/replay.py`).
+- **Status:** accepted — `httpx2` added as a dev dependency on main (lead).

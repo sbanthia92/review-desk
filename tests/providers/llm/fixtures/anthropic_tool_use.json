@@ -1,0 +1,34 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "msg_01FixtureAAAA",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-sonnet-5-5",
+    "content": [
+      {
+        "type": "tool_use",
+        "id": "toolu_01FixtureOK",
+        "name": "Verdict",
+        "input": {
+          "label": "verified",
+          "confidence": 0.82,
+          "reasons": [
+            "Primary source matches the figure."
+          ]
+        }
+      }
+    ],
+    "stop_reason": "tool_use",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 42,
+      "output_tokens": 17,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3
+    }
+  }
+}

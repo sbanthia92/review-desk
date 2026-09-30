@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "msg_01FixtureAAAA",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-haiku-4-5-20251001",
+    "content": [
+      {
+        "type": "text",
+        "text": "Let me think about"
+      }
+    ],
+    "stop_reason": "max_tokens",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 42,
+      "output_tokens": 17,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3
+    }
+  }
+}
