@@ -79,7 +79,8 @@ Document ──► extractor ──► ClaimLedger ──► plan ──► agen
   budgets (`budget_for(claim_id)`).
 - **`Usage`**: tokens, search/fetch/LLM calls, seconds; supports `+`.
 - **`AgentResult`**: `agent`, `findings`, `ledger_updates`, `usage`, `error`
-  (set when the agent degraded instead of failing the job).
+  (set when the agent degraded instead of failing the job), `notes`
+  (non-fatal notices, no document text).
 - **`ProgressEvent`**: `step` (usually a `ProgressStep`), `message`,
   `percent` 0–100.
 - **`Report`**: verdict line, `counts` (by severity label), must_fix,

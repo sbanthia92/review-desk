@@ -609,7 +609,10 @@ class AgentResult(_Model):
     """What one agent run returns to the orchestrator.
 
     ``error`` is set when the agent failed and degraded (the report then notes
-    e.g. "fact-check unavailable") instead of failing the job.
+    e.g. "fact-check unavailable") instead of failing the job. ``notes`` holds
+    non-fatal notices (e.g. "2 quoted claims could not be located and were
+    dropped"); the orchestrator may copy them into ``Report.notes``. Notes must
+    never contain document text.
     """
 
     agent: str
@@ -617,6 +620,7 @@ class AgentResult(_Model):
     ledger_updates: list[LedgerUpdate] = Field(default_factory=list)
     usage: Usage = Field(default_factory=Usage)
     error: str | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class ProgressStep(StrEnum):

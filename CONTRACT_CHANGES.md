@@ -20,4 +20,4 @@ Template (copy, fill in, append below the line):
 - **What:** add `notes: list[str] = Field(default_factory=list)` to `AgentResult` (non-fatal degradation notices, e.g. "2 quoted claims could not be located and were dropped").
 - **Why:** `error` means the agent degraded; there is no field for "succeeded, but dropped/merged some output". The orchestrator could copy these into `Report.notes`.
 - **Workaround in place:** the extractor puts the counts in its final `ProgressEvent.message` and exposes them via `ExtractorAgent.extract_claims(ctx) -> ExtractionOutcome.notes()` in `reviewdesk/agents/extractor/agent.py`.
-- **Status:** open
+- **Status:** accepted — `AgentResult.notes` added on main (lead). T3 may switch to it in a follow-up.
