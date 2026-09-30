@@ -77,6 +77,10 @@ def _embedded_ipv4(ip: ipaddress.IPv6Address) -> ipaddress.IPv4Address | None:
 
 def is_public_ip(ip: IPAddress) -> bool:
     """True only for globally routable unicast addresses."""
+    if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped is not None:
+        # Judge ``::ffff:a.b.c.d`` by its IPv4 address alone: how ``ipaddress``
+        # classifies mapped addresses differs between Python 3.12 patch releases.
+        return is_public_ip(ip.ipv4_mapped)
     if (
         ip.is_private
         or ip.is_loopback

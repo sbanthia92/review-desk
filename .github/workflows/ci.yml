@@ -12,8 +12,10 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+      - name: Install Python
+        run: uv python install
       - name: Install
-        run: uv sync --locked
+        run: uv sync --locked --managed-python
       - name: Lint
         run: |
           uv run ruff check .
