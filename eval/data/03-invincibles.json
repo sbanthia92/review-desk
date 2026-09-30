@@ -1,0 +1,51 @@
+{
+  "id": "03-invincibles",
+  "title": "The Invincibles are the greatest Premier League team ever",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Arsenal went unbeaten for all 38 league games in 2004-05",
+      "correction": "Arsenal's unbeaten Premier League season was 2003-04."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Wenger had arrived from Japanese side Nagoya Grampus in 1990",
+      "correction": "Wenger joined Arsenal from Nagoya Grampus in 1996."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Most former players rank them above the Manchester United treble side of 1999."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Manchester City's 100-point season does not count, because City spent more money than Arsenal ever did.",
+      "known_rebuttal": "Spending does not change what happened on the pitch: within a season, points and goals are the measure, and City's 100 points and record goal difference exceed Arsenal's 90 points. Arsenal were themselves among the league's highest wage payers in that era, so the money argument cuts both ways."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "Their was no weakness",
+      "correction": "There was no weakness"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Arsenal went unbeaten for all 38 league games in 2004-05, a feat that have never been repeated in the Premier League.",
+      "note": "'have' should be 'has', but the sentence carries a wrong fact, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "They won 26 games and drew 12",
+      "note": "True fact; only interpretation rebuttals may survive."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "05-four-day-week",
+  "title": "The five-day week is a relic. Give us Fridays back.",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Henry Ford adopted the five-day week for his factory workers in 1946",
+      "correction": "Ford Motor Company adopted the five-day, 40-hour week in 1926."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Employees on a four-day week are twice as productive per hour as those on five."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "Since I personally get more done now that I take Fridays off, every company would benefit from a four-day week.",
+      "known_rebuttal": "Personal anecdote does not generalise. Reported gains come mostly from trials of self-selected, office-based firms, while shift-based and customer-facing work such as hospitals, retail and support must cover the same hours, so a shorter week there means hiring more staff or cutting service rather than free productivity."
+    },
+    {
+      "id": "d4",
+      "type": "borrowed_sentence",
+      "quote": "It is not from the benevolence of the butcher, the brewer, or the baker, that we expect our dinner, but from their regard to their own interest.",
+      "source_url": "https://www.gutenberg.org/ebooks/3300",
+      "source_title": "An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "Managers is often the last to be convinced",
+      "correction": "Managers are often the last to be convinced"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "irregardless of tradition",
+      "correction": "regardless of tradition"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Henry Ford adopted the five-day week for his factory workers in 1946, and he done it for profit, not kindness.",
+      "note": "'done' should be 'did', but the sentence carries a wrong date, so the fact finding wins."
+    }
+  ]
+}

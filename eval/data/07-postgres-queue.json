@@ -1,0 +1,51 @@
+{
+  "id": "07-postgres-queue",
+  "title": "Design: Move the job queue from Redis to Postgres",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "PostgreSQL only added SKIP LOCKED in version 12",
+      "correction": "SKIP LOCKED was added in PostgreSQL 9.5 (released January 2016)."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Postgres-backed queues comfortably handle 100,000 jobs per second on a single node, which is far beyond our peak."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "Redis has been down twice this year, so moving the queue into Postgres will make the system more reliable.",
+      "known_rebuttal": "Moving the queue into the primary database couples job throughput to the database that serves user traffic: a job backlog, table bloat from constant updates and deletes, or a long-running transaction can now degrade the main application. Both Redis incidents were memory exhaustion during a backlog, which argues for fixing Redis capacity, persistence and alerting rather than showing Postgres is more reliable."
+    },
+    {
+      "id": "d4",
+      "type": "grammar",
+      "quote": "We assumes the jobs table",
+      "correction": "We assume the jobs table"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "The migration are expected",
+      "correction": "The migration is expected"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "PostgreSQL only added SKIP LOCKED in version 12, which were released in 2019",
+      "note": "'were' should be 'was', but the sentence carries a wrong version, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "We assumes the jobs table will never grow past a few million rows.",
+      "note": "Copy editor (grammar) and structure reviewer (unstated assumption, no retention plan) both flag this sentence; they should be merged into one finding."
+    }
+  ]
+}

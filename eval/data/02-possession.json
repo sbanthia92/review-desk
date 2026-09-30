@@ -1,0 +1,51 @@
+{
+  "id": "02-possession",
+  "title": "Possession is the only stat that matters",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Spain won Euro 2008, the 2010 World Cup and Euro 2016",
+      "correction": "Spain won Euro 2008, the 2010 World Cup and Euro 2012; Portugal won Euro 2016."
+    },
+    {
+      "id": "d2",
+      "type": "unsupported",
+      "quote": "Teams that average over 60% possession win nine out of ten matches."
+    },
+    {
+      "id": "d3",
+      "type": "weak_argument",
+      "quote": "Possession stats prove who the better team was, because if you have the ball, the other side cannot score.",
+      "known_rebuttal": "Possession correlates only weakly with winning. Teams routinely dominate the ball and lose to counter-attacks; Leicester won the 2015-16 Premier League with some of the lowest possession figures in the division, and measures of chance quality such as expected goals predict results far better than share of the ball."
+    },
+    {
+      "id": "d4",
+      "type": "borrowed_sentence",
+      "quote": "Hence to fight and conquer in all your battles is not supreme excellence; supreme excellence consists in breaking the enemy's resistance without fighting.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "dont just keep the ball",
+      "correction": "don't just keep the ball"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "they suffocates you with it",
+      "correction": "they suffocate you with it"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Possession stats prove who the better team was, because if you have the ball, the other side cannot score.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    }
+  ]
+}
