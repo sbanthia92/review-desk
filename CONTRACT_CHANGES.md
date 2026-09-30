@@ -27,3 +27,15 @@ Template (copy, fill in, append below the line):
 - **Why:** `reviewdesk.providers.search.config.search_clients_from_env` and `scripts/compare_search.py` read these names; users need to know them.
 - **Workaround in place:** names are documented in `reviewdesk/providers/search/__init__.py` and `config.py` docstrings; `compare_search.py --env-file` reads any `.env`.
 - **Status:** accepted — keys added to `.env.example` on main (lead).
+
+## T12 · `focus` on the `ReviewPipeline` protocol
+- **What:** add `*, focus: str | None = None` to `ReviewPipeline.__call__` in `reviewdesk/contracts/interfaces.py` (`reviewdesk.pipeline.run_review` already accepts it).
+- **Why:** the MCP tool's `focus` argument (DESIGN.md "MCP interface") has to reach the pipeline; the contract shape has no way to pass it, so any injected `ReviewPipeline` silently drops it.
+- **Workaround in place:** `reviewdesk/mcp_local/wiring.py` defines a local `ReviewRunner` protocol (contract shape + `focus`) and `adapt_pipeline()` to wrap a plain `ReviewPipeline`.
+- **Status:** open
+
+## T12 · Surface rejected provider keys from `run_review`
+- **What:** have the orchestrator (T10) re-raise `AuthError` (at least from the LLM client) instead of turning it into per-agent degradation notes; or add a `Report` field listing provider errors by type.
+- **Why:** with an invalid or out-of-credit key every agent degrades and the user gets an empty "ready" report instead of the "invalid key" error DESIGN.md requires.
+- **Workaround in place:** `RegistryPipeline` in `reviewdesk/mcp_local/wiring.py` wraps the registry's `llm` and `search` in proxies that record the first `AuthError` and raise it after `run_review` returns. T11's CLI and T16's workers will need the same unless the orchestrator does it.
+- **Status:** open
