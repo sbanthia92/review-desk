@@ -15,3 +15,9 @@ Template (copy, fill in, append below the line):
 ```
 
 ---
+
+## T2 · List search provider keys in `.env.example`
+- **What:** add `BRAVE_SEARCH_API_KEY=`, `TAVILY_API_KEY=` and `EXA_API_KEY=` to `.env.example` (replacing the "added once T2 picks providers" comment).
+- **Why:** `reviewdesk.providers.search.config.search_clients_from_env` and `scripts/compare_search.py` read these names; users need to know them.
+- **Workaround in place:** names are documented in `reviewdesk/providers/search/__init__.py` and `config.py` docstrings; `compare_search.py --env-file` reads any `.env`.
+- **Status:** open
