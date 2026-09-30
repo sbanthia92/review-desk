@@ -1,0 +1,34 @@
+# Review Desk report
+
+**Verdict:** Ready: no issues found.
+
+**Findings by severity:** none
+
+## Must fix
+
+None found.
+
+## Strongest counter-case
+
+None found.
+
+## Should fix
+
+None found.
+
+## Polish
+
+None found.
+
+## Originality notes (heuristic)
+
+None found.
+
+## Appendix: claim ledger
+
+None found.
+
+---
+
+*Profile: opinion · Generated 2026-09-01 12:00 UTC*  
+*Usage: 0 tokens (0 in, 0 out) · 0 model calls · 0 search calls · 0 page fetches*

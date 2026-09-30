@@ -1,0 +1,133 @@
+{#- Review Desk report email. Autoescaped; inline CSS only; no scripts or external assets. -#}
+{%- set h2 = "margin:28px 0 8px;padding-bottom:4px;border-bottom:1px solid #d0d7de;font-size:18px;color:#1f2328;" -%}
+{%- set h3 = "margin:16px 0 6px;font-size:15px;color:#1f2328;" -%}
+{%- set p = "margin:0 0 8px;" -%}
+{%- set quote = "margin:0 0 8px;padding:4px 12px;border-left:3px solid #d0d7de;color:#57606a;" -%}
+{%- set muted = "margin:0 0 8px;color:#57606a;font-style:italic;" -%}
+{%- set ul = "margin:0 0 8px;padding-left:20px;" -%}
+{%- set link = "color:#0969da;" -%}
+{%- macro sources(items) -%}
+{%- if items %}
+<p style="{{ p }}"><strong>Sources:</strong></p>
+<ul style="{{ ul }}">
+{%- for s in items %}
+<li style="margin:0 0 4px;">{% if s.href %}<a href="{{ s.href }}" style="{{ link }}" target="_blank" rel="noopener noreferrer">{{ s.title }}</a>{% else %}{{ s.title }} <span style="color:#57606a;">(link removed: unsafe URL {{ s.url }})</span>{% endif %}{% if s.is_primary %} <span style="color:#1a7f37;">(primary source)</span>{% endif %}{% if s.excerpt %}: &ldquo;{{ s.excerpt }}&rdquo;{% endif %}</li>
+{%- endfor %}
+</ul>
+{%- endif %}
+{%- endmacro -%}
+{%- macro findings(items, show_severity) -%}
+{%- if not items %}
+<p style="{{ muted }}">{{ empty }}</p>
+{%- endif %}
+{%- for f in items %}
+<h3 style="{{ h3 }}">{{ loop.index }}. {% if show_severity %}{{ f.severity | capitalize }}{% else %}Finding{% endif %}</h3>
+{%- if f.quote %}
+<blockquote style="{{ quote }}">{{ f.quote }}</blockquote>
+{%- endif %}
+<p style="{{ p }}"><strong>Problem:</strong> {{ f.message }}</p>
+{%- if f.suggestion %}
+<p style="{{ p }}"><strong>Suggestion:</strong> {{ f.suggestion }}</p>
+{%- endif %}
+{{- sources(f.sources) }}
+{%- endfor %}
+{%- endmacro -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review Desk report</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f6f8fa;">
+<div style="max-width:680px;margin:0 auto;padding:24px;background-color:#ffffff;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#1f2328;">
+<h1 style="margin:0 0 12px;font-size:22px;color:#1f2328;">Review Desk report</h1>
+<p style="{{ p }}font-size:16px;"><strong>Verdict:</strong> {{ view.verdict_line }}</p>
+<p style="{{ p }}"><strong>Findings by severity:</strong> {% if view.counts %}{% for c in view.counts %}{{ c.label }}: {{ c.count }}{% if not loop.last %} &middot; {% endif %}{% endfor %}{% else %}none{% endif %}</p>
+
+<h2 style="{{ h2 }}">Must fix</h2>
+{{- findings(view.must_fix, true) }}
+
+<h2 style="{{ h2 }}">Strongest counter-case</h2>
+{%- if not view.counter_case %}
+<p style="{{ muted }}">{{ empty }}</p>
+{%- endif %}
+{%- for r in view.counter_case %}
+<h3 style="{{ h3 }}">{{ loop.index }}. Strength {{ r.strength }}/5 (attacks the {{ r.target_kind }})</h3>
+<p style="{{ p }}">{{ r.argument }}</p>
+<p style="{{ p }}"><strong>Targets:</strong></p>
+<ul style="{{ ul }}">
+{%- for t in r.targets %}
+<li style="margin:0 0 4px;">{% if t.text is not none %}&ldquo;{{ t.text }}&rdquo;{% else %}claim {{ t.claim_id }} (not in ledger){% endif %}</li>
+{%- endfor %}
+</ul>
+{%- if r.sources %}
+{{- sources(r.sources) }}
+{%- else %}
+<p style="{{ muted }}">No sources cited: treat this as a consideration.</p>
+{%- endif %}
+{%- endfor %}
+
+<h2 style="{{ h2 }}">Should fix</h2>
+{{- findings(view.should_fix, false) }}
+
+<h2 style="{{ h2 }}">Polish</h2>
+{%- if not view.polish %}
+<p style="{{ muted }}">{{ empty }}</p>
+{%- endif %}
+{%- for g in view.polish %}
+<h3 style="{{ h3 }}">{{ g.label }}</h3>
+<ul style="{{ ul }}">
+{%- for i in g.items %}
+<li style="margin:0 0 4px;">{% if i.quote %}&ldquo;{{ i.quote }}&rdquo;{% if i.suggestion %} &rarr; &ldquo;{{ i.suggestion }}&rdquo;{% endif %}: {{ i.message }}{% elif i.suggestion %}{{ i.message }} (suggestion: &ldquo;{{ i.suggestion }}&rdquo;){% else %}{{ i.message }}{% endif %}</li>
+{%- endfor %}
+</ul>
+{%- endfor %}
+
+<h2 style="{{ h2 }}">Originality notes (heuristic)</h2>
+{%- if view.originality %}
+<p style="{{ muted }}">{{ disclaimer }}</p>
+{%- endif %}
+{{- findings(view.originality, false) }}
+
+<h2 style="{{ h2 }}">Appendix: claim ledger</h2>
+{%- if not view.ledger %}
+<p style="{{ muted }}">{{ empty }}</p>
+{%- else %}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;font-size:13px;">
+<tr>
+<th align="left" style="padding:6px;border-bottom:1px solid #d0d7de;">Verdict</th>
+<th align="left" style="padding:6px;border-bottom:1px solid #d0d7de;">Claim</th>
+<th align="left" style="padding:6px;border-bottom:1px solid #d0d7de;">Type</th>
+<th align="left" style="padding:6px;border-bottom:1px solid #d0d7de;">Importance</th>
+</tr>
+{%- for row in view.ledger %}
+<tr>
+<td valign="top" style="padding:6px;border-bottom:1px solid #eaeef2;"><strong>{{ row.verdict }}</strong></td>
+<td valign="top" style="padding:6px;border-bottom:1px solid #eaeef2;">&ldquo;{{ row.text }}&rdquo;
+{%- if row.note %}<br><span style="color:#57606a;">Note: {{ row.note }}</span>{% endif %}
+{%- for s in row.sources %}<br><span style="color:#57606a;">Source: {% if s.href %}<a href="{{ s.href }}" style="{{ link }}" target="_blank" rel="noopener noreferrer">{{ s.title }}</a>{% else %}{{ s.title }} (link removed: unsafe URL {{ s.url }}){% endif %}{% if s.is_primary %} (primary source){% endif %}</span>{% endfor %}
+{%- if row.rebuttal_count %}<br><span style="color:#57606a;">Rebuttals: {{ row.rebuttal_count }}</span>{% endif %}
+<br><span style="color:#8c959f;font-size:12px;">id {{ row.claim_id }}</span></td>
+<td valign="top" style="padding:6px;border-bottom:1px solid #eaeef2;">{{ row.type }}</td>
+<td valign="top" style="padding:6px;border-bottom:1px solid #eaeef2;">{{ row.importance }}</td>
+</tr>
+{%- endfor %}
+</table>
+{%- endif %}
+
+<div style="margin-top:28px;padding-top:12px;border-top:1px solid #d0d7de;font-size:12px;color:#57606a;">
+<p style="{{ p }}">Profile: {{ view.profile }} &middot; Generated {{ view.generated_at }}</p>
+<p style="{{ p }}">Usage: {{ view.usage.total_tokens }} tokens ({{ view.usage.input_tokens }} in, {{ view.usage.output_tokens }} out) &middot; {{ view.usage.llm_calls }} model calls &middot; {{ view.usage.search_calls }} search calls &middot; {{ view.usage.fetch_calls }} page fetches{% if view.usage.seconds is not none %} &middot; {{ view.usage.seconds }}s{% endif %}</p>
+{%- if view.notes %}
+<p style="{{ p }}"><strong>Notices:</strong></p>
+<ul style="{{ ul }}">
+{%- for n in view.notes %}
+<li>{{ n }}</li>
+{%- endfor %}
+</ul>
+{%- endif %}
+</div>
+</div>
+</body>
+</html>
