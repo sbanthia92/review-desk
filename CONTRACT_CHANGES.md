@@ -15,3 +15,9 @@ Template (copy, fill in, append below the line):
 ```
 
 ---
+
+## T1 · Declare `httpx2` explicitly
+- **What:** add `httpx2` (the HTTP library `anthropic>=1.10` and `openai>=3.22` are built on, currently 2.13.1) as a direct dependency or dev dependency in `pyproject.toml`.
+- **Why:** the LLM adapter tests replay recorded fixtures through `httpx2.MockTransport` injected into the SDK clients (`respx` only patches `httpx`, which the SDKs no longer use). Adapter code imports `httpx2` only under `TYPE_CHECKING`. Today it resolves only as a transitive dependency.
+- **Workaround in place:** tests import the transitive `httpx2` directly (`tests/providers/llm/replay.py`).
+- **Status:** open

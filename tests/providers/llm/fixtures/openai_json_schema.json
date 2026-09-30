@@ -1,0 +1,29 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "chatcmpl-Fixture",
+    "object": "chat.completion",
+    "created": 1759200000,
+    "model": "gpt-5.4",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "stop",
+        "logprobs": null,
+        "message": {
+          "role": "assistant",
+          "content": "{\"label\": \"verified\", \"confidence\": 0.82, \"reasons\": [\"Primary source matches the figure.\"]}",
+          "refusal": null
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 55,
+      "completion_tokens": 21,
+      "total_tokens": 76
+    }
+  }
+}
