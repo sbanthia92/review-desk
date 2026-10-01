@@ -98,10 +98,17 @@ def _attr(value: str) -> str:
 
 
 def document_block(claim: Claim) -> str:
-    """The claim text, delimited as untrusted document data."""
+    """The claim text, delimited as untrusted document data.
+
+    When the claim has a standalone restatement (pronouns resolved by the
+    extractor), it is included so the claim can be checked out of context.
+    """
+    context = ""
+    if claim.standalone:
+        context = f"\nMeaning in context: {_neutralise(claim.standalone)}"
     return (
         f'<untrusted_document claim_id="{_attr(claim.id)}">\n'
-        f"{_neutralise(claim.text)}\n</untrusted_document>"
+        f"{_neutralise(claim.text)}{context}\n</untrusted_document>"
     )
 
 

@@ -45,3 +45,9 @@ Template (copy, fill in, append below the line):
 - **Why:** the LLM adapter tests replay recorded fixtures through `httpx2.MockTransport` injected into the SDK clients (`respx` only patches `httpx`, which the SDKs no longer use). Adapter code imports `httpx2` only under `TYPE_CHECKING`. Today it resolves only as a transitive dependency.
 - **Workaround in place:** tests import the transitive `httpx2` directly (`tests/providers/llm/replay.py`).
 - **Status:** accepted — `httpx2` added as a dev dependency on main (lead).
+
+## Lead · Standalone restatement on `Claim`
+- **What:** `Claim.standalone: str = ""` and the `Claim.checkable_text` property (`standalone or text`).
+- **Why:** on the first real review the fact-checker researched "They finished ten points clear of second-placed Arsenal" without knowing who "They" were, found an article about another season, and flagged a true claim as unsupported.
+- **Workaround in place:** none needed; the extractor fills it and the fact-checker and devil's advocate read it.
+- **Status:** accepted — added on main (lead), with the user's approval.

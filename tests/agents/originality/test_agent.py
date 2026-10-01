@@ -129,8 +129,9 @@ async def test_no_match_returns_no_findings() -> None:
     assert result.error is None
     assert result.findings == []
     assert_valid(result, OPINION_DOC)
-    assert len(search.queries) == 5
-    assert result.usage.search_calls == 5
+    # Five distinctive sentences plus one off-topic sentence qualify in this document.
+    assert len(search.queries) == 6
+    assert result.usage.search_calls == 6
 
 
 async def test_near_match_under_threshold_is_ignored() -> None:

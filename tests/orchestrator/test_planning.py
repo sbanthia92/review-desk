@@ -106,19 +106,25 @@ def _cb(cid: str, iterations: int = 2, searches: int = 3, tokens: int = 1_000) -
 
 
 VALIDATE_CASES = [
-    ("valid plan accepted", _reply(), Profile.OPINION, ["factcheck", "devils_advocate"], ""),
+    (
+        "valid plan accepted",
+        _reply(),
+        Profile.OPINION,
+        ["factcheck", "devils_advocate", "originality"],
+        "",
+    ),
     (
         "unknown agent dropped",
         _reply(agents=["factcheck", "astrologer"]),
         Profile.OPINION,
-        ["factcheck"],
+        ["factcheck", "originality"],
         "",
     ),
     (
         "extractor dropped",
         _reply(agents=["extractor", "copyedit"]),
         Profile.OPINION,
-        ["copyedit"],
+        ["copyedit", "originality"],
         "",
     ),
     (
@@ -211,3 +217,18 @@ def test_validate_plan_respects_registry() -> None:
     )
     assert plan is not None
     assert plan.agents == [AgentName.DEVILS_ADVOCATE]
+
+
+def test_originality_is_required_for_opinion_only_when_available() -> None:
+    ledger = bare_ledger()
+    reply = _reply(agents=["factcheck"])
+    plan, _ = validate_plan(
+        reply, profile=Profile.OPINION, ledger=ledger, budget=Budget(), available=["factcheck"]
+    )
+    assert plan is not None
+    assert [a.value for a in plan.agents] == ["factcheck"]  # not registered: not forced
+    plan, _ = validate_plan(
+        reply, profile=Profile.DESIGN_DOC, ledger=ledger, budget=Budget(), available=ALL
+    )
+    assert plan is not None
+    assert "originality" not in [a.value for a in plan.agents]

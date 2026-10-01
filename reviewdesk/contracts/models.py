@@ -127,6 +127,11 @@ class Claim(_Model):
 
     ``text`` must equal ``span.text_of(document.text)`` exactly.
     ``importance`` is 0.0 (trivial) to 1.0 (the thesis hinges on it).
+    ``standalone`` restates the claim so it can be understood (and searched
+    for) without the rest of the document: pronouns and references such as
+    "they" or "that season" are replaced by what they refer to. It is written
+    by the extractor's model, so treat it as untrusted data like ``text``.
+    Empty when the quote already stands alone.
     """
 
     id: str = Field(default_factory=lambda: new_id("claim"))
@@ -134,6 +139,12 @@ class Claim(_Model):
     span: Span
     type: ClaimType
     importance: float = Field(ge=0.0, le=1.0)
+    standalone: str = ""
+
+    @property
+    def checkable_text(self) -> str:
+        """The claim as it should be researched: ``standalone`` if set, else ``text``."""
+        return self.standalone or self.text
 
 
 class Evidence(_Model):

@@ -325,7 +325,8 @@ async def test_valid_llm_plan_is_used() -> None:
     assert da.runs == [] and ce.runs == []
     plan = fc.runs[0].plan
     assert plan is not None
-    assert plan.agents == [AgentName.FACTCHECK]
+    # Originality is required for opinion pieces even if the planner omits it.
+    assert plan.agents == [AgentName.FACTCHECK, AgentName.ORIGINALITY]
     assert plan.deep_research_claim_ids == ["claim_goals"]
     assert plan.budget_for("claim_goals").max_search_calls == 5
     [call] = llm.calls_for("orchestrator.plan")

@@ -187,12 +187,12 @@ class ClaimResearch:
 
     async def _plan_queries(self) -> list[str]:
         if not self.deep:
-            return [self.claim.text]
+            return [self.claim.checkable_text]
         plan = await self._llm(
             prompts.queries_messages(self.claim), QueryPlan, prompts.TAG_QUERIES, _OUT_QUERIES
         )
         queries = [" ".join(q.split()) for q in plan.queries if q.strip()]
-        return queries[:MAX_QUERIES] or [self.claim.text]
+        return queries[:MAX_QUERIES] or [self.claim.checkable_text]
 
     async def _read(
         self, url: str, *, query: str, title: str, snippet: str, kind: str = "page"
@@ -211,7 +211,7 @@ class ClaimResearch:
             self._step(ResearchAction.FETCH_PAGE, url, f"Fetched: {page.title}", [page.final_url])
             title = page.title or title
             text, can_be_primary = page.text, True
-            passages = find_in_page(text, self.claim.text, query)
+            passages = find_in_page(text, self.claim.checkable_text, query)
         source = Source(
             url=url,
             title=title or url,

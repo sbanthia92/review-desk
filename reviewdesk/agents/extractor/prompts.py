@@ -28,6 +28,11 @@ class ExtractedClaim(BaseModel):
         description="Exact, verbatim, contiguous text copied from the document. "
         "No paraphrase, no ellipses."
     )
+    standalone: str = Field(
+        default="",
+        description="The same claim restated in one sentence that can be understood "
+        "without the document: replace pronouns and references with what they refer to.",
+    )
     type: ClaimType = Field(description="thesis, supporting or factual")
     importance: float = Field(
         default=0.5, description="0.0 (trivial) to 1.0 (the argument hinges on it)"
@@ -62,6 +67,11 @@ Return JSON with one field, "claims": a list of objects with:
 - "quote": the claim copied exactly and verbatim from the document, as one \
 contiguous sentence or clause. Keep the original wording, capitalization and \
 punctuation. Never paraphrase, summarise, merge sentences or use ellipses.
+- "standalone": the same claim restated in one sentence that makes sense on \
+its own, for a fact-checker who cannot see the document. Replace pronouns and \
+vague references ("they", "the club", "that season", "the proposal") with the \
+specific names, dates and things they refer to in the document. Do not add \
+facts the document does not state, and keep every number exactly as written.
 - "type": one of
   - "thesis": the document's central argument. At most one per document.
   - "supporting": an argumentative claim that backs or elaborates the thesis.
