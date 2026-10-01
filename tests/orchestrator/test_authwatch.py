@@ -59,3 +59,17 @@ async def test_other_provider_errors_still_degrade():
     )
     report = await Orchestrator(registry).review(OPINION_DOC, Profile.AUTO, ProgressRecorder())
     assert report.document_id == OPINION_DOC.id
+
+
+async def test_degraded_review_is_never_called_ready():
+    registry = _registry(
+        FakeLLM(default={}),
+        FakeSearch(),
+        [
+            FakeAgent(AgentName.EXTRACTOR),
+            FakeAgent(AgentName.FACTCHECK, error="provider error"),
+        ],
+    )
+    report = await Orchestrator(registry).review(OPINION_DOC, Profile.OPINION, ProgressRecorder())
+    assert report.verdict_line.startswith("Incomplete review")
+    assert "Ready" not in report.verdict_line

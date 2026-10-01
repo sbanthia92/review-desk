@@ -51,7 +51,11 @@ def _plural(n: int, word: str) -> str:
 
 
 def verdict_line(findings: list[Finding], *, partial: bool = False) -> str:
-    """One sentence on overall readiness."""
+    """One sentence on overall readiness.
+
+    A partial review (an agent failed, timed out or left claims unchecked) is
+    never called "ready": missing checks are not a clean bill of health.
+    """
     errors = sum(1 for f in findings if f.severity is Severity.FACTUAL_ERROR)
     unsupported = sum(1 for f in findings if f.severity is Severity.UNSUPPORTED)
     rebuttals = sum(1 for f in findings if f.severity is Severity.STRONG_REBUTTAL)
@@ -70,6 +74,8 @@ def verdict_line(findings: list[Finding], *, partial: bool = False) -> str:
         if structure:
             parts.append(_plural(structure, "structure issue"))
         line = f"Nearly ready: no factual problems found; address {' and '.join(parts)}."
+    elif partial:
+        return "Incomplete review: some checks did not run, so readiness is unknown. See notes."
     elif findings:
         line = "Ready: only minor suggestions."
     else:
