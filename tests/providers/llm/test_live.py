@@ -61,6 +61,15 @@ async def test_live_structured(cls: type[AnthropicLLM] | type[OpenAILLM], var: s
     assert resp.parsed.label == "verified"
 
 
+@pytest.mark.parametrize("tier", [ModelTier.CHEAP, ModelTier.MID, ModelTier.STRONG])
+async def test_live_anthropic_structured_every_tier(tier: ModelTier) -> None:
+    """Every tier must accept the structured-output request, even with a small cap."""
+    llm = AnthropicLLM(_key("ANTHROPIC_API_KEY"))
+    resp = await llm.complete(VERDICT_MSGS, schema=Verdict, model_tier=tier, max_tokens=300)
+    assert isinstance(resp.parsed, Verdict)
+    assert resp.parsed.label == "verified"
+
+
 @pytest.mark.parametrize(
     "cls,var", [(AnthropicLLM, "ANTHROPIC_API_KEY"), (OpenAILLM, "OPENAI_API_KEY")]
 )

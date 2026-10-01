@@ -67,7 +67,9 @@ async def test_request_options_and_tier_mapping() -> None:
     await llm.complete(MSGS, model_tier=ModelTier.STRONG, max_tokens=256, temperature=0.2)
     body = replay.body()
     assert body["model"] == "claude-custom-strong"
-    assert body["max_tokens"] == 256
+    # Thinking counts against max_tokens, so thinking models get headroom.
+    assert body["max_tokens"] == 256 + 8000
+    assert body["output_config"] == {"effort": "medium"}
     assert "temperature" not in body  # not part of the current Messages API
     await llm.complete(MSGS, model_tier=ModelTier.MID)
     assert replay.body()["model"] == "claude-sonnet-5-5"
@@ -87,7 +89,31 @@ async def test_consecutive_roles_merged() -> None:
     assert replay.body()["messages"] == [{"role": "user", "content": "a\n\nb"}]
 
 
-async def test_structured_output_via_forced_tool() -> None:
+async def test_cheap_tier_gets_no_effort_or_headroom() -> None:
+    replay = Replay("anthropic_text")
+    await make(replay).complete(MSGS, model_tier=ModelTier.CHEAP, max_tokens=256)
+    body = replay.body()
+    assert body["max_tokens"] == 256
+    assert "output_config" not in body  # Haiku 4.5 rejects effort
+
+
+async def test_effort_and_headroom_are_configurable() -> None:
+    replay = Replay("anthropic_text")
+    llm = make(replay, effort={"mid": "low"}, thinking_headroom=1000)
+    await llm.complete(MSGS, model_tier=ModelTier.MID, max_tokens=300)
+    body = replay.body()
+    assert body["max_tokens"] == 1300
+    assert body["output_config"] == {"effort": "low"}
+
+
+async def test_refusal_is_a_provider_error() -> None:
+    replay = Replay("anthropic_refusal")
+    with pytest.raises(ProviderError, match="refusal") as info:
+        await make(replay).complete(MSGS, model_tier=ModelTier.STRONG)
+    assert info.value.retryable is False
+
+
+async def test_structured_output_via_tool_without_forcing() -> None:
     replay = Replay("anthropic_tool_use")
     resp = await make(replay).complete(MSGS, schema=Verdict, model_tier=ModelTier.MID)
     assert isinstance(resp.parsed, Verdict)
@@ -96,7 +122,9 @@ async def test_structured_output_via_forced_tool() -> None:
     assert resp.usage.llm_calls == 1
 
     body = replay.body()
-    assert body["tool_choice"] == {"type": "tool", "name": "Verdict"}
+    # Forced tool_choice is a 400 on Claude Opus 5.5 / Sonnet 5.5.
+    assert body["tool_choice"] == {"type": "auto", "disable_parallel_tool_use": True}
+    assert "calling the `Verdict` tool" in body["system"]
     tool = body["tools"][0]
     assert tool["name"] == "Verdict"
     assert tool["input_schema"]["type"] == "object"
@@ -189,6 +217,7 @@ async def test_bad_request_is_non_retryable_provider_error() -> None:
         await make(replay).complete(MSGS, model_tier=ModelTier.CHEAP)
     assert not isinstance(info.value, AuthError)
     assert info.value.retryable is False
+    assert "messages: field required" in str(info.value)  # says what was wrong
     assert len(replay.requests) == 1
 
 

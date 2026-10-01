@@ -1,9 +1,15 @@
 """Anthropic (Claude) adapter implementing ``LLMClient``.
 
-Structured output uses a forced tool call: the Pydantic schema becomes the
-tool's ``input_schema`` and the tool input is validated against the model. If
-validation fails the adapter re-asks once (``schema_retries``) with the
-validation errors as a ``tool_result``, then raises ``SchemaError``.
+Structured output uses a tool call: the Pydantic schema becomes the tool's
+``input_schema`` and the tool input is validated against the model. The tool is
+requested with ``tool_choice: auto`` plus a system instruction, because current
+models (Claude Opus 5.5, Sonnet 5.5) reject forced ``tool_choice`` with a 400.
+If the model answers in text or validation fails, the adapter re-asks once
+(``schema_retries``), then raises ``SchemaError``.
+
+On models whose thinking is always on, thinking tokens count against
+``max_tokens``, so the adapter adds ``thinking_headroom`` to the caller's cap
+and sets ``output_config.effort`` per tier.
 """
 
 from __future__ import annotations
@@ -36,10 +42,13 @@ from reviewdesk.providers.llm._common import (
     with_retries,
 )
 from reviewdesk.providers.llm.config import (
+    ANTHROPIC_THINKING_HEADROOM,
+    DEFAULT_ANTHROPIC_EFFORT,
     DEFAULT_ANTHROPIC_MODELS,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TIMEOUT_SECONDS,
     RetryPolicy,
+    anthropic_supports_effort,
     resolve_models,
 )
 
@@ -47,6 +56,11 @@ if TYPE_CHECKING:
     import httpx2
 
 PROVIDER = "anthropic"
+
+TOOL_INSTRUCTION = (
+    "Respond only by calling the `{tool}` tool exactly once with your answer. "
+    "Do not answer in plain text."
+)
 
 _BILLING_MARKERS = ("credit balance", "billing", "insufficient")
 
@@ -76,6 +90,8 @@ class AnthropicLLM:
         timeout: float = DEFAULT_TIMEOUT_SECONDS,
         schema_retries: int = 1,
         send_temperature: bool = False,
+        effort: Mapping[ModelTier | str, str] | None = None,
+        thinking_headroom: int = ANTHROPIC_THINKING_HEADROOM,
         base_url: str | None = None,
         http_client: httpx2.AsyncClient | None = None,
     ) -> None:
@@ -86,6 +102,8 @@ class AnthropicLLM:
         self.default_max_tokens = default_max_tokens
         self.schema_retries = schema_retries
         self.send_temperature = send_temperature
+        self.effort = resolve_models(DEFAULT_ANTHROPIC_EFFORT, effort)
+        self.thinking_headroom = thinking_headroom
         self._client = anthropic.AsyncAnthropic(
             api_key=api_key,
             base_url=base_url,
@@ -121,10 +139,18 @@ class AnthropicLLM:
         if not convo:
             convo = [{"role": "user", "content": "Begin."}]
 
+        thinks = anthropic_supports_effort(model)
         kwargs: dict[str, Any] = {
             "model": model,
-            "max_tokens": max_tokens or self.default_max_tokens,
+            "max_tokens": (max_tokens or self.default_max_tokens)
+            + (self.thinking_headroom if thinks else 0),
         }
+        tier_effort = self.effort.get(ModelTier(model_tier))
+        if thinks and tier_effort:
+            kwargs["output_config"] = {"effort": tier_effort}
+        if schema is not None:
+            instruction = TOOL_INSTRUCTION.format(tool=schema_name(schema))
+            system = f"{system}\n\n{instruction}" if system else instruction
         if system:
             kwargs["system"] = system
         if temperature is not None and self.send_temperature:
@@ -132,6 +158,7 @@ class AnthropicLLM:
 
         if schema is None:
             msg = await self._create(messages=convo, **kwargs)
+            _raise_if_refused(msg)
             usage = _usage(msg)
             return LLMResponse(text=_text(msg), model=msg.model or model, usage=usage)
 
@@ -143,12 +170,14 @@ class AnthropicLLM:
                 "input_schema": json_schema_for(schema),
             }
         ]
-        kwargs["tool_choice"] = {"type": "tool", "name": tool}
+        # Forced tool_choice ("tool"/"any") is a 400 on current models.
+        kwargs["tool_choice"] = {"type": "auto", "disable_parallel_tool_use": True}
 
         total = Usage()
         reason = "no output"
         for _ in range(self.schema_retries + 1):
             msg = await self._create(messages=convo, **kwargs)
+            _raise_if_refused(msg)
             total = total + _usage(msg)
             block = next(
                 (b for b in msg.content if b.type == "tool_use" and b.name == tool),
@@ -160,7 +189,7 @@ class AnthropicLLM:
                     break
                 convo = [
                     *convo,
-                    {"role": "assistant", "content": _text(msg) or "(no output)"},
+                    {"role": "assistant", "content": _echo_blocks(msg) or "(no output)"},
                     {
                         "role": "user",
                         "content": f"Call the `{tool}` tool with your answer.",
@@ -216,11 +245,22 @@ def _text(msg: anthropic.types.Message) -> str:
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
-def _echo_blocks(msg: anthropic.types.Message) -> list[dict[str, Any]]:
-    """Re-send the assistant turn as request params (text and tool_use only)."""
-    out: list[dict[str, Any]] = []
+def _raise_if_refused(msg: anthropic.types.Message) -> None:
+    if msg.stop_reason == "refusal":
+        raise ProviderError("anthropic declined the request (refusal)", retryable=False)
+
+
+def _echo_blocks(msg: anthropic.types.Message) -> list[Any]:
+    """Re-send the assistant turn as request params.
+
+    Thinking blocks are passed back unchanged (the API requires them next to
+    a ``tool_use`` when thinking is on); text and tool_use are rebuilt.
+    """
+    out: list[Any] = []
     for b in msg.content:
-        if b.type == "text" and b.text:
+        if b.type in ("thinking", "redacted_thinking"):
+            out.append(b)
+        elif b.type == "text" and b.text:
             out.append({"type": "text", "text": b.text})
         elif b.type == "tool_use":
             out.append({"type": "tool_use", "id": b.id, "name": b.name, "input": b.input})
@@ -280,7 +320,13 @@ def _classify(exc: Exception) -> ProviderError | TransientFailure | None:
                 ProviderError(f"anthropic server error ({status} {kind})", retryable=True),
                 headers,
             )
-        return ProviderError(f"anthropic request failed ({status} {kind})", retryable=False)
+        detail = ""
+        if status == 400:
+            # 400 messages describe the bad parameter, which is what a caller
+            # needs to fix it. Clip them; they never contain the API key.
+            text = " ".join(_error_message(exc).split())[:200]
+            detail = f": {text}" if text else ""
+        return ProviderError(f"anthropic request failed ({status} {kind}){detail}", retryable=False)
     if isinstance(exc, anthropic.AnthropicError):
         return ProviderError(f"anthropic client error ({type(exc).__name__})", retryable=False)
     return None
