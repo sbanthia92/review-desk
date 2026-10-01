@@ -333,8 +333,8 @@ class DevilsAdvocateAgent:
         )
         queries = deque(q.strip()[:300] for q in plan.queries[:3] if q.strip())
         if not queries:
-            queries.append(claim.text[:300])
-        terms = keywords(claim.text, *queries)
+            queries.append(claim.checkable_text[:300])
+        terms = keywords(claim.checkable_text, *queries)
         seen: set[str] = set()
         known: set[str] = set()
         notes: list[str] = []

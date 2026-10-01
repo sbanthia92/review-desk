@@ -213,3 +213,99 @@ def distinctive_sentences(text: str) -> list[Sentence]:
         ranked.append(scored)
     ranked.sort(key=lambda s: (-s.score, s.span.start))
     return ranked
+
+
+# ---------------------------------------------------------------------------
+# Off-topic sentences
+# ---------------------------------------------------------------------------
+
+OFF_TOPIC_MIN_WORDS = 6
+"""Shortest sentence considered as an off-topic candidate."""
+
+OFF_TOPIC_MIN_UNCOMMON = 2
+"""Minimum distinct uncommon words for an off-topic candidate."""
+
+OFF_TOPIC_MAX_OVERLAP = 0.5
+"""Candidates sharing more than this share of topic words with the rest of the
+document are on-topic and not sampled as off-topic."""
+
+
+def _stem(word: str) -> str:
+    """Crude stem so ``battles``/``battle`` and ``wins``/``winning`` match."""
+    word = word.replace("’", "'").split("'")[0]
+    for suffix in ("ing", "ies", "ed", "es", "s"):
+        if len(word) - len(suffix) >= 4 and word.endswith(suffix):
+            return word[: -len(suffix)]
+    return word
+
+
+def _topic_stems(text: str) -> set[str]:
+    return {_stem(t) for t in words(text) if is_uncommon(t) and not t[0].isdigit()}
+
+
+def off_topic_sentences(text: str) -> list[Sentence]:
+    """Sentences that share few topic words with the rest of the document.
+
+    A borrowed line (a proverb, a famous quotation, a passage lifted from
+    elsewhere) often talks about something other than the article around it
+    and is too short or too plainly worded to rank as "distinctive". These are
+    ranked least-related first (ties: longer first, then position). ``score``
+    is ``1 - overlap``.
+    """
+    sentences = [
+        (span, sentence, _topic_stems(sentence)) for span, sentence in split_sentences(text)
+    ]
+    counts: dict[str, int] = {}
+    for _span, _sentence, stems in sentences:
+        for stem in stems:
+            counts[stem] = counts.get(stem, 0) + 1
+    seen: set[tuple[str, ...]] = set()
+    ranked: list[Sentence] = []
+    for span, sentence, stems in sentences:
+        tokens = words(sentence)
+        if len(tokens) < OFF_TOPIC_MIN_WORDS or len(stems) < OFF_TOPIC_MIN_UNCOMMON:
+            continue
+        if quoted_ratio(sentence) > MAX_QUOTED_RATIO or _BOILERPLATE.search(sentence):
+            continue
+        key = tuple(tokens)
+        if key in seen:
+            continue
+        seen.add(key)
+        shared = sum(1 for stem in stems if counts[stem] > 1)
+        overlap = shared / len(stems)
+        if overlap > OFF_TOPIC_MAX_OVERLAP:
+            continue
+        ranked.append(
+            Sentence(
+                span=span,
+                text=sentence,
+                word_count=len(tokens),
+                uncommon=len(stems),
+                score=1.0 - overlap,
+            )
+        )
+    ranked.sort(key=lambda s: (-s.score, -s.word_count, s.span.start))
+    return ranked
+
+
+def sample_sentences(text: str, limit: int) -> list[Sentence]:
+    """Up to ``limit`` sentences to check, alternating the two rankings.
+
+    Takes the most distinctive sentence, then the least on-topic, and so on,
+    skipping repeats, so both a lifted aphorism and a lifted dense passage
+    are likely to be sampled. Deterministic for a given text.
+    """
+    pools = [distinctive_sentences(text), off_topic_sentences(text)]
+    chosen: list[Sentence] = []
+    taken: set[Span] = set()
+    indexes = [0, 0]
+    while len(chosen) < limit and any(indexes[i] < len(pools[i]) for i in (0, 1)):
+        for i in (0, 1):
+            while indexes[i] < len(pools[i]) and pools[i][indexes[i]].span in taken:
+                indexes[i] += 1
+            if indexes[i] < len(pools[i]) and len(chosen) < limit:
+                sentence = pools[i][indexes[i]]
+                indexes[i] += 1
+                taken.add(sentence.span)
+                chosen.append(sentence)
+    return chosen

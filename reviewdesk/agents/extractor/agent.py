@@ -52,6 +52,9 @@ DEFAULT_MAX_CLAIMS = 60
 MIN_CLAIM_CHARS = 3
 """Located spans shorter than this (after stripping) are discarded as noise."""
 
+MAX_STANDALONE_CHARS = 400
+"""Cap on a claim's standalone restatement."""
+
 _PROMPT_OVERHEAD_TOKENS = 600
 _OUTPUT_ALLOWANCE_TOKENS = 1_500
 _TYPE_RANK = {ClaimType.THESIS: 0, ClaimType.SUPPORTING: 1, ClaimType.FACTUAL: 2}
@@ -62,6 +65,11 @@ def clamp_importance(value: float) -> float:
     if not math.isfinite(value):
         return 0.5
     return min(1.0, max(0.0, value))
+
+
+def clean_standalone(value: str) -> str:
+    """One line, clipped: the model's standalone restatement of a claim."""
+    return " ".join(value.split())[:MAX_STANDALONE_CHARS]
 
 
 def estimate_tokens(text: str) -> int:
@@ -75,6 +83,7 @@ class _Candidate:
     type: ClaimType
     importance: float
     order: int
+    standalone: str = ""
 
 
 @dataclass
@@ -232,7 +241,11 @@ class ExtractorAgent:
         # claim is a duplicate of the first.
         span = next((s for s in spans if s not in used), spans[0])
         return _Candidate(
-            span=span, type=item.type, importance=clamp_importance(item.importance), order=order
+            span=span,
+            type=item.type,
+            importance=clamp_importance(item.importance),
+            order=order,
+            standalone=clean_standalone(item.standalone),
         )
 
     def _finalize(
@@ -279,6 +292,9 @@ class ExtractorAgent:
                 span=c.span,
                 type=c.type,
                 importance=c.importance,
+                standalone=""
+                if c.standalone == doc.text[c.span.start : c.span.end]
+                else c.standalone,
             )
             for c in kept
         ]

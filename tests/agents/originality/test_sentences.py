@@ -111,3 +111,25 @@ def test_empty_and_heading_only_documents() -> None:
     assert (
         distinctive_sentences("# Only a heading with several distinctive technical words\n") == []
     )
+
+
+def test_off_topic_aphorism_is_sampled():
+    from reviewdesk.agents.originality.sentences import off_topic_sentences, sample_sentences
+
+    text = (
+        "Leicester City won the Premier League title with a modest wage bill. "
+        "Their wage bill was the fourth lowest in the league that season. "
+        "The league title usually goes to a club with a huge wage bill. "
+        "If you know the enemy and know yourself, you need not fear the result of a "
+        "hundred battles. "
+        "Leicester City showed that a modest club can still win the league title."
+    )
+    borrowed = "If you know the enemy and know yourself"
+    assert off_topic_sentences(text)[0].text.startswith(borrowed)
+    sample = sample_sentences(text, 2)
+    assert any(s.text.startswith(borrowed) for s in sample)
+    assert len({s.span for s in sample}) == len(sample)  # no repeats
+    for s in sample:
+        assert s.span.text_of(text) == s.text
+    assert sample_sentences(text, 0) == []
+    assert sample_sentences(text, 3) == sample_sentences(text, 3)  # deterministic

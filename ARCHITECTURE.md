@@ -43,6 +43,9 @@ Document ──► extractor ──► ClaimLedger ──► plan ──► agen
   `overlaps`, `contains`, `text_of`. Empty spans overlap nothing.
 - **`Claim`**: `id`, `text`, `span`, `type` (`ClaimType`: thesis, supporting,
   factual), `importance` 0–1. `text` must equal `span.text_of(doc.text)`.
+  `standalone` restates the claim with pronouns and references resolved, so
+  it can be researched out of context; `checkable_text` is `standalone or
+  text`.
 - **`Evidence`**: `url`, `title`, `excerpt`, `retrieved_at`, `is_primary`.
 - **`Verdict`**: verified, wrong, unsupported, unchecked. Verified is rejected
   without evidence.

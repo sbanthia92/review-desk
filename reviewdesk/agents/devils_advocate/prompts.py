@@ -152,7 +152,11 @@ def _focus_block(focus: str | None) -> str:
 
 
 def _claim_line(claim: Claim) -> str:
-    return f"[{claim.id}] ({claim.type.value}, importance {claim.importance:.2f}) {claim.text}"
+    context = f" (in context: {claim.standalone})" if claim.standalone else ""
+    return (
+        f"[{claim.id}] ({claim.type.value}, importance {claim.importance:.2f}) "
+        f"{claim.text}{context}"
+    )
 
 
 @dataclass(frozen=True)

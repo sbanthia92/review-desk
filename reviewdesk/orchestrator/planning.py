@@ -44,6 +44,15 @@ UNLISTED_CLAIM_BUDGET = ClaimBudget(max_iterations=1, max_search_calls=1, max_to
 """Budget a validated LLM plan gives claims it did not list."""
 _MIN_WEIGHT = 0.05
 
+REQUIRED_AGENTS: dict[Profile, tuple[AgentName, ...]] = {
+    Profile.OPINION: (AgentName.ORIGINALITY,),
+}
+"""Agents the planner may not drop for a profile (when they are available).
+
+The originality check costs a few searches and no model calls, and the planner
+has no way to tell from the claims whether a sentence was borrowed.
+"""
+
 
 def plannable_agents(profile: Profile, available: Iterable[str]) -> list[AgentName]:
     """Agents ``profile`` allows (minus the extractor) that are in ``available``."""
@@ -168,6 +177,9 @@ def validate_plan(
             agents.append(name)
     if not agents:
         return None, "plan schedules no allowed agents"
+    for required in REQUIRED_AGENTS.get(profile, ()):
+        if required in allowed and required not in agents:
+            agents.append(required)
     agents.sort(key=agent_rank)
 
     deep: list[str] = []

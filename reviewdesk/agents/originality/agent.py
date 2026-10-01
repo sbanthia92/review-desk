@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 
-from reviewdesk.agents.originality.sentences import Sentence, distinctive_sentences
+from reviewdesk.agents.originality.sentences import Sentence, sample_sentences
 from reviewdesk.agents.originality.similarity import Match, same_url, similarity
 from reviewdesk.contracts.errors import BudgetExceeded, FetchError, ProviderError
 from reviewdesk.contracts.interfaces import ReviewContext, SearchResult
@@ -33,7 +33,7 @@ from reviewdesk.contracts.models import (
 
 log = logging.getLogger(__name__)
 
-DEFAULT_SAMPLE_SIZE = 5
+DEFAULT_SAMPLE_SIZE = 8
 """Sentences searched per document (further capped by the search budget)."""
 
 DEFAULT_THRESHOLD = 0.6
@@ -115,13 +115,13 @@ class OriginalityAgent:
         return AgentName.ORIGINALITY
 
     def sample(self, ctx: ReviewContext) -> tuple[list[Sentence], int]:
-        """``(sentences to search, sentences wanted)``, most distinctive first.
+        """``(sentences to search, sentences wanted)``: off-topic and distinctive ones.
 
         ``wanted`` is capped by ``sample_size``; the returned sample is further
         capped by the searches left in the job budget.
         """
-        candidates = distinctive_sentences(ctx.document.text)
-        wanted = min(self.sample_size, len(candidates))
+        candidates = sample_sentences(ctx.document.text, self.sample_size)
+        wanted = len(candidates)
         return candidates[: min(wanted, ctx.meter.searches_left())], wanted
 
     async def run(self, ctx: ReviewContext) -> AgentResult:
