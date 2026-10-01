@@ -1,0 +1,21 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "id": "msg_01FixtureAAAA",
+    "type": "message",
+    "role": "assistant",
+    "model": "claude-opus-5-5",
+    "content": [],
+    "stop_reason": "refusal",
+    "stop_sequence": null,
+    "usage": {
+      "input_tokens": 42,
+      "output_tokens": 17,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3
+    }
+  }
+}

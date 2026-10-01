@@ -25,6 +25,30 @@ DEFAULT_OPENAI_MODELS: Mapping[ModelTier, str] = {
     ModelTier.STRONG: "gpt-5.5",
 }
 
+DEFAULT_ANTHROPIC_EFFORT: Mapping[ModelTier, str] = {
+    ModelTier.MID: "medium",
+    ModelTier.STRONG: "medium",
+}
+"""``output_config.effort`` per tier (thinking depth and token spend).
+
+Only sent to models that accept it (see ``anthropic_supports_effort``).
+"""
+
+ANTHROPIC_THINKING_HEADROOM = 8_000
+"""Extra ``max_tokens`` for models whose thinking is always on.
+
+Thinking tokens count against ``max_tokens``, so a caller asking for a
+300-token answer would otherwise be cut off before any output.
+"""
+
+_NO_EFFORT_PREFIXES = ("claude-haiku", "claude-3", "claude-sonnet-4-5")
+
+
+def anthropic_supports_effort(model: str) -> bool:
+    """True for models that accept ``output_config.effort`` and think by default."""
+    return not model.startswith(_NO_EFFORT_PREFIXES)
+
+
 DEFAULT_MAX_TOKENS = 4096
 """Output-token cap used when the caller does not pass ``max_tokens``."""
 
