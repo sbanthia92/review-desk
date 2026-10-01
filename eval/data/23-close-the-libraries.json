@@ -1,0 +1,84 @@
+{
+  "id": "23-close-the-libraries",
+  "title": "Close the branch libraries and spend the money on broadband",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Parliament passed the Public Libraries Act in 1750",
+      "correction": "The Public Libraries Act was passed in 1850."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Andrew Carnegie, the Scottish-born steel magnate, paid for more than 25,000 libraries",
+      "correction": "Andrew Carnegie funded about 2,500 libraries (2,509 is the usual figure).",
+      "note": "[multi-part] The description of Carnegie (Scottish-born steel magnate) is true; only the number of libraries is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Wikipedia, launched in 2011",
+      "correction": "Wikipedia was launched in January 2001."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "Three quarters of the people who sign petitions to save a library have not visited it in the last five years."
+    },
+    {
+      "id": "d5",
+      "type": "weak_argument",
+      "quote": "Everything is on the internet now, so nobody needs a building full of books.",
+      "known_rebuttal": "Much of what libraries lend is not freely online: in-copyright books, paywalled journals and newspapers, and e-books, which are themselves lent through library services. A significant minority of households have no home broadband or no suitable device, and the library is where they get online, apply for jobs and use public services. Libraries also provide staff help, study space and children's literacy programmes, none of which a broadband connection replaces."
+    },
+    {
+      "id": "d6",
+      "type": "borrowed_sentence",
+      "quote": "People of the same trade seldom meet together, even for merriment and diversion, but the conversation ends in a conspiracy against the public, or in some contrivance to raise prices.",
+      "source_url": "https://www.gutenberg.org/ebooks/3300",
+      "source_title": "An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "more staff then readers",
+      "correction": "more staff than readers"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "The cost of heating and staffing those rooms have not fallen",
+      "correction": "The cost of heating and staffing those rooms has not fallen"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "more for learning then a reading room",
+      "correction": "more for learning than a reading room"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Everything is on the internet now, so nobody needs a building full of books.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "the Gutenberg Bible was printed in Mainz in the 1450s",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "paid for more than 25,000 libraries, and each of those buildings were a promise that learning belonged to everybody",
+      "note": "'were' should be 'was', but the sentence carries a wrong number, so the fact finding wins."
+    }
+  ]
+}

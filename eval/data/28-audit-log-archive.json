@@ -1,0 +1,78 @@
+{
+  "id": "28-audit-log-archive",
+  "title": "Design: Move audit logs to object storage",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "is designed for 99.99% durability",
+      "correction": "Amazon S3 is designed for 99.999999999% (eleven nines) durability; 99.99% is the availability design target of the S3 Standard storage class.",
+      "note": "[multi-part] [secondary-source] The launch year (2006) is right; only the durability figure is wrong, and it is easily confused with the availability figure. The primary source is the AWS S3 documentation."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "S3 is only eventually consistent, so a read that follows a write may return stale data.",
+      "correction": "Since December 2020, Amazon S3 has provided strong read-after-write consistency for all requests.",
+      "note": "[secondary-source] Older blog posts and answers that describe eventual consistency still rank highly; the primary sources are the AWS announcement of December 2020 and the current S3 documentation."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Moving the logs will reduce storage costs by 90%."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Auditors have never asked us for logs older than a year, so we can delete everything after twelve months.",
+      "known_rebuttal": "What auditors happened to ask for in the past is not the retention requirement. Retention is set by law, contract and standards: many financial and regulatory regimes require records to be kept for six or seven years, security standards such as PCI DSS set minimum periods of their own, and a litigation hold can require logs to be preserved indefinitely. Breaches are often discovered long after they begin, so old logs are exactly what an investigation needs. Deletion cannot be undone, while cold object storage costs very little, so the period should come from a written retention policy."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "The table have grown to 900 GB",
+      "correction": "The table has grown to 900 GB"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "Protection against deletion or tampering are not covered",
+      "correction": "Protection against deletion or tampering is not covered"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Each of the hourly files are checksummed",
+      "correction": "Each of the hourly files is checksummed"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "If the counts in step two does not match",
+      "correction": "If the counts in step two do not match"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "Protection against deletion or tampering are not covered in this version.",
+      "note": "Copy editor (grammar) and structure reviewer (an audit log design with no tamper-resistance, such as object lock or versioning, is missing a core requirement) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Amazon S3, launched in 2006",
+      "note": "[multi-part] The true half of the sentence that also carries d1; a rebuttal disputing the launch year must be discarded."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "is designed for 99.99% durability, which is more then our database offers today",
+      "note": "'then' should be 'than', but the sentence carries a wrong figure, so the fact finding wins."
+    }
+  ]
+}

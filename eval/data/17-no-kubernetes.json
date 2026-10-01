@@ -1,0 +1,77 @@
+{
+  "id": "17-no-kubernetes",
+  "title": "You do not need Kubernetes",
+  "genre": "tech_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "handed it to the Apache Software Foundation a year later",
+      "correction": "Google donated Kubernetes to the Cloud Native Computing Foundation (CNCF, part of the Linux Foundation) in 2015.",
+      "note": "[multi-part] The first half of the sentence (open-sourced by Google in 2014) and the timing of the donation are true; only the receiving foundation is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The name comes from the Latin word for helmsman",
+      "correction": "'Kubernetes' comes from the Greek word for helmsman or pilot."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Teams that adopt Kubernetes spend 60% of their engineering time on infrastructure."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Google needs Kubernetes and you are not Google, so you do not need it.",
+      "known_rebuttal": "Whether an orchestrator is worth it depends on operational requirements, not on company size. A small team running several services still needs rolling deploys, health checks, restarts, autoscaling and secret management, and the alternative is usually a home-grown set of scripts that nobody else knows. Managed services such as GKE, EKS and AKS remove most of the control-plane burden, and a standard API brings portability, a large ecosystem and engineers who already know it."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "It is a capital mistake to theorize before one has data.",
+      "source_url": "https://www.gutenberg.org/ebooks/1661",
+      "source_title": "The Adventures of Sherlock Holmes by Arthur Conan Doyle"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "this conversation alot over",
+      "correction": "this conversation a lot over"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Each of these pieces need upgrading",
+      "correction": "Each of these pieces needs upgrading"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "This setup has less moving parts",
+      "correction": "This setup has fewer moving parts"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "in a afternoon",
+      "correction": "in an afternoon"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Google needs Kubernetes and you are not Google, so you do not need it.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The name comes from the Latin word for helmsman, which tell you how its designers saw it",
+      "note": "'tell' should be 'tells', but the clause carries a wrong fact, so the fact finding wins."
+    }
+  ]
+}

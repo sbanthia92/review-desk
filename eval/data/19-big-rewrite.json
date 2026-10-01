@@ -1,0 +1,90 @@
+{
+  "id": "19-big-rewrite",
+  "title": "Stop being afraid of the big rewrite",
+  "genre": "tech_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Joel Spolsky's famous essay \"Things You Should Never Do\" was about Microsoft's decision to rewrite Word from scratch",
+      "correction": "Spolsky's essay 'Things You Should Never Do, Part I' (April 2000) was about Netscape's decision to rewrite its browser from scratch.",
+      "note": "[secondary-source] The essay is usually met through summaries and quotations in other blog posts; the primary source is the essay itself on joelonsoftware.com."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Fred Brooks published The Mythical Man-Month in 1995",
+      "correction": "The Mythical Man-Month was first published in 1975 (an anniversary edition followed in 1995).",
+      "note": "[secondary-source] Search results may surface the 1995 anniversary edition; the original publication date is 1975."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "it was published in the winter of 1999",
+      "correction": "The Agile Manifesto was written and published in February 2001.",
+      "note": "[multi-part] The first half of the sentence (seventeen authors at a ski resort in Utah) is true; only the year is wrong."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "Rewritten systems have 80% fewer defects than the code they replace."
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Engineers who work on legacy code are twice as likely to quit within a year."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "The old code is ugly and nobody understands it, so starting again from scratch will be faster than fixing it.",
+      "known_rebuttal": "Ugly code usually encodes years of bug fixes and edge cases that are documented nowhere else, so a rewrite has to rediscover them one production incident at a time. While the team rebuilds what already exists, the old system still needs maintenance and the product ships nothing new, which is how Netscape lost its market. If nobody understands the current behaviour, nobody can specify the replacement either; incremental replacement behind the existing interface (the strangler-fig approach) delivers the same end state with far less risk."
+    },
+    {
+      "id": "d7",
+      "type": "borrowed_sentence",
+      "quote": "There is no instance of a country having benefited from prolonged warfare.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "would of been the first to say so",
+      "correction": "would have been the first to say so"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "a rewrite done in small steps are not",
+      "correction": "a rewrite done in small steps is not"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "Their not leaving because the work is hard",
+      "correction": "They're not leaving because the work is hard"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "When the new system pass the same tests",
+      "correction": "When the new system passes the same tests"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Fred Brooks published The Mythical Man-Month in 1995, and he warned about the \"second-system effect\", in which a team's next design collapse under the weight",
+      "note": "'collapse' should be 'collapses', but the sentence carries a wrong date, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The Agile Manifesto was written by seventeen people at a ski resort in Utah",
+      "note": "[multi-part] The true half of the sentence that also carries d3; a rebuttal disputing this fact must be discarded."
+    }
+  ]
+}

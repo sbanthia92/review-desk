@@ -1,0 +1,96 @@
+{
+  "id": "24-robots-not-astronauts",
+  "title": "Send robots, not astronauts",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Neil Armstrong and Michael Collins walked on the surface on 20 July 1969",
+      "correction": "Neil Armstrong and Buzz Aldrin walked on the Moon on 20 July 1969; Michael Collins stayed in lunar orbit.",
+      "note": "[multi-part] Armstrong and the date are right; only the second moonwalker is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The last of them left in December 1975",
+      "correction": "The last crewed Moon landing, Apollo 17, left the Moon in December 1972."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Voyager 1, launched in 1987",
+      "correction": "Voyager 1 was launched in September 1977.",
+      "note": "[multi-part] The second fact in the sentence (crossing into interstellar space in 2012) is true; only the launch year is wrong."
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "NASA spent millions of dollars developing a pen that would write in zero gravity, while the Soviet cosmonauts simply used pencils.",
+      "correction": "The space pen was developed privately by the Fisher Pen Company at its own expense; NASA paid nothing for its development and later bought the pens at a few dollars each, as did the Soviet space programme.",
+      "note": "[secondary-source] A widely repeated anecdote; top results are likely to be retellings. NASA's own history pages and the Fisher company's account are the primary sources and contradict it."
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "A robotic mission returns ten times more science per dollar than a crewed one."
+    },
+    {
+      "id": "d6",
+      "type": "unsupported",
+      "quote": "Nine out of ten planetary scientists would cancel crewed missions tomorrow if the money were guaranteed to go to probes."
+    },
+    {
+      "id": "d7",
+      "type": "weak_argument",
+      "quote": "No robot has ever died in space, so human spaceflight can no longer be justified.",
+      "known_rebuttal": "Safety is one consideration, not the whole case. A trained person on site works far faster and more flexibly than a rover: the Apollo 17 crew, which included a professional geologist, drove further and collected more varied samples in three days than rovers have managed in years. Astronauts repaired and upgraded the Hubble Space Telescope, a rescue that no robot of the time could have performed. Crewed programmes also sustain the public support and budgets from which robotic science is funded, and astronauts accept the risk knowingly."
+    },
+    {
+      "id": "d8",
+      "type": "borrowed_sentence",
+      "quote": "It is not down in any map; true places never are.",
+      "source_url": "https://www.gutenberg.org/ebooks/2701",
+      "source_title": "Moby Dick; Or, The Whale by Herman Melville"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "we would not have gave it up",
+      "correction": "we would not have given it up"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "nobody want to bite that hand",
+      "correction": "nobody wants to bite that hand"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "Each of those crews were flying",
+      "correction": "Each of those crews was flying"
+    },
+    {
+      "id": "d12",
+      "type": "grammar",
+      "quote": "does not care weather the first thing",
+      "correction": "does not care whether the first thing"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Twelve people have walked on the Moon.",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Voyager 1, launched in 1987, crossed into interstellar space in 2012, and it are still sending data home.",
+      "note": "'are' should be 'is', but the sentence carries a wrong launch year, so the fact finding wins."
+    }
+  ]
+}

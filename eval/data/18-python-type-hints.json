@@ -1,0 +1,72 @@
+{
+  "id": "18-python-type-hints",
+  "title": "Type hints are making Python worse",
+  "genre": "tech_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Python 3.0 followed in 2012",
+      "correction": "Python 3.0 was released in December 2008.",
+      "note": "[multi-part] The first half of the sentence (first Python release in 1991) is true; only the Python 3.0 year is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Type hints arrived with PEP 484 in Python 2.7",
+      "correction": "PEP 484 type hints were introduced in Python 3.5, released in September 2015.",
+      "note": "[multi-part] [secondary-source] The PEP number is right and the version is wrong. Top results are likely tutorials and blog posts; the primary source is PEP 484 itself and the Python 3.5 release notes on python.org."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Type annotations catch fewer than 2% of the bugs that reach production."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Python became popular without types, so adding them can only slow teams down.",
+      "known_rebuttal": "What made a language popular for scripts and notebooks says little about what large, long-lived codebases need. Companies with millions of lines of Python, such as Dropbox and Instagram, adopted gradual typing because it made refactoring safer and code easier to navigate. Hints are optional and incremental, they power editor completion and catch whole classes of errors before tests run, and published studies of dynamically typed code find that a meaningful share of real bugs would have been caught by a type checker."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "A foolish consistency is the hobgoblin of little minds, adored by little statesmen and philosophers and divines.",
+      "source_url": "https://www.gutenberg.org/ebooks/2944",
+      "source_title": "Essays, First Series by Ralph Waldo Emerson"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "grew faster then any of its rivals",
+      "correction": "grew faster than any of its rivals"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Now the type checker run on every commit",
+      "correction": "Now the type checker runs on every commit"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Tests tell you weather the code works",
+      "correction": "Tests tell you whether the code works"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Guido van Rossum released the first version of Python in 1991",
+      "note": "[multi-part] The true half of the sentence that also carries d1; a rebuttal disputing this fact must be discarded."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The defenders say that types catch bugs. They catch very few. Type annotations catch fewer than 2% of the bugs that reach production.",
+      "note": "A copy editor may want to merge these three choppy sentences, but the last one is an unsupported claim, so the fact finding wins and the copy edit is dropped."
+    }
+  ]
+}

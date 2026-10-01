@@ -11,7 +11,7 @@ import pytest
 
 from eval.baseline import TAG_BASELINE, BaselineReviewer
 from eval.cli import main, resolve_pipelines
-from eval.dataset import DefectType, SeededDocument, load_dataset
+from eval.dataset import RECALL_TYPES, DefectType, SeededDocument, load_dataset
 from eval.fake_pipeline import (
     FakeAgentPipeline,
     OracleAgents,
@@ -167,6 +167,35 @@ async def test_every_conflict_rule_resolved_by_oracle() -> None:
     statuses = {(c.rule, c.status) for s in results.scores for c in s.conflicts}
     assert all(status is ConflictStatus.RESOLVED for _, status in statuses)
     assert len({rule for rule, _ in statuses}) == 4
+
+
+async def test_oracle_is_perfect_on_every_one_of_the_thirty_documents() -> None:
+    assert len(DATASET) >= 30
+    results = await run_eval({"oracle": builtin_pipelines(DATASET)["oracle"]}, DATASET)
+    assert {s.doc_id for s in results.scores} == {d.id for d in DATASET}
+    for score in results.scores:
+        assert score.error is None, score.doc_id
+        assert all(o.caught for o in score.defects), score.doc_id
+        assert score.items == score.items_matched, score.doc_id  # no stray findings
+        assert score.conflicts, score.doc_id
+        for c in score.conflicts:
+            assert c.status is ConflictStatus.RESOLVED, (score.doc_id, c.defect_id, c.detail)
+    summary = results.summary()["oracle"]
+    for defect_type in RECALL_TYPES:
+        assert summary[f"recall.{defect_type.value}"].mean == 1.0
+    assert summary["conflict_accuracy"].mean == 1.0
+
+
+async def test_empty_and_noisy_pipelines_on_the_full_set() -> None:
+    pipes = builtin_pipelines(DATASET)
+    results = await run_eval({"noisy": pipes["noisy"], "empty": pipes["empty"]}, DATASET)
+    s = results.summary()
+    assert s["empty"]["recall.overall"].mean == 0.0
+    assert s["empty"]["conflicts_triggered"].mean == 0.0
+    noisy = s["noisy"]["recall.overall"].mean
+    assert noisy is not None and 0.5 < noisy < 0.9
+    precision = s["noisy"]["precision_matched"].mean
+    assert precision is not None and precision < 1.0  # one false positive per document
 
 
 async def test_baseline_through_harness_with_fake_llm_and_judge() -> None:

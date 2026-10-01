@@ -1,0 +1,71 @@
+{
+  "id": "12-istanbul-momentum",
+  "title": "Momentum is real, and Istanbul proves it",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Andriy Shevchenko added two more before the break",
+      "correction": "Hernan Crespo scored Milan's second and third goals in the 2005 final; Shevchenko did not score.",
+      "note": "[multi-part] The first half of the sentence (Maldini scoring inside the first minute) is true; only the scorer of the other two goals is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Liverpool scored three times in sixteen minutes",
+      "correction": "Liverpool's three goals came in six minutes (Gerrard 54', Smicer 56', Alonso 60')."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Teams that score first after half-time go on to win 75% of the time."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Liverpool came back from three goals down, so no lead is ever safe and managers should never try to defend one.",
+      "known_rebuttal": "The comeback is famous precisely because it is so rare: teams leading by three goals at half-time win almost every time, so one exception says nothing about the best policy. Research on momentum and the 'hot hand' in sport finds little predictive effect once the quality of the teams is accounted for, and Milan in fact dominated extra time and came within a double save of winning, which is hard to square with momentum having decided the match."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "Nothing is so painful to the human mind as a great and sudden change.",
+      "source_url": "https://www.gutenberg.org/ebooks/84",
+      "source_title": "Frankenstein; Or, The Modern Prometheus by Mary Wollstonecraft Shelley"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "should of been a consolation",
+      "correction": "should have been a consolation"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Each of them were looking",
+      "correction": "Each of them was looking"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "The affect on the opposition",
+      "correction": "The effect on the opposition"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Liverpool came back from three goals down, so no lead is ever safe and managers should never try to defend one.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Paolo Maldini opened the scoring inside the first minute",
+      "note": "[multi-part] The true half of the sentence that also carries d1; a rebuttal disputing this fact must be discarded."
+    }
+  ]
+}

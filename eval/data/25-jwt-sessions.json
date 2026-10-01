@@ -1,0 +1,78 @@
+{
+  "id": "25-jwt-sessions",
+  "title": "Design: Replace server-side sessions with JWTs",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "JSON Web Tokens are defined in RFC 6749",
+      "correction": "JSON Web Tokens are defined in RFC 7519 (May 2015); RFC 6749 is the OAuth 2.0 Authorization Framework.",
+      "note": "[secondary-source] Top results are likely tutorials and vendor blog posts; the primary sources are the RFCs themselves on rfc-editor.org."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "the payload is encrypted by default, so we can put the user's id, role and tenant in it without exposing them to the browser",
+      "correction": "A standard signed JWT (JWS) has a payload that is only base64url-encoded and readable by anyone who holds the token; encryption requires JWE (RFC 7516).",
+      "note": "[multi-part] [secondary-source] The first half of the sentence (three parts: header, payload and signature) is true; only the encryption claim is wrong. The primary sources are RFC 7519 and RFC 7515."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Removing the session lookup will cut p99 API latency by 40%."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Stateless tokens need no storage, so they are simpler and safer than sessions.",
+      "known_rebuttal": "Stateless tokens cannot be revoked before they expire: logout, a password change, a role change or a stolen token all need a server-side denylist or version check, which brings back the storage and the lookup that the design claims to remove. With a 30-day lifetime and one shared HS256 secret, any single compromised service can forge tokens for all the others. The safer pattern is short-lived access tokens plus refresh tokens that are stored and revocable on the server, which is neither stateless nor simpler than sessions."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "The session cluster have been resized",
+      "correction": "The session cluster has been resized"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "every user who's session lived",
+      "correction": "every user whose session lived"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Its not expected that clients",
+      "correction": "It's not expected that clients"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Token revocation are out of scope",
+      "correction": "Token revocation is out of scope"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "Token revocation are out of scope for this document.",
+      "note": "Copy editor (grammar) and structure reviewer (revocation is a core requirement that the design leaves out) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "JSON Web Tokens are defined in RFC 6749, and every language we use have a mature library for them.",
+      "note": "'have' should be 'has', but the sentence carries a wrong RFC number, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Stateless tokens need no storage, so they are simpler and safer than sessions.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    }
+  ]
+}

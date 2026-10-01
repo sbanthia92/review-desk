@@ -1,0 +1,77 @@
+{
+  "id": "11-greece-2004",
+  "title": "Greece 2004 proved that defending wins tournaments",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "beat the hosts Portugal 2-0 in the final in Lisbon",
+      "correction": "Greece beat Portugal 1-0 in the Euro 2004 final in Lisbon.",
+      "note": "[multi-part] The opponent, the round and the city are right; only the score is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Under their Italian coach Otto Rehhagel",
+      "correction": "Otto Rehhagel, Greece's coach at Euro 2004, is German."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Since 2004, the team with the best defensive record has won 80% of major international tournaments."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Greece won without a single star, so attacking talent is irrelevant in knockout football.",
+      "known_rebuttal": "One seven-match tournament is a tiny sample. Most tournament winners since have been built around elite attackers, such as Spain from 2008 to 2012, France in 2018 and Argentina in 2022, and Greece themselves failed to qualify for the 2006 World Cup and lost all three group games at Euro 2008, which suggests their win was an outlier rather than a repeatable model."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "He will win who knows when to fight and when not to fight.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "it were never meant to be",
+      "correction": "it was never meant to be"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "their was never a minute",
+      "correction": "there was never a minute"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Less clean sheets means fewer medals",
+      "correction": "Fewer clean sheets mean fewer medals"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "anybody who disagree should",
+      "correction": "anybody who disagrees should"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Then they beat the hosts Portugal 2-0 in the final in Lisbon, a result that still feel impossible when you say it out loud",
+      "note": "'feel' should be 'feels', but the clause carries a wrong score, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Denmark won the European Championship in 1992",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

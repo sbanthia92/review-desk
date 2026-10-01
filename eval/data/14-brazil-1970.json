@@ -1,0 +1,77 @@
+{
+  "id": "14-brazil-1970",
+  "title": "Brazil 1970 is still the best team there has ever been",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "beating Italy 4-2 in the final at the Azteca",
+      "correction": "Brazil beat Italy 4-1 in the 1970 World Cup final at the Estadio Azteca."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Brazil's fourth title",
+      "correction": "1970 was Brazil's third World Cup title (after 1958 and 1962); their fourth came in 1994.",
+      "note": "[multi-part] The first half of the sentence (Pelé's third winner's medal) is true; only Brazil's title count is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "The team was coached by Telê Santana",
+      "correction": "Brazil's coach at the 1970 World Cup was Mário Zagallo; Telê Santana coached Brazil at the 1982 and 1986 World Cups."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "In a 2020 poll, 90% of professional coaches named Brazil 1970 as the best international team in history."
+    },
+    {
+      "id": "d5",
+      "type": "weak_argument",
+      "quote": "No team since has won every match at a World Cup while playing so attractively, so the modern game has clearly gone backwards.",
+      "known_rebuttal": "The premise is shaky and the conclusion does not follow. Brazil's 2002 side won all seven of its matches, and 'attractive' is a judgement formed largely from highlight reels. The 1970 tournament was played at altitude and in midday heat at a far slower tempo against much less organised defending; modern players cover more ground at higher intensity with less space, so comparable skill is harder to show, which is evidence of progress rather than decline."
+    },
+    {
+      "id": "d6",
+      "type": "borrowed_sentence",
+      "quote": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness",
+      "source_url": "https://www.gutenberg.org/ebooks/98",
+      "source_title": "A Tale of Two Cities by Charles Dickens"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Nobody were asked to sacrifice himself",
+      "correction": "Nobody was asked to sacrifice himself"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "there passing was quicker then anything",
+      "correction": "their passing was quicker than anything"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "Its a standard that no team has reached since",
+      "correction": "It's a standard that no team has reached since"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "They finished the job by beating Italy 4-2 in the final at the Azteca, and the fourth goal are still the one every child tries to copy in the playground.",
+      "note": "'are' should be 'is', but the sentence carries a wrong score, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Jairzinho scored in every one of those matches",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}
