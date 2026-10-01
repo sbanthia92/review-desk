@@ -1,0 +1,89 @@
+{
+  "id": "20-nuclear-climate",
+  "title": "Nuclear power is the only serious answer to the climate crisis",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "commits countries to holding warming well below three degrees Celsius",
+      "correction": "The Paris Agreement aims to hold warming well below 2 degrees Celsius above pre-industrial levels, and to pursue efforts to limit it to 1.5 degrees.",
+      "note": "[multi-part] [secondary-source] The adoption year (2015) is right; only the temperature goal is wrong. News coverage paraphrases the goal in many ways; the primary source is Article 2 of the agreement text on unfccc.int."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "the meltdowns at Fukushima in 2001",
+      "correction": "The Fukushima Daiichi accident happened in March 2011.",
+      "note": "[multi-part] The first half of the sentence (Chernobyl in 1986) is true; only the Fukushima year is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Germany switched off its last three reactors in April 2013",
+      "correction": "Germany shut down its last three nuclear reactors in April 2023."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "Every euro spent on nuclear cuts three times as much carbon as a euro spent on wind."
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Polls show that 70% of people who live near a reactor want a second one built."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "France built most of its reactors in about fifteen years, so any country could do the same today.",
+      "known_rebuttal": "France's build-out in the 1970s and 1980s relied on a single state utility, a standardised reactor design, a trained workforce and a dedicated supply chain, none of which most countries have today. Recent Western projects show the difference: Flamanville 3 in France, Olkiluoto 3 in Finland, Vogtle 3 and 4 in the United States and Hinkley Point C in Britain have all run many years late and far over budget. Over the same period wind and solar costs have fallen sharply and they can be deployed in months, so new nuclear is the slower and dearer route to near-term cuts."
+    },
+    {
+      "id": "d7",
+      "type": "borrowed_sentence",
+      "quote": "If men were angels, no government would be necessary.",
+      "source_url": "https://www.gutenberg.org/ebooks/1404",
+      "source_title": "The Federalist Papers by Alexander Hamilton, John Jay and James Madison (No. 51)"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Wind and solar is welcome",
+      "correction": "Wind and solar are welcome"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "decides to do it and then keep its nerve",
+      "correction": "decides to do it and then keeps its nerve"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "We could of started twenty years ago",
+      "correction": "We could have started twenty years ago"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "the choice gets more harder",
+      "correction": "the choice gets harder"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The Paris Agreement, adopted in 2015",
+      "note": "[multi-part] The true half of the sentence that also carries d1; a rebuttal disputing the adoption year must be discarded."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Germany switched off its last three reactors in April 2013, a decision that look worse every winter.",
+      "note": "'look' should be 'looks', but the sentence carries a wrong year, so the fact finding wins."
+    }
+  ]
+}

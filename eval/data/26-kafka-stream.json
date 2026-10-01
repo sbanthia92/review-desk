@@ -1,0 +1,85 @@
+{
+  "id": "26-kafka-stream",
+  "title": "Design: Replace the nightly batch with a Kafka event stream",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Kafka was originally built at Twitter",
+      "correction": "Apache Kafka was originally developed at LinkedIn.",
+      "note": "[multi-part] The second fact in the sentence (open-sourced in 2011) is true; only the company is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Kafka guarantees that messages are delivered in order across all partitions of a topic",
+      "correction": "Kafka guarantees ordering only within a single partition, not across the partitions of a topic.",
+      "note": "[secondary-source] Top results are likely blog posts and Q&A threads; the primary source is the Apache Kafka documentation."
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Kafka keeps messages for 30 days by default",
+      "correction": "Kafka's default log retention is 7 days (log.retention.hours=168).",
+      "note": "[secondary-source] The primary source is the broker configuration reference in the Apache Kafka documentation."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "Streaming pipelines cost 50% less to run than batch jobs at our volume."
+    },
+    {
+      "id": "d5",
+      "type": "weak_argument",
+      "quote": "Batch is legacy technology and streaming is the industry standard, so we should migrate every pipeline.",
+      "known_rebuttal": "The requirement is data freshness, not fashion. Only pipelines whose consumers need low latency benefit from streaming; reports that are read once a day gain nothing from second-level freshness. Streaming adds standing costs that batch does not have: a cluster to operate and be on call for, schema evolution, late and out-of-order data, duplicate handling and harder backfills. Batch jobs are simpler to rerun and audit, so the migration should be decided per pipeline, by need."
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "When it fail",
+      "correction": "When it fails"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Their is no plan yet",
+      "correction": "There is no plan yet"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "We expects that most changes",
+      "correction": "We expect that most changes"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "If the row counts differs",
+      "correction": "If the row counts differ"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "Their is no plan yet for who will be on call for the cluster.",
+      "note": "Copy editor (grammar) and structure reviewer (no operational ownership or on-call plan) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "open-sourced in 2011",
+      "note": "[multi-part] The true half of the sentence that also carries d1; a rebuttal disputing this fact must be discarded."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Kafka guarantees that messages are delivered in order across all partitions of a topic, so the warehouse loader do not need to handle out-of-order updates.",
+      "note": "'do' should be 'does', but the sentence carries a wrong fact, so the fact finding wins."
+    }
+  ]
+}

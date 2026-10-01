@@ -1,0 +1,72 @@
+{
+  "id": "13-five-substitutes",
+  "title": "Five substitutes are handing the title to the richest squads",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "The back-pass rule, introduced in 1998, stopped goalkeepers picking the ball up from a team-mate's pass",
+      "correction": "The back-pass rule was introduced in 1992.",
+      "note": "[secondary-source] Top results are likely fan sites and news retrospectives; the primary source is the IFAB Laws of the Game and its 1992 amendment."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "English football switched to three points for a win in 1981, and FIFA followed at the 1990 World Cup",
+      "correction": "FIFA first used three points for a win at the 1994 World Cup (the 1981 date for English football is correct).",
+      "note": "[multi-part] The first half of the quote (England switched to three points for a win in 1981) is true; only the World Cup year is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Since the five-substitute rule arrived, the richest six clubs have won 12% more points from losing positions than they did before."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Bigger squads benefit most from five substitutes, therefore the rule exists only to help the rich clubs.",
+      "known_rebuttal": "Who benefits does not establish why a rule exists. Five substitutes were introduced in 2020 as a temporary answer to fixture congestion after the pandemic shutdown and made permanent by IFAB in 2022 on player-welfare grounds, and Premier League clubs, including the richest, at first voted to go back to three before adopting five from 2022-23. Smaller clubs also use the extra changes to protect thin squads from injury, so the effect on competitive balance is an empirical question, not proof of intent."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "Now, here, you see, it takes all the running you can do, to keep in the same place.",
+      "source_url": "https://www.gutenberg.org/ebooks/12",
+      "source_title": "Through the Looking-Glass by Lewis Carroll"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "then it watch a fresh front line",
+      "correction": "then it watches a fresh front line"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Now there a sign of squad depth",
+      "correction": "Now they're a sign of squad depth"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Nobody who voted for it were thinking",
+      "correction": "Nobody who voted for it was thinking"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "FIFA followed at the 1990 World Cup, which finally give teams a reason to chase a winner",
+      "note": "'give' should be 'gave', but the clause carries a wrong year, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Yellow and red cards were first used at the 1970 World Cup",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

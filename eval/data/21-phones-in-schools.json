@@ -1,0 +1,71 @@
+{
+  "id": "21-phones-in-schools",
+  "title": "Take the phones out of the classroom",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "The first iPhone went on sale in 2010",
+      "correction": "The first iPhone was announced in January 2007 and went on sale in June 2007."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The PISA tests, run by UNESCO every three years",
+      "correction": "PISA is run by the OECD (Organisation for Economic Co-operation and Development).",
+      "note": "[multi-part] The three-year cycle is right; only the organisation is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "A Microsoft study proved that the human attention span has fallen to eight seconds, which is shorter than a goldfish's.",
+      "note": "[secondary-source] Widely repeated by news sites. The figure traces back to a 2015 Microsoft Canada marketing report that cited a third-party statistics website rather than any measurement of its own; following the chain to the primary source shows that no study supports it."
+    },
+    {
+      "id": "d4",
+      "type": "unsupported",
+      "quote": "Schools that ban phones see test scores rise by 20% within a year."
+    },
+    {
+      "id": "d5",
+      "type": "weak_argument",
+      "quote": "I survived school without a phone, so today's pupils do not need one either.",
+      "known_rebuttal": "One person's experience in a different era does not show what pupils need now. Families rely on phones for travel and for contact before and after school, some pupils need them to manage medical conditions such as diabetes or as accessibility aids, and many schools set work through apps. The published evidence on bans is mixed, with some studies finding small gains for low-achieving pupils and others finding no effect on grades or wellbeing, so the case has to rest on that evidence rather than on anecdote."
+    },
+    {
+      "id": "d6",
+      "type": "borrowed_sentence",
+      "quote": "He who knows only his own side of the case, knows little of that.",
+      "source_url": "https://www.gutenberg.org/ebooks/34901",
+      "source_title": "On Liberty by John Stuart Mill"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "the corridors is calmer",
+      "correction": "the corridors are calmer"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Every rule worth having were awkward once",
+      "correction": "Every rule worth having was awkward once"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "I survived school without a phone, so today's pupils do not need one either.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The first iPhone went on sale in 2010, and inside a decade it had became normal",
+      "note": "'had became' should be 'had become', but the sentence carries a wrong year, so the fact finding wins."
+    }
+  ]
+}

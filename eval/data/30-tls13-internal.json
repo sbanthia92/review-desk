@@ -1,0 +1,78 @@
+{
+  "id": "30-tls13-internal",
+  "title": "Design: Require TLS 1.3 on all internal services",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "TLS 1.3 was published as RFC 8446 in 2014",
+      "correction": "TLS 1.3 was published as RFC 8446 in August 2018.",
+      "note": "[multi-part] [secondary-source] The RFC number is right; only the year is wrong. Top results are likely vendor explainers; the primary source is RFC 8446 on rfc-editor.org."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "A full TLS 1.3 handshake takes two round trips, the same as TLS 1.2",
+      "correction": "A full TLS 1.3 handshake takes one round trip; TLS 1.2 takes two.",
+      "note": "[secondary-source] The primary source is RFC 8446 (handshake overview)."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "TLS 1.3 will reduce the CPU we spend on encryption by 25%."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "TLS 1.3 is newer than TLS 1.2, so it is more secure in every respect and we can safely enable all of its features.",
+      "known_rebuttal": "Newer does not mean safer in every configuration. TLS 1.3's 0-RTT early data can be captured and replayed by an attacker, so enabling it on non-idempotent endpoints such as payment and order APIs creates a replay risk that TLS 1.2 did not have; the specification itself warns that it must only be used for requests that are safe to repeat. Each optional feature needs its own review, and forcing 1.3 in one step will also cut off any client that cannot speak it."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "each team chose it's own settings",
+      "correction": "each team chose its own settings"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "have not been compiled",
+      "correction": "has not been compiled"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "If error rates rises afterwards",
+      "correction": "If error rates rise afterwards"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "No changes is needed",
+      "correction": "No changes are needed"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "The list of clients that cannot speak TLS 1.3 have not been compiled.",
+      "note": "Copy editor (grammar) and structure reviewer (no compatibility inventory before a one-step cut-over) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "TLS 1.3 was published as RFC 8446 in 2014, so it is mature and every library we use support it.",
+      "note": "'support' should be 'supports', but the sentence carries a wrong year, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "TLS 1.0 and 1.1 were formally deprecated by RFC 8996 in 2021",
+      "note": "[secondary-source] True fact, with the RFC as the primary source; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

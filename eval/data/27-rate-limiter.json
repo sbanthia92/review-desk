@@ -1,0 +1,78 @@
+{
+  "id": "27-rate-limiter",
+  "title": "Design: Per-tenant API rate limiting",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "HTTP 429 Too Many Requests, which is defined in RFC 2616",
+      "correction": "Status code 429 Too Many Requests is defined in RFC 6585 (April 2012); RFC 2616 (HTTP/1.1, 1999) does not contain it.",
+      "note": "[multi-part] [secondary-source] The status code and its name are right; only the RFC is wrong. Top results are likely reference sites and blog posts; the primary source is RFC 6585 on rfc-editor.org."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Redis, first released in 2009 by Salvatore Sanfilippo, listens on port 5432 by default",
+      "correction": "Redis listens on port 6379 by default; 5432 is PostgreSQL's default port.",
+      "note": "[multi-part] The first half of the sentence (first released in 2009 by Salvatore Sanfilippo) is true; only the port is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Rate limiting will reduce our infrastructure bill by a third."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "A fixed window counter is the simplest algorithm, and simple things do not fail, so it is the right choice for us.",
+      "known_rebuttal": "Simple is not the same as correct. A fixed window lets a tenant send a full quota at the end of one window and another at the start of the next, so bursts of twice the limit get through, which is exactly the overload the design is meant to prevent. A sliding window or token bucket costs one small atomic script more and removes the problem. The simple counter also still depends on Redis, clock alignment across gateways and an undecided failure policy, so it can certainly fail."
+    },
+    {
+      "id": "d5",
+      "type": "grammar",
+      "quote": "The affected customers was not told",
+      "correction": "The affected customers were not told"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "have not been decided",
+      "correction": "has not been decided"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "any tenant who's normal traffic",
+      "correction": "any tenant whose normal traffic"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "We expect less than five tenants",
+      "correction": "We expect fewer than five tenants"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "The behaviour when Redis is down have not been decided.",
+      "note": "Copy editor (grammar) and structure reviewer (the failure-mode section is empty: fail open or fail closed is undecided) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "A fixed window counter is the simplest algorithm, and simple things do not fail, so it is the right choice for us.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "which is defined in RFC 2616, and include a Retry-After header so that well-behaved clients backs off",
+      "note": "'backs off' should be 'back off', but the sentence carries a wrong RFC, so the fact finding wins."
+    }
+  ]
+}

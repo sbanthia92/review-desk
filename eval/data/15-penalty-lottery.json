@@ -1,0 +1,78 @@
+{
+  "id": "15-penalty-lottery",
+  "title": "Penalty shoot-outs are a lottery, so stop pretending otherwise",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "The penalty spot is ten yards from goal",
+      "correction": "The penalty mark is 12 yards (11 metres) from the goal line."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The World Cup's first shoot-out came in the 1982 semi-final, when Italy beat France in Seville",
+      "correction": "The first World Cup shoot-out was West Germany's win over France in the 1982 semi-final in Seville.",
+      "note": "[multi-part] The round, the year, the losing side and the city are right; only the winning team is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Left-footed takers miss twice as often as right-footed ones in shoot-outs."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Shoot-outs are pure luck, so practising them is a waste of training time.",
+      "known_rebuttal": "Shoot-out outcomes are not random. Research on penalty-taking finds that technique, routine and how long a player takes after the whistle all affect conversion, and goalkeepers who study takers' habits save more. Germany have won nearly all of their major-tournament shoot-outs, and England, after years of defeats, won their first World Cup shoot-out in 2018 following deliberate preparation; a pure lottery would not produce such persistent differences or respond to practice."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "All warfare is based on deception.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "whoever guess right on the night",
+      "correction": "whoever guesses right on the night"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "Coaches who spends hours on penalties",
+      "correction": "Coaches who spend hours on penalties"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Your not watching a test of nerve",
+      "correction": "You're not watching a test of nerve"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Shoot-outs are pure luck, so practising them is a waste of training time.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Roberto Baggio missed the decisive kick in the 1994 final",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "when Italy beat France in Seville, and nothing about the contest have changed since",
+      "note": "'have' should be 'has', but the clause carries a wrong team, so the fact finding wins."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "id": "16-womens-game-stadiums",
+  "title": "The women's game has outgrown its small grounds",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "The first Women's World Cup was held in 1991 in the United States",
+      "correction": "The first FIFA Women's World Cup was held in 1991 in China (the United States won it).",
+      "note": "[multi-part] The year is right; only the host country is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Spain won the 2023 World Cup by beating England 2-0 in Sydney",
+      "correction": "Spain beat England 1-0 in the 2023 Women's World Cup final in Sydney.",
+      "note": "[multi-part] The winner, the opponent, the year and the city are right; only the score is wrong."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "Girls who watch a women's match live are five times more likely to join a club."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "Wembley sold out for one final, so every women's league match should now be played in the biggest stadiums.",
+      "known_rebuttal": "A one-off final with a national team and a trophy at stake says little about weekly league demand. Average league attendances are a small fraction of the capacity of the largest grounds, so most fixtures would be played in mostly empty stadiums, which costs far more to open and damages the atmosphere that brings people back. Clubs that have grown crowds did it by moving selected fixtures to the main stadium and building up gradually, not by moving every match at once."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "If a man does not keep pace with his companions, perhaps it is because he hears a different drummer.",
+      "source_url": "https://www.gutenberg.org/ebooks/205",
+      "source_title": "Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "people who was embarrassed",
+      "correction": "people who were embarrassed"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "every coach I have spoke to",
+      "correction": "every coach I have spoken to"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "it costs to much to open",
+      "correction": "it costs too much to open"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Spain won the 2023 World Cup by beating England 2-0 in Sydney, in front of a crowd that would of filled most men's finals.",
+      "note": "'would of' should be 'would have', but the sentence carries a wrong score, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The Lionesses beat Germany 2-1 at Wembley in the Euro 2022 final in front of 87,192 people",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    }
+  ]
+}

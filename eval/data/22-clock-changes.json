@@ -1,0 +1,72 @@
+{
+  "id": "22-clock-changes",
+  "title": "Stop changing the clocks",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "to save coal during the Second World War",
+      "correction": "Germany adopted daylight saving time in 1916, during the First World War.",
+      "note": "[multi-part] The country and the year (Germany, 1916) are right; only the war is wrong."
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The European Parliament voted in 2009 to scrap the twice-yearly change",
+      "correction": "The European Parliament voted in March 2019 to end seasonal clock changes.",
+      "note": "[secondary-source] News reports on the vote vary in detail; the primary source is the European Parliament's own record of the March 2019 vote."
+    },
+    {
+      "id": "d3",
+      "type": "unsupported",
+      "quote": "The clock change costs the British economy two billion pounds every year."
+    },
+    {
+      "id": "d4",
+      "type": "weak_argument",
+      "quote": "The clocks were first changed to save coal in wartime, and we no longer light our homes with coal, so there is no reason left to change them.",
+      "known_rebuttal": "Why a practice began does not settle whether it is useful now. The modern case for summer time rests on lighter evenings for leisure, retail and road safety, not on coal. The real choice is between permanent summer time and permanent winter time, and each has costs: Britain tried year-round summer time from 1968 to 1971 and abandoned it, largely because of dark winter mornings in the north. Any change would also need to be coordinated with neighbouring countries."
+    },
+    {
+      "id": "d5",
+      "type": "borrowed_sentence",
+      "quote": "The real price of everything, what everything really costs to the man who wants to acquire it, is the toil and trouble of acquiring it.",
+      "source_url": "https://www.gutenberg.org/ebooks/3300",
+      "source_title": "An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith"
+    },
+    {
+      "id": "d6",
+      "type": "grammar",
+      "quote": "anyone who enjoy it",
+      "correction": "anyone who enjoys it"
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "some people has become",
+      "correction": "some people have become"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "witch way the hands",
+      "correction": "which way the hands"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "William Willett, a British builder, campaigned for it in a 1907 pamphlet",
+      "note": "True fact; a rebuttal disputing the fact itself must be discarded."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The European Parliament voted in 2009 to scrap the twice-yearly change, and yet the clocks still goes back every autumn",
+      "note": "'goes' should be 'go', but the sentence carries a wrong year, so the fact finding wins."
+    }
+  ]
+}
