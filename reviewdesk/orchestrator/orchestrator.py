@@ -112,6 +112,8 @@ class _Job:
     unfinished: list[str] = field(default_factory=list)
     """Labels of work cut off by the time limit."""
     decisions: list[Decision] = field(default_factory=list)
+    degraded: bool = False
+    """True once any agent failed, errored or left factual claims unchecked."""
 
     def remaining(self) -> float:
         return max(0.0, self.deadline - time.monotonic())
@@ -282,6 +284,7 @@ class Orchestrator:
             kind = type(outcome).__name__
             log.warning("orchestrator: agent %s failed (%s)", name, kind)
             job.note(f"{label(name)} unavailable")
+            job.degraded = True
             return None
         job.ok.add(name)
         job.usage = job.usage + outcome.usage
@@ -292,6 +295,7 @@ class Orchestrator:
             job.note(note)
         if outcome.error:
             job.note(_error_note(name, outcome.error))
+            job.degraded = True
         return outcome
 
     @staticmethod
@@ -579,10 +583,11 @@ class Orchestrator:
             )
             if unchecked:
                 job.note(f"partial fact-check: {unchecked} claim(s) unchecked")
+                job.degraded = True
         if job.unfinished:
             unfinished = ", ".join(dict.fromkeys(job.unfinished))
             job.note(f"partial results: time limit reached ({unfinished} did not finish)")
-        partial = bool(job.unfinished) or any(n.endswith("unavailable") for n in job.notes)
+        partial = bool(job.unfinished) or job.degraded
         usage = _max_usage(job.usage, job.meter.used)
         report = build_report(
             job.document,
