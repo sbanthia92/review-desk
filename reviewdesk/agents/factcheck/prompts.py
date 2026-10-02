@@ -64,6 +64,16 @@ Use the surrounding passage, when given, only to work out which event, season, \
 person or organisation the claim is about. A source about a different one is \
 "irrelevant", never "contradicts", even if names or numbers look similar. \
 Judge the claim itself, not the rest of the passage.
+A claim often has several material parts: the specific facts a reader could \
+be misled by if they were wrong (a number, date, name, place, stated cause or \
+order of events). Rhetorical flourishes, descriptive wording, honorifics and \
+anything that follows by obvious implication are not parts. A source \
+"supports" the claim if it confirms at least one material part and contradicts \
+none; it "contradicts" the claim if it disputes any material part.
+- unverified_parts: the parts that no source so far confirms or contradicts, a \
+few words each (use the "parts still unconfirmed" list you are given, if any, \
+and drop the ones these sources settle). Leave it empty when every part is \
+covered. If any remain, prefer "refine" with a next_query aimed at one of them.
 Next step:
 - "stop" if a primary source settles the claim, two independent sources agree, \
 or further searching will not help;
@@ -78,6 +88,20 @@ factual claim using ONLY the evidence provided, never your own memory.
 - "verified": the evidence directly supports the claim as written.
 - "wrong": the evidence directly contradicts it; give the correction.
 - "unsupported": the evidence does not settle it either way.
+Check the claim part by part. In "parts", list each material part with its own \
+verdict: the specific facts a reader could be misled by if they were wrong (a \
+number, date, name, place, stated cause or order of events). Do not list \
+rhetorical flourishes, descriptive wording ("whispered", "ebullient"), \
+honorifics, or anything the evidence makes clearly true by obvious \
+implication (a manager who rebuilt the team after a crash survived it). A part \
+is verified when the evidence makes it clearly true, even if not word for \
+word. The claim is "verified" only if every material part is verified, \
+"wrong" if any is contradicted, and "unsupported" otherwise; name the failing \
+part in the explanation. Evidence that confirms one part says nothing about \
+the other material parts.
+For a "wrong" verdict set "contested": true if any of the evidence supports \
+the specific detail that the contradicting evidence disputes, false if \
+nothing does.
 Evidence about a different event, season, person or organisation than the one \
 the claim (read with its surrounding passage) is about does not count for or \
 against it.
@@ -156,12 +180,29 @@ def queries_messages(claim: Claim, context: str = "") -> list[Message]:
     ]
 
 
+def _parts_text(parts: list[str] | None) -> str:
+    if parts is None:
+        return "(first look: work them out from the claim)"
+    if not parts:
+        return "(none: every part was covered by earlier sources)"
+    return "; ".join(_neutralise(p)[:120] for p in parts[:8])
+
+
 def assess_messages(
-    claim: Claim, sources: list[Source], query: str, context: str = ""
+    claim: Claim,
+    sources: list[Source],
+    query: str,
+    context: str = "",
+    open_parts: list[str] | None = None,
 ) -> list[Message]:
-    """Messages for ``factcheck.assess``."""
+    """Messages for ``factcheck.assess``.
+
+    ``open_parts`` are the parts of the claim earlier sources left unconfirmed
+    (None on the first look).
+    """
     content = (
         f"Claim to check:\n{document_block(claim, context)}\n\n"
+        f"Parts still unconfirmed before these sources: {_parts_text(open_parts)}\n\n"
         f"Last search query: {_neutralise(query) or '(none)'}\n\n"
         f"Retrieved sources:\n{_sources_text(sources)}"
     )
@@ -172,11 +213,16 @@ def assess_messages(
 
 
 def judge_messages(
-    claim: Claim, supporting: list[Evidence], contradicting: list[Evidence], context: str = ""
+    claim: Claim,
+    supporting: list[Evidence],
+    contradicting: list[Evidence],
+    context: str = "",
+    open_parts: list[str] | None = None,
 ) -> list[Message]:
     """Messages for ``factcheck.judge``."""
     content = (
         f"Claim to check:\n{document_block(claim, context)}\n\n"
+        f"Parts the research found no source for: {_parts_text(open_parts)}\n\n"
         f"Evidence that supports the claim:\n{_evidence_text(supporting, 'supports')}\n\n"
         f"Evidence that contradicts the claim:\n"
         f"{_evidence_text(contradicting, 'contradicts')}"

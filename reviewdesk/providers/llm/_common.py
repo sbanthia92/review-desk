@@ -172,6 +172,13 @@ def validate(schema: type[BaseModel], data: Any) -> tuple[BaseModel | None, str]
             f"- {'.'.join(str(p) for p in err['loc']) or '<root>'}: {err['msg']}"
             for err in exc.errors(include_input=False, include_url=False)[:20]
         ]
+        if isinstance(data, dict) and any(
+            isinstance(v, str) and v.lstrip()[:1] in ("[", "{") for v in data.values()
+        ):
+            lines.append(
+                "- Pass lists and objects as real JSON arrays and objects, not as text "
+                "inside a string."
+            )
         return None, "\n".join(lines)
 
 
@@ -186,14 +193,58 @@ def unstringify(data: Any) -> Any:
     out: dict[str, Any] = {}
     for key, value in data.items():
         if isinstance(value, str) and value.lstrip()[:1] in ("[", "{"):
-            try:
-                out[key] = json.loads(value)
+            decoded = _loads_lenient(value)
+            if decoded is not None:
+                out[key] = decoded
                 changed = True
                 continue
-            except ValueError:
-                pass
         out[key] = value
     return out if changed else data
+
+
+def _loads_lenient(text: str) -> Any:
+    """``json.loads``, retrying once with unescaped inner quotes repaired."""
+    for candidate in (text, escape_inner_quotes(text)):
+        try:
+            return json.loads(candidate)
+        except ValueError:
+            continue
+    return None
+
+
+def escape_inner_quotes(text: str) -> str:
+    """Escape double quotes that sit inside JSON string values.
+
+    A model quoting a document that itself contains quotation marks often
+    forgets to escape them. A quote ends a string only if the next
+    non-space character is ``,``, ``}``, ``]`` or ``:`` (or the text ends);
+    any other quote inside a string is escaped. Raw newlines inside strings
+    are escaped too.
+    """
+    out: list[str] = []
+    in_string = False
+    i = 0
+    while i < len(text):
+        ch = text[i]
+        if not in_string:
+            in_string = ch == '"'
+            out.append(ch)
+        elif ch == "\\" and i + 1 < len(text):
+            out.append(ch + text[i + 1])
+            i += 1
+        elif ch == "\n":
+            out.append("\\n")
+        elif ch == '"':
+            rest = text[i + 1 :].lstrip()
+            if not rest or rest[0] in ",}]:":
+                in_string = False
+                out.append(ch)
+            else:
+                out.append('\\"')
+        else:
+            out.append(ch)
+        i += 1
+    return "".join(out)
 
 
 def schema_error(provider: str, schema: type[BaseModel], reason: str) -> SchemaError:

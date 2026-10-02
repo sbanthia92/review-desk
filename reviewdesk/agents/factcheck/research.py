@@ -34,6 +34,7 @@ from reviewdesk.agents.factcheck.sources import (
     looks_like_injection,
     primary_hint,
     relevant,
+    reputably_contradicted,
     reputably_supported,
     settles,
     shared_terms,
@@ -86,8 +87,9 @@ SECOND_LOOK_TOKENS = 4_000
 """Extra per-claim token allowance for the second look."""
 
 _OUT_QUERIES = 300
-_OUT_ASSESS = 800
-_OUT_JUDGE = 600
+_OUT_ASSESS = 1_000
+_OUT_JUDGE = 900
+MAX_OPEN_PARTS = 8
 
 _T = TypeVar("_T", bound=BaseModel)
 
@@ -163,6 +165,9 @@ class ClaimResearch:
         self.actions = 0
         self.iteration = 1
         self.sources: dict[str, Source] = {}
+        self.open_parts: list[str] | None = None
+        """Parts of the claim no source has confirmed or contradicted yet
+        (None until the first assessment)."""
         self.outcome = ClaimOutcome(claim_id=claim.id)
         self.context = surrounding_context(ctx.document.text, claim.span.start, claim.span.end)
 
@@ -310,11 +315,14 @@ class ClaimResearch:
 
     async def _assess(self, batch: list[Source], query: str) -> Assessment:
         assessment = await self._llm(
-            prompts.assess_messages(self.claim, batch, query, self.context),
+            prompts.assess_messages(self.claim, batch, query, self.context, self.open_parts),
             Assessment,
             prompts.TAG_ASSESS,
             _OUT_ASSESS,
         )
+        self.open_parts = [
+            _clip(part, 120) for part in assessment.unverified_parts if part.strip()
+        ][:MAX_OPEN_PARTS]
         by_url = {s.url: s for s in batch}
         for judged in assessment.sources:
             source = by_url.get(judged.url)
@@ -338,8 +346,16 @@ class ClaimResearch:
         return assessment
 
     def _settled(self) -> bool:
+        """True when research can stop: contradicted, or supported in every part.
+
+        Support for one part of a claim ("the club chartered a plane") does not
+        settle the others ("the next day", "to make the Wolves fixture"), so
+        the loop keeps going while parts remain unconfirmed.
+        """
         sources = list(self.sources.values())
-        return settles(sources, Stance.SUPPORTS) or settles(sources, Stance.CONTRADICTS)
+        if settles(sources, Stance.CONTRADICTS):
+            return True
+        return settles(sources, Stance.SUPPORTS) and not self.open_parts
 
     # -- entry points ------------------------------------------------------
 
@@ -518,6 +534,7 @@ class ClaimResearch:
                         [s.evidence for s in supporting if s.evidence],
                         [s.evidence for s in contradicting if s.evidence],
                         self.context,
+                        self.open_parts,
                     ),
                     Judgment,
                     prompts.TAG_JUDGE,
@@ -531,9 +548,18 @@ class ClaimResearch:
 
         sup_settled = settles(sources, Stance.SUPPORTS)
         con_settled = settles(sources, Stance.CONTRADICTS)
+        contested = True
         if judgment is not None:
             proposed, confidence = judgment.verdict, judgment.confidence
             explanation = judgment.explanation
+            contested = judgment.contested
+            # A claim is verified only if every checkable part is. Enforced
+            # here, so one confirmed part cannot carry the whole sentence.
+            failing = [p for p in judgment.parts if p.verdict != "verified"]
+            if proposed == "verified" and failing:
+                proposed = "wrong" if any(p.verdict == "wrong" for p in failing) else "unsupported"
+                listed = "; ".join(_clip(p.part, 80) for p in failing[:4])
+                explanation = f"Not confirmed: {listed}. {explanation}".strip()
         elif sup_settled != con_settled:
             proposed = "verified" if sup_settled else "wrong"
             decisive = supporting if sup_settled else contradicting
@@ -574,6 +600,28 @@ class ClaimResearch:
             return self._finish(
                 Verdict.WRONG, evidence_of(contradicting), confidence, explanation, correction
             )
+        if (
+            proposed == "wrong"
+            and judgment is not None
+            and not contested
+            and confidence >= SINGLE_SOURCE_MIN_CONFIDENCE
+            and reputably_contradicted(sources)
+        ):
+            # Mirror of the single-source rule for "verified": one reputable
+            # source contradicts the claim and nothing retrieved supports the
+            # disputed detail.
+            note = (
+                "One reputable source contradicts this, and nothing retrieved supports "
+                "the disputed detail."
+            )
+            self._step(ResearchAction.STOP, "wrong", note, [s.url for s in contradicting])
+            return self._finish(
+                Verdict.WRONG,
+                evidence_of(contradicting),
+                min(confidence, SINGLE_SOURCE_MAX_CONFIDENCE),
+                f"{note} {explanation}".strip(),
+                judgment.correction,
+            )
 
         # Not settled. Either the sources we found do not back the claim as
         # written (a finding the author should act on), or we simply could not
@@ -590,7 +638,12 @@ class ClaimResearch:
                 "Only weak sourcing was found: not a primary source, a reputable outlet or "
                 f"two independent sources. {explanation}"
             )
-        elif (supporting or contradicting) and explanation:
+        elif contradicting and explanation:
+            note = explanation
+        elif supporting and explanation:
+            # Sources back part of the claim and dispute none of it: the rest
+            # could not be confirmed, which is not a must-fix.
+            could_not_confirm = True
             note = explanation
         else:
             could_not_confirm = True

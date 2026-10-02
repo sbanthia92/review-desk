@@ -111,3 +111,36 @@ def test_validate_decodes_json_encoded_list_fields() -> None:
     assert unstringify(same) is same
     parsed, feedback = validate(Out, {"items": "not a list"})
     assert parsed is None and "items" in feedback
+
+
+def test_escape_inner_quotes_repairs_unescaped_quotes_in_strings() -> None:
+    import json
+
+    from pydantic import BaseModel
+
+    from reviewdesk.providers.llm._common import escape_inner_quotes, validate
+
+    broken = (
+        '[\n  {"quote": "he whispered, "Keep the flag flying" to Murphy",'
+        ' "reason": "a\nb"},\n  {"quote": "plain", "reason": ""}\n]'
+    )
+    fixed = json.loads(escape_inner_quotes(broken))
+    assert fixed[0]["quote"] == 'he whispered, "Keep the flag flying" to Murphy'
+    assert fixed[0]["reason"] == "a\nb"
+    assert fixed[1] == {"quote": "plain", "reason": ""}
+    ok = '{"a": "x \\"y\\" z", "b": [1, 2]}'
+    assert json.loads(escape_inner_quotes(ok)) == json.loads(ok)  # valid JSON is unchanged
+
+    class Edit(BaseModel):
+        quote: str
+        reason: str = ""
+
+    class Out(BaseModel):
+        edits: list[Edit]
+
+    parsed, feedback = validate(Out, {"edits": broken})
+    assert feedback == "" and isinstance(parsed, Out) and len(parsed.edits) == 2
+
+    parsed, feedback = validate(Out, {"edits": "[not json at all"})
+    assert parsed is None
+    assert "real JSON arrays" in feedback  # the retry tells the model what to change
