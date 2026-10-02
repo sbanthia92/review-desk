@@ -51,3 +51,9 @@ Template (copy, fill in, append below the line):
 - **Why:** on the first real review the fact-checker researched "They finished ten points clear of second-placed Arsenal" without knowing who "They" were, found an article about another season, and flagged a true claim as unsupported.
 - **Workaround in place:** none needed; the extractor fills it and the fact-checker and devil's advocate read it.
 - **Status:** accepted — added on main (lead), with the user's approval.
+
+## Lead · "Could not verify" section on `Report`
+- **What:** `Report.unverified: list[Finding]`, filled with the fact-checker's `Severity.CONSIDER` findings; rendered as "Could not verify" after "Must fix". `Verdict` is unchanged (these claims stay `unsupported` in the ledger).
+- **Why:** on the user's own draft, 8 of 9 must-fix items were true facts the checker merely failed to confirm. "Could not confirm" and "sources do not back this" are different findings.
+- **Workaround in place:** none needed.
+- **Status:** accepted — added on main (lead), with the user's approval. The verified rule in DESIGN.md was relaxed at the same time.

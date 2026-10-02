@@ -56,7 +56,7 @@ AGENT_ROLE: dict[str, Role] = {
 }
 """Role implied by a contributing agent (the fact-checker's comes from severity)."""
 
-FINDING_SECTIONS = ("must_fix", "should_fix", "polish", "originality")
+FINDING_SECTIONS = ("must_fix", "unverified", "should_fix", "polish", "originality")
 """Report sections that hold findings, in report order."""
 
 
@@ -95,6 +95,10 @@ def finding_roles(finding: Finding) -> frozenset[Role]:
     roles.update(AGENT_ROLE[a] for a in finding_agents(finding) if a in AGENT_ROLE)
     if finding.heuristic:
         roles.add(Role.ORIGINALITY)
+    if AgentName.FACTCHECK in finding_agents(finding) and finding.severity is Severity.CONSIDER:
+        # "Could not verify": the fact-checker found no source for the claim,
+        # which is how a planted unsupported claim shows up.
+        roles.add(Role.UNSUPPORTED)
     return frozenset(roles)
 
 

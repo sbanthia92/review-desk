@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from collections.abc import Awaitable, Callable
@@ -159,11 +160,40 @@ def validate(schema: type[BaseModel], data: Any) -> tuple[BaseModel | None, str]
             return schema.model_validate_json(data), ""
         return schema.model_validate(data), ""
     except ValidationError as exc:
+        # Models sometimes return a list or object field as a JSON-encoded
+        # string. Decode those and try once more before asking for a repair.
+        decoded = unstringify(data)
+        if decoded is not data:
+            try:
+                return schema.model_validate(decoded), ""
+            except ValidationError:
+                pass
         lines = [
             f"- {'.'.join(str(p) for p in err['loc']) or '<root>'}: {err['msg']}"
             for err in exc.errors(include_input=False, include_url=False)[:20]
         ]
         return None, "\n".join(lines)
+
+
+def unstringify(data: Any) -> Any:
+    """Decode dict values that are JSON-encoded lists or objects.
+
+    Returns ``data`` itself (same object) when nothing was decoded.
+    """
+    if not isinstance(data, dict):
+        return data
+    changed = False
+    out: dict[str, Any] = {}
+    for key, value in data.items():
+        if isinstance(value, str) and value.lstrip()[:1] in ("[", "{"):
+            try:
+                out[key] = json.loads(value)
+                changed = True
+                continue
+            except ValueError:
+                pass
+        out[key] = value
+    return out if changed else data
 
 
 def schema_error(provider: str, schema: type[BaseModel], reason: str) -> SchemaError:

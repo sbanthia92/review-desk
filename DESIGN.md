@@ -111,6 +111,9 @@ The fact-checker and devil's advocate run a bounded loop per claim instead of a 
 
 - **Cap: 3 iterations per claim**, plus per-claim search and token budgets set by the plan.
 - Stop when a primary source directly settles the claim, when two independent sources agree, or at the cap. Hitting the cap gives "unsupported" with its confidence noted, never a guess.
+- **Verified** needs a primary source, two independent sources, or one reputable source (an edited reference work, major news organisation or official body, actually fetched) that nothing retrieved contradicts. Social and user-generated hosts never count towards settling a claim.
+- **Second look:** before giving up on a claim, the fact-checker re-reads pages already fetched for the document's other claims. This costs no searches.
+- **"Could not verify" is not "unsupported".** When sources were found but do not back the claim as written, it is an unsupported claim (must fix). When no adequate source was found, the claim is reported as "could not verify" at lower severity: failing to find a source is not evidence of an error.
 - Tools are read-only, so a malicious page can waste budget but cannot act.
 - Every step (query, source, finding) is saved as a research trail on the claim's ledger entry.
 
@@ -144,6 +147,7 @@ Later candidates: report / analyst note (number consistency, source checks) and 
 
 1. **Verdict line:** one sentence on overall readiness, plus counts by severity.
 2. **Must fix:** factual errors and unsupported claims, each with the quoted span, the problem, and sources.
+   - **Could not verify:** factual claims the fact-checker could not confirm, at lower severity.
 3. **Strongest counter-case:** the devil's advocate's top 3 rebuttals, each with sources and the claim it targets.
 4. **Should fix:** structure findings.
 5. **Polish:** copy edits, grouped.

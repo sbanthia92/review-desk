@@ -87,3 +87,27 @@ def test_fixtures_contain_no_secrets() -> None:
         assert "sk-proj-" not in text, path.name
         assert "x-api-key" not in json.loads(text).get("headers", {}), path.name
         assert "authorization" not in json.loads(text).get("headers", {}), path.name
+
+
+def test_validate_decodes_json_encoded_list_fields() -> None:
+    from pydantic import BaseModel
+
+    from reviewdesk.providers.llm._common import unstringify, validate
+
+    class Item(BaseModel):
+        name: str
+
+    class Out(BaseModel):
+        items: list[Item]
+        note: str = ""
+
+    parsed, feedback = validate(Out, {"items": '[{"name": "a"}, {"name": "b"}]', "note": "[x"})
+    assert feedback == ""
+    assert isinstance(parsed, Out)
+    assert [i.name for i in parsed.items] == ["a", "b"]
+    assert parsed.note == "[x"  # not valid JSON: left as text
+
+    same = {"items": [{"name": "a"}]}
+    assert unstringify(same) is same
+    parsed, feedback = validate(Out, {"items": "not a list"})
+    assert parsed is None and "items" in feedback

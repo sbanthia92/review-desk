@@ -87,6 +87,8 @@ Document ──► extractor ──► ClaimLedger ──► plan ──► agen
 - **`ProgressEvent`**: `step` (usually a `ProgressStep`), `message`,
   `percent` 0–100.
 - **`Report`**: verdict line, `counts` (by severity label), must_fix,
+  unverified (the fact-checker's "could not confirm" findings: agent
+  `factcheck`, severity `CONSIDER`),
   counter_case (rebuttals), should_fix, polish, originality, ledger, usage,
   notes (degradation notices), generated_at.
 

@@ -45,10 +45,14 @@ UNLISTED_CLAIM_BUDGET = ClaimBudget(max_iterations=1, max_search_calls=1, max_to
 _MIN_WEIGHT = 0.05
 
 REQUIRED_AGENTS: dict[Profile, tuple[AgentName, ...]] = {
-    Profile.OPINION: (AgentName.ORIGINALITY,),
+    Profile.OPINION: (AgentName.FACTCHECK, AgentName.DEVILS_ADVOCATE, AgentName.ORIGINALITY),
+    Profile.DESIGN_DOC: (AgentName.FACTCHECK, AgentName.DEVILS_ADVOCATE),
 }
 """Agents the planner may not drop for a profile (when they are available).
 
+Fact-checking against sources and the evidence-backed counter-case are what
+the product is for, so the planner decides their depth and budgets, not whether
+they run; each returns nothing when the ledger gives it no claims to work on.
 The originality check costs a few searches and no model calls, and the planner
 has no way to tell from the claims whether a sentence was borrowed.
 """

@@ -255,14 +255,15 @@ async def test_unsupported_when_cap_reached():
     verdict = verdicts(result)["c_fatigue"]
     assert verdict.verdict is Verdict.UNSUPPORTED
     assert verdict.confidence is not None and verdict.confidence <= 0.5
-    assert "cap reached" in verdict.note and "confidence 0.70" in verdict.note
+    assert "weak sourcing" in verdict.note
     # Hard cap: exactly three iterations, never a fourth search.
     assert search.queries == ["pressing fatigue february", "query two", "query three"]
     assert len(llm.calls_for("factcheck.assess")) == MAX_RESEARCH_ITERATIONS
     assert max(s.step.iteration for s in steps(result)) == MAX_RESEARCH_ITERATIONS
     assert_trail_capped(result)
     [finding] = result.findings
-    assert finding.severity is Severity.UNSUPPORTED
+    # Weak sourcing is "could not confirm" (lower severity), not "unsupported".
+    assert finding.severity is Severity.CONSIDER
     assert finding.claim_ids == ["c_fatigue"]
     assert finding.span == ledger.get("c_fatigue").claim.span
     assert_applies(result, ledger)
@@ -526,6 +527,7 @@ async def test_emits_progress():
         "Fact-checking claim 1 of 3",
         "Fact-checking claim 2 of 3",
         "Fact-checking claim 3 of 3",
+        "Re-reading gathered sources for 3 unsettled claim(s)",
     ]
     assert set(recorder.steps) == {ProgressStep.REVIEWING}
 

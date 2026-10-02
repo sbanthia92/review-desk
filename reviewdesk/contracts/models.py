@@ -664,7 +664,9 @@ class Report(_Model):
     """The final structured report, rendered to markdown and HTML.
 
     Sections follow the design doc order: verdict line and ``counts``;
-    ``must_fix`` (factual errors, unsupported claims); ``counter_case`` (top 3
+    ``must_fix`` (factual errors, unsupported claims); ``unverified`` (factual
+    claims the fact-checker could not confirm: lower severity, because failing
+    to find a source is not evidence the claim is wrong); ``counter_case`` (top 3
     rebuttals); ``should_fix`` (structure); ``polish`` (copy edits);
     ``originality`` (heuristic matches); ``ledger`` (appendix). ``counts`` is
     keyed by ``Severity.label``. ``notes`` holds degradation notices such as
@@ -676,6 +678,7 @@ class Report(_Model):
     verdict_line: str
     counts: dict[str, int] = Field(default_factory=dict)
     must_fix: list[Finding] = Field(default_factory=list)
+    unverified: list[Finding] = Field(default_factory=list)
     counter_case: list[Rebuttal] = Field(default_factory=list)
     should_fix: list[Finding] = Field(default_factory=list)
     polish: list[Finding] = Field(default_factory=list)

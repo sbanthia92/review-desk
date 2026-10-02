@@ -17,6 +17,7 @@ failures degrade the affected claims to ``unchecked`` and set
 from __future__ import annotations
 
 import asyncio
+import contextlib
 
 from reviewdesk.agents.factcheck import prompts
 from reviewdesk.agents.factcheck.research import (
@@ -25,6 +26,7 @@ from reviewdesk.agents.factcheck.research import (
     estimate_tokens,
 )
 from reviewdesk.agents.factcheck.schemas import DebateReply
+from reviewdesk.agents.factcheck.sources import Source
 from reviewdesk.contracts import (
     AgentName,
     AgentResult,
@@ -44,7 +46,7 @@ from reviewdesk.contracts import (
     Verdict,
 )
 
-DEFAULT_MAX_CLAIMS = 12
+DEFAULT_MAX_CLAIMS = 20
 DEFAULT_DEEP_CLAIMS = 5
 DEFAULT_CONCURRENCY = 3
 _OUT_DEBATE = 600
@@ -100,6 +102,7 @@ class FactCheckAgent:
 
         semaphore = asyncio.Semaphore(self.concurrency)
         started = 0
+        researches: list[ClaimResearch] = []
 
         async def check(claim: Claim) -> ClaimOutcome:
             nonlocal started
@@ -114,12 +117,39 @@ class FactCheckAgent:
                 )
                 budget = plan.budget_for(claim.id) if plan is not None else ClaimBudget()
                 research = ClaimResearch(ctx, claim, budget, deep=claim.id in deep_ids)
+                researches.append(research)
                 try:
                     return await research.run()
                 except ReviewDeskError as exc:
                     return research.fail(exc)
 
         outcomes = await asyncio.gather(*(check(c) for c in selected))
+
+        # Second look: claims in one document share a subject, so pages fetched
+        # for one claim often settle another. No new searches or fetches.
+        pool: dict[str, Source] = {}
+        for research in researches:
+            for source in research.sources.values():
+                if source.kind == "page" and source.text and not source.suspicious:
+                    pool.setdefault(source.url, source)
+
+        async def revisit(research: ClaimResearch) -> None:
+            async with semaphore:
+                # A failed second look keeps the first verdict.
+                with contextlib.suppress(ReviewDeskError):
+                    await research.second_look(list(pool.values()))
+                research.outcome.usage = research.usage
+
+        unsettled = [r for r in researches if r.outcome.verdict is Verdict.UNSUPPORTED]
+        if pool and unsettled:
+            ctx.emit_progress(
+                ProgressEvent(
+                    step=ProgressStep.REVIEWING,
+                    message=f"Re-reading gathered sources for {len(unsettled)} unsettled claim(s)",
+                    percent=95.0,
+                )
+            )
+            await asyncio.gather(*(revisit(r) for r in unsettled))
 
         updates: list[LedgerUpdate] = []
         findings = []

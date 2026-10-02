@@ -11,6 +11,7 @@ from reviewdesk.contracts.models import Document, Report
 from reviewdesk.report.view import (
     EMPTY_SECTION,
     ORIGINALITY_DISCLAIMER,
+    UNVERIFIED_NOTE,
     FindingView,
     ReportView,
     SourceView,
@@ -72,6 +73,11 @@ def render_view_text(view: ReportView) -> str:
 
     _heading(lines, "Must fix")
     _findings(lines, view.must_fix, show_severity=True)
+
+    _heading(lines, "Could not verify")
+    if view.unverified:
+        lines.extend([UNVERIFIED_NOTE, ""])
+    _findings(lines, view.unverified, show_severity=False)
 
     _heading(lines, "Strongest counter-case")
     if not view.counter_case:

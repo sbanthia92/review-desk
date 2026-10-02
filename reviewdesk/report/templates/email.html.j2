@@ -48,6 +48,12 @@
 <h2 style="{{ h2 }}">Must fix</h2>
 {{- findings(view.must_fix, true) }}
 
+<h2 style="{{ h2 }}">Could not verify</h2>
+{%- if view.unverified %}
+<p style="{{ muted }}">{{ unverified_note }}</p>
+{%- endif %}
+{{- findings(view.unverified, false) }}
+
 <h2 style="{{ h2 }}">Strongest counter-case</h2>
 {%- if not view.counter_case %}
 <p style="{{ muted }}">{{ empty }}</p>

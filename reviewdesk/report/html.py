@@ -12,7 +12,13 @@ from functools import cache
 from jinja2 import Environment, PackageLoader, StrictUndefined
 
 from reviewdesk.contracts.models import Document, Report
-from reviewdesk.report.view import EMPTY_SECTION, ORIGINALITY_DISCLAIMER, ReportView, build_view
+from reviewdesk.report.view import (
+    EMPTY_SECTION,
+    ORIGINALITY_DISCLAIMER,
+    UNVERIFIED_NOTE,
+    ReportView,
+    build_view,
+)
 
 TEMPLATE_NAME = "email.html.j2"
 
@@ -30,7 +36,12 @@ def _environment() -> Environment:
 def render_view_html(view: ReportView) -> str:
     """Render an already-built view to HTML."""
     template = _environment().get_template(TEMPLATE_NAME)
-    return template.render(view=view, empty=EMPTY_SECTION, disclaimer=ORIGINALITY_DISCLAIMER)
+    return template.render(
+        view=view,
+        empty=EMPTY_SECTION,
+        disclaimer=ORIGINALITY_DISCLAIMER,
+        unverified_note=UNVERIFIED_NOTE,
+    )
 
 
 def render_html(report: Report, document: Document | None = None) -> str:

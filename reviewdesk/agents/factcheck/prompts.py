@@ -45,6 +45,8 @@ that would find evidence to verify or refute one factual claim.
 - Prefer queries likely to surface the primary source (the original dataset, \
 official table, filing, transcript or publication) over commentary.
 - If the claim has several parts, target the part most likely to be wrong.
+- Use the surrounding passage, when given, to make each query specific: name \
+the people, teams, organisations, competition and year the claim is about.
 
 {_UNTRUSTED_RULES}"""
 
@@ -58,6 +60,10 @@ For each source give:
 statistics, dataset, filing, transcript, the publication being cited), not \
 reporting about it;
 - quote: one verbatim sentence from the source backing the stance.
+Use the surrounding passage, when given, only to work out which event, season, \
+person or organisation the claim is about. A source about a different one is \
+"irrelevant", never "contradicts", even if names or numbers look similar. \
+Judge the claim itself, not the rest of the passage.
 Next step:
 - "stop" if a primary source settles the claim, two independent sources agree, \
 or further searching will not help;
@@ -72,6 +78,9 @@ factual claim using ONLY the evidence provided, never your own memory.
 - "verified": the evidence directly supports the claim as written.
 - "wrong": the evidence directly contradicts it; give the correction.
 - "unsupported": the evidence does not settle it either way.
+Evidence about a different event, season, person or organisation than the one \
+the claim (read with its surrounding passage) is about does not count for or \
+against it.
 Prefer primary sources when sources disagree. Give a confidence from 0 to 1, \
 a one or two sentence explanation, and the URLs of the evidence you relied on.
 
@@ -97,18 +106,24 @@ def _attr(value: str) -> str:
     return _neutralise(value).replace('"', "'").replace("\n", " ")
 
 
-def document_block(claim: Claim) -> str:
+def document_block(claim: Claim, context: str = "") -> str:
     """The claim text, delimited as untrusted document data.
 
     When the claim has a standalone restatement (pronouns resolved by the
     extractor), it is included so the claim can be checked out of context.
+    ``context`` is the passage around the claim in the document; it tells the
+    model which event or subject the claim is about and is not itself checked.
     """
-    context = ""
+    extra = ""
     if claim.standalone:
-        context = f"\nMeaning in context: {_neutralise(claim.standalone)}"
+        extra += f"\nMeaning in context: {_neutralise(claim.standalone)}"
+    if context:
+        extra += (
+            f"\nSurrounding passage (context only, do not fact-check it):\n{_neutralise(context)}"
+        )
     return (
         f'<untrusted_document claim_id="{_attr(claim.id)}">\n'
-        f"{_neutralise(claim.text)}{context}\n</untrusted_document>"
+        f"{_neutralise(claim.text)}{extra}\n</untrusted_document>"
     )
 
 
@@ -133,18 +148,20 @@ def _evidence_text(evidence: Iterable[Evidence], label: str) -> str:
     return "\n\n".join(blocks) if blocks else "(none)"
 
 
-def queries_messages(claim: Claim) -> list[Message]:
+def queries_messages(claim: Claim, context: str = "") -> list[Message]:
     """Messages for ``factcheck.queries``."""
     return [
         Message(role="system", content=QUERIES_SYSTEM),
-        Message(role="user", content=f"Claim to check:\n{document_block(claim)}"),
+        Message(role="user", content=f"Claim to check:\n{document_block(claim, context)}"),
     ]
 
 
-def assess_messages(claim: Claim, sources: list[Source], query: str) -> list[Message]:
+def assess_messages(
+    claim: Claim, sources: list[Source], query: str, context: str = ""
+) -> list[Message]:
     """Messages for ``factcheck.assess``."""
     content = (
-        f"Claim to check:\n{document_block(claim)}\n\n"
+        f"Claim to check:\n{document_block(claim, context)}\n\n"
         f"Last search query: {_neutralise(query) or '(none)'}\n\n"
         f"Retrieved sources:\n{_sources_text(sources)}"
     )
@@ -155,11 +172,11 @@ def assess_messages(claim: Claim, sources: list[Source], query: str) -> list[Mes
 
 
 def judge_messages(
-    claim: Claim, supporting: list[Evidence], contradicting: list[Evidence]
+    claim: Claim, supporting: list[Evidence], contradicting: list[Evidence], context: str = ""
 ) -> list[Message]:
     """Messages for ``factcheck.judge``."""
     content = (
-        f"Claim to check:\n{document_block(claim)}\n\n"
+        f"Claim to check:\n{document_block(claim, context)}\n\n"
         f"Evidence that supports the claim:\n{_evidence_text(supporting, 'supports')}\n\n"
         f"Evidence that contradicts the claim:\n"
         f"{_evidence_text(contradicting, 'contradicts')}"
