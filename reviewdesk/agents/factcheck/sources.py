@@ -253,6 +253,13 @@ def reputably_supported(sources: list[Source]) -> bool:
     return any(is_reputable(s.url) and s.can_be_primary for s in relevant(sources, Stance.SUPPORTS))
 
 
+def reputably_contradicted(sources: list[Source]) -> bool:
+    """True if a reputable source that was actually fetched contradicts the claim."""
+    return any(
+        is_reputable(s.url) and s.can_be_primary for s in relevant(sources, Stance.CONTRADICTS)
+    )
+
+
 def shared_terms(claim: str, text: str) -> int:
     """How many of the claim's terms appear in ``text`` (numbers count double)."""
     wanted = _terms(claim)

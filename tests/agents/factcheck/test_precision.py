@@ -118,7 +118,7 @@ async def test_sources_that_do_not_back_the_claim_are_a_must_fix_without_contrad
     llm = FakeLLM(
         {
             "factcheck.queries": {"queries": ["liverpool 99 points"]},
-            "factcheck.assess": assess(src(BBC, "supports", QUOTE)),
+            "factcheck.assess": assess(src(BBC, "contradicts", QUOTE)),
             "factcheck.judge": {
                 "verdict": "unsupported",
                 "confidence": 0.6,
@@ -231,3 +231,131 @@ def test_passage_matching_tolerates_spelling_variants():
         "The aircraft landed at Munich for refuelling before the flight home."
     ]
     assert shared_terms(claim, page) >= 2
+
+
+# -- multi-part claims and the single-source "wrong" rule ------------------------
+
+WIKI = "https://en.wikipedia.org/wiki/Liverpool_2019-20"
+ESPN = "https://www.espn.com/soccer/story/liverpool-title"
+
+
+async def test_one_confirmed_part_does_not_verify_the_whole_claim():
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool 99 points"]},
+            "factcheck.assess": assess(src(BBC, "supports", QUOTE)),
+            # The judge says "verified" overall but admits one part is not.
+            "factcheck.judge": {
+                **judge("verified", 0.9),
+                "parts": [
+                    {"part": "Liverpool won the 2019-20 title", "verdict": "verified"},
+                    {"part": "with 99 points", "verdict": "unsupported"},
+                ],
+            },
+        }
+    )
+    ctx = _ctx(
+        llm, FakeSearch(default=[hit(BBC)]), FakeFetcher({BBC: BBC_TEXT}), (POINTS, 0.6, "c1")
+    )
+    result = await FactCheckAgent().run(ctx)
+    verdict = verdicts(result)["c1"]
+    assert verdict.verdict is Verdict.UNSUPPORTED
+    assert verdict.note.startswith("Not confirmed: with 99 points.")
+    [finding] = result.findings
+    assert finding.severity is Severity.CONSIDER  # backed in part, disputed nowhere
+
+
+async def test_a_contradicted_part_makes_the_claim_wrong():
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool 99 points"]},
+            "factcheck.assess": assess(
+                src(BBC, "contradicts", QUOTE), src(WIKI, "contradicts", QUOTE)
+            ),
+            "factcheck.judge": {
+                **judge("verified", 0.9, correction="It was 97 points."),
+                "parts": [
+                    {"part": "won the title", "verdict": "verified"},
+                    {"part": "99 points", "verdict": "wrong"},
+                ],
+            },
+        }
+    )
+    ctx = _ctx(
+        llm,
+        FakeSearch(default=[hit(BBC, rank=1), hit(WIKI, rank=2)]),
+        FakeFetcher({BBC: BBC_TEXT, WIKI: BBC_TEXT}),
+        (POINTS, 0.6, "c1"),
+    )
+    result = await FactCheckAgent().run(ctx)
+    assert verdicts(result)["c1"].verdict is Verdict.WRONG
+    assert result.findings[0].severity is Severity.FACTUAL_ERROR
+
+
+async def test_research_continues_while_parts_are_unconfirmed():
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool title 2019-20"]},
+            "factcheck.assess": [
+                # Two independent sources support the claim, but one part is open.
+                assess(
+                    src(BBC, "supports", QUOTE),
+                    src(WIKI, "supports", QUOTE),
+                    next_step="refine",
+                    next_query="liverpool 99 points total",
+                    unverified_parts=["99 points"],
+                ),
+                assess(src(ESPN, "supports", QUOTE)),
+            ],
+            "factcheck.judge": judge("verified", 0.9),
+        }
+    )
+    search = FakeSearch(
+        {
+            "liverpool title 2019-20": [hit(BBC, rank=1), hit(WIKI, rank=2)],
+            "99 points total": [hit(ESPN)],
+        }
+    )
+    fetcher = FakeFetcher({BBC: BBC_TEXT, WIKI: BBC_TEXT, ESPN: BBC_TEXT})
+    ctx = _ctx(llm, search, fetcher, (POINTS, 0.6, "c1"))
+    result = await FactCheckAgent().run(ctx)
+    # Without open parts the loop would have stopped after the first search.
+    assert search.queries == ["liverpool title 2019-20", "liverpool 99 points total"]
+    assert verdicts(result)["c1"].verdict is Verdict.VERIFIED
+    second = llm.calls_for("factcheck.assess")[1].messages[-1].content
+    assert "Parts still unconfirmed before these sources: 99 points" in second
+
+
+async def _single_contradiction(url: str, contested: bool) -> Any:
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool 99 points"]},
+            "factcheck.assess": assess(src(url, "contradicts", QUOTE)),
+            "factcheck.judge": {
+                **judge("wrong", 0.85, correction="It was 97 points."),
+                "contested": contested,
+            },
+        }
+    )
+    ctx = _ctx(
+        llm, FakeSearch(default=[hit(url)]), FakeFetcher({url: BBC_TEXT}), (POINTS, 0.6, "c1")
+    )
+    return await FactCheckAgent().run(ctx)
+
+
+async def test_one_reputable_uncontested_contradiction_is_wrong():
+    result = await _single_contradiction(BBC, contested=False)
+    verdict = verdicts(result)["c1"]
+    assert verdict.verdict is Verdict.WRONG
+    assert verdict.confidence == 0.7
+    assert "One reputable source contradicts this" in verdict.note
+    [finding] = result.findings
+    assert finding.severity is Severity.FACTUAL_ERROR
+    assert finding.suggestion == "It was 97 points."
+
+
+async def test_contested_or_unknown_source_contradiction_is_not_wrong():
+    for url, contested in ((BBC, True), (BLOG, False)):
+        result = await _single_contradiction(url, contested)
+        assert verdicts(result)["c1"].verdict is Verdict.UNSUPPORTED
+        assert result.findings[0].severity is Severity.UNSUPPORTED  # still a must-fix

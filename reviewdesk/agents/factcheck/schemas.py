@@ -59,6 +59,16 @@ class Assessment(BaseModel):
     next_query: str | None = None
     follow_url: str | None = None
     summary: str = ""
+    unverified_parts: list[str] = Field(default_factory=list)
+    """Checkable parts of the claim that no source seen so far confirms or
+    contradicts (a few words each). Empty when every part is covered."""
+
+
+class PartVerdict(BaseModel):
+    """The judge's verdict on one checkable part of a claim."""
+
+    part: str
+    verdict: Literal["verified", "wrong", "unsupported"]
 
 
 class Judgment(BaseModel):
@@ -70,6 +80,13 @@ class Judgment(BaseModel):
     correction: str | None = None
     """For wrong claims: what the evidence says instead."""
     evidence_urls: list[str] = Field(default_factory=list)
+    parts: list[PartVerdict] = Field(default_factory=list)
+    """A verdict for each checkable part of the claim (number, date, name,
+    place, cause, sequence). The claim is verified only if every part is."""
+    contested: bool = True
+    """For a "wrong" verdict: True if any evidence supports the specific
+    detail the contradicting evidence disputes. Defaults to True (the cautious
+    reading) when the model does not say."""
 
 
 class DebateReply(BaseModel):
