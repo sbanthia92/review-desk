@@ -329,6 +329,7 @@ class ClaimResearch:
             if source is None:  # the model may only judge what it was shown
                 continue
             source.stance = judged.stance
+            source.source_type = judged.source_type
             if judged.stance is Stance.IRRELEVANT:
                 source.evidence = None
                 continue

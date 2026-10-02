@@ -359,3 +359,49 @@ async def test_contested_or_unknown_source_contradiction_is_not_wrong():
         result = await _single_contradiction(url, contested)
         assert verdicts(result)["c1"].verdict is Verdict.UNSUPPORTED
         assert result.findings[0].severity is Severity.UNSUPPORTED  # still a must-fix
+
+
+# -- model-judged source quality ---------------------------------------------------
+
+RTE = "https://www.rte.ie/sport/soccer/busby"
+
+
+async def test_model_judged_major_news_counts_as_reputable():
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool 99 points"]},
+            "factcheck.assess": assess(
+                {**src(RTE, "supports", QUOTE), "source_type": "major_news"}
+            ),
+            "factcheck.judge": judge("verified", 0.9),
+        }
+    )
+    ctx = _ctx(
+        llm, FakeSearch(default=[hit(RTE)]), FakeFetcher({RTE: BBC_TEXT}), (POINTS, 0.6, "c1")
+    )
+    result = await FactCheckAgent().run(ctx)
+    assert verdicts(result)["c1"].verdict is Verdict.VERIFIED  # not on the host list
+
+
+async def test_social_host_is_never_reputable_whatever_the_model_says():
+    llm = FakeLLM(
+        {
+            "factcheck.queries": {"queries": ["liverpool 99 points"]},
+            "factcheck.assess": assess(
+                {**src(INSTA, "supports", QUOTE), "source_type": "major_news"}
+            ),
+            "factcheck.judge": judge("verified", 0.9),
+        }
+    )
+    ctx = _ctx(
+        llm, FakeSearch(default=[hit(INSTA)]), FakeFetcher({INSTA: BBC_TEXT}), (POINTS, 0.6, "c1")
+    )
+    result = await FactCheckAgent().run(ctx)
+    assert verdicts(result)["c1"].verdict is Verdict.UNSUPPORTED
+
+
+def test_judge_prompt_allows_simple_inference():
+    from reviewdesk.agents.factcheck import prompts
+
+    assert "arithmetic or simple logic" in prompts.JUDGE_SYSTEM
+    assert "source_type" in prompts.ASSESS_SYSTEM

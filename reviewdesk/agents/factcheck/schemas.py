@@ -41,11 +41,38 @@ class NextStep(StrEnum):
     """Fetch ``follow_url`` (usually the primary source a page cites)."""
 
 
+class SourceType(StrEnum):
+    """What kind of publication a source is (the model's reading, checked in code)."""
+
+    PRIMARY = "primary"
+    """The original record itself (official table, filing, transcript, dataset)."""
+    REFERENCE = "reference"
+    """An edited encyclopedia or reference work."""
+    MAJOR_NEWS = "major_news"
+    """An established national or international news organisation."""
+    OFFICIAL = "official"
+    """A government, governing body, league, or the organisation the claim is about."""
+    SPECIALIST = "specialist"
+    """A specialist publication or database with editorial standards."""
+    BLOG = "blog"
+    """A personal, fan or self-published site."""
+    SOCIAL = "social"
+    """Social media or other user-generated content."""
+    UNKNOWN = "unknown"
+
+
+REPUTABLE_SOURCE_TYPES = frozenset(
+    {SourceType.PRIMARY, SourceType.REFERENCE, SourceType.MAJOR_NEWS, SourceType.OFFICIAL}
+)
+"""Types that can verify (or refute) an uncontested claim on their own."""
+
+
 class SourceAssessment(BaseModel):
     """The model's reading of one retrieved source."""
 
     url: str
     stance: Stance
+    source_type: SourceType = SourceType.UNKNOWN
     is_primary: bool = False
     quote: str = ""
     """Verbatim sentence from the source that supports the stance."""

@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from urllib.parse import urlsplit
 
-from reviewdesk.agents.factcheck.schemas import Stance
+from reviewdesk.agents.factcheck.schemas import REPUTABLE_SOURCE_TYPES, SourceType, Stance
 from reviewdesk.contracts import Evidence, utcnow
 
 MAX_PASSAGES = 5
@@ -216,6 +216,8 @@ class Source:
     retrieved_at: datetime = field(default_factory=utcnow)
     stance: Stance | None = None
     evidence: Evidence | None = None
+    source_type: SourceType = SourceType.UNKNOWN
+    """The model's reading of what kind of publication this is."""
 
     @property
     def domain(self) -> str:
@@ -240,6 +242,19 @@ def settles(sources: list[Source], stance: Stance) -> bool:
     return len({s.domain for s in hits if not is_low_quality(s.url)}) >= 2
 
 
+def is_reputable_source(source: Source) -> bool:
+    """True if one fetched ``source`` can verify or refute an uncontested claim.
+
+    Either its host is on the known list, or the assessing model classed it as
+    a primary record, reference work, major news organisation or official
+    body. Social and user-generated hosts never qualify, whatever the model
+    says, and search snippets never do (the page itself must have been read).
+    """
+    if not source.can_be_primary or is_low_quality(source.url):
+        return False
+    return is_reputable(source.url) or source.source_type in REPUTABLE_SOURCE_TYPES
+
+
 def reputably_supported(sources: list[Source]) -> bool:
     """True if a reputable source supports the claim and nothing contradicts it.
 
@@ -249,15 +264,12 @@ def reputably_supported(sources: list[Source]) -> bool:
     """
     if relevant(sources, Stance.CONTRADICTS):
         return False
-    # ``can_be_primary`` is False for search snippets: the page itself must have been read.
-    return any(is_reputable(s.url) and s.can_be_primary for s in relevant(sources, Stance.SUPPORTS))
+    return any(is_reputable_source(s) for s in relevant(sources, Stance.SUPPORTS))
 
 
 def reputably_contradicted(sources: list[Source]) -> bool:
     """True if a reputable source that was actually fetched contradicts the claim."""
-    return any(
-        is_reputable(s.url) and s.can_be_primary for s in relevant(sources, Stance.CONTRADICTS)
-    )
+    return any(is_reputable_source(s) for s in relevant(sources, Stance.CONTRADICTS))
 
 
 def shared_terms(claim: str, text: str) -> int:
