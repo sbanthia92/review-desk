@@ -56,6 +56,13 @@ source bears on one factual claim, then choose the next research step.
 For each source give:
 - stance: "supports", "contradicts" or "irrelevant" for the exact claim \
 (numbers, dates, names and scope must match to support it);
+- source_type: what kind of publication it is: "primary" (the original record \
+itself), "reference" (an edited encyclopedia or reference work), "major_news" \
+(an established national or international news organisation), "official" (a \
+government, governing body, league, or the organisation the claim is about), \
+"specialist" (a specialist publication or database with editorial standards), \
+"blog" (a personal, fan or self-published site), "social" (social media or \
+user-generated content) or "unknown";
 - is_primary: true only if the source is itself the original record (official \
 statistics, dataset, filing, transcript, the publication being cited), not \
 reporting about it;
@@ -95,8 +102,10 @@ rhetorical flourishes, descriptive wording ("whispered", "ebullient"), \
 honorifics, or anything the evidence makes clearly true by obvious \
 implication (a manager who rebuilt the team after a crash survived it). A part \
 is verified when the evidence makes it clearly true, even if not word for \
-word. The claim is "verified" only if every material part is verified, \
-"wrong" if any is contradicted, and "unsupported" otherwise; name the failing \
+word, and also when it follows directly by arithmetic or simple logic from \
+sourced facts (a 3-3 second leg and a 5-4 aggregate imply a 2-1 first leg). \
+The claim is "verified" only if every material part is verified, "wrong" if \
+any is contradicted, and "unsupported" otherwise; name the failing \
 part in the explanation. Evidence that confirms one part says nothing about \
 the other material parts.
 For a "wrong" verdict set "contested": true if any of the evidence supports \
