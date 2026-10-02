@@ -6,7 +6,7 @@ The idea is younger than most people think. William Willett, a British builder, 
 
 Nobody would invent this today. The European Parliament voted in 2009 to scrap the twice-yearly change, and yet the clocks still goes back every autumn, because national governments could not agree on what should replace it.
 
-The costs are real, even if they are spread thinly. The clock change costs the British economy two billion pounds every year. The real price of everything, what everything really costs to the man who wants to acquire it, is the toil and trouble of acquiring it. We pay for our lighter evenings in missed trains, tired children and a week of bad temper in every office in the land.
+The costs are real, even if they are spread thinly. The clock change costs the British economy two billion pounds every year. The real price of every thing, what every thing really costs to the man who wants to acquire it, is the toil and trouble of acquiring it. We pay for our lighter evenings in missed trains, tired children and a week of bad temper in every office in the land.
 
 The case for abolition is short. The clocks were first changed to save coal in wartime, and we no longer light our homes with coal, so there is no reason left to change them. A rule that has outlived its purpose should be retired, however fond of it some people has become.
 
