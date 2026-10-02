@@ -6,7 +6,7 @@ It is easy to forget how quickly this happened. The first iPhone went on sale in
 
 The damage is now well documented. A Microsoft study proved that the human attention span has fallen to eight seconds, which is shorter than a goldfish's. Any teacher could have told you the same without a laboratory. A lesson is a slow thing, and a phone is a fast thing, and the fast thing wins every time.
 
-Other countries have acted while we have dithered. France banned phones in its primary and middle schools in 2018, and the sky did not fall in. The PISA tests, run by UNESCO every three years, hold every country up against the same yardstick, and ours has not been flattered by the comparison.
+Other countries have acted while we have dithered. France banned phones in its primary and middle schools in 2018, and the sky did not fall in. The PISA tests, run by UNESCO since 2000, hold every country up against the same yardstick, and ours has not been flattered by the comparison.
 
 The evidence from schools that have tried it is just as clear. Schools that ban phones see test scores rise by 20% within a year. Teachers in those schools tell me that behaviour improves, that the corridors is calmer and that children talk to each other at lunch.
 

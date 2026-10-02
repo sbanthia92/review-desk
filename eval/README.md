@@ -145,11 +145,16 @@ Conflict checks:
 
 ## Facts to verify by hand
 
-**Every fact below was written from memory, with no network access, and has
-not been checked against a source.** Before any live run (real search, real
-fact-checker), verify each row against a primary or authoritative source and
-fix the answer key if a "true value" is wrong or out of date. A wrong key
-silently punishes a correct pipeline.
+**Verified against sources on 2026-10-02.** Every fact below was first
+written from memory, then checked against primary or authoritative sources
+(Project Gutenberg texts, RFCs and release notes, official bodies, Wikipedia,
+major news). Seven items were corrected: the wording of three borrowed
+sentences (`05`, `17`, `22`), one false background sentence (`14`), one
+"unsupported" seed that polls actually support (`20`), one fact that has gone
+out of date (`21`: PISA moves to a four-year cycle from 2029, so the text no
+longer says "every three years"), and one false statement in a known rebuttal
+(`24`). Facts can change, so re-check the date-sensitive ones before each
+major eval run. A wrong key silently punishes a correct pipeline.
 
 What to check, per document:
 
@@ -224,7 +229,7 @@ Borrowed: "The mass of men lead lives of quiet desperation." from Walden, and On
 | --- | --- | --- |
 | d1 | Henry Ford adopted the five-day week for his factory workers in 1946 | Ford Motor Company adopted the five-day, 40-hour week in 1926. |
 
-Borrowed: "It is not from the benevolence of the butcher, the brewer, or the baker, that we expect our dinner, but from their regard to their own interest." from An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith (<https://www.gutenberg.org/ebooks/3300>).
+Borrowed: "It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own interest." from An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith (<https://www.gutenberg.org/ebooks/3300>).
 
 ### 06-sqlite-production
 
@@ -341,7 +346,7 @@ Borrowed: "If a man does not keep pace with his companions, perhaps it is becaus
 | d1 | handed it to the Apache Software Foundation a year later | Google donated Kubernetes to the Cloud Native Computing Foundation (CNCF, part of the Linux Foundation) in 2015. |
 | d2 | The name comes from the Latin word for helmsman | 'Kubernetes' comes from the Greek word for helmsman or pilot. |
 
-Borrowed: "It is a capital mistake to theorize before one has data." from The Adventures of Sherlock Holmes by Arthur Conan Doyle (<https://www.gutenberg.org/ebooks/1661>).
+Borrowed: "It is a capital mistake to theorise before one has data." from The Adventures of Sherlock Holmes by Arthur Conan Doyle (<https://www.gutenberg.org/ebooks/1661>).
 
 ### 18-python-type-hints
 
@@ -383,7 +388,7 @@ Borrowed: "If men were angels, no government would be necessary." from The Feder
 | Defect | Seeded (wrong) text | True value |
 | --- | --- | --- |
 | d1 | The first iPhone went on sale in 2010 | The first iPhone was announced in January 2007 and went on sale in June 2007. |
-| d2 | The PISA tests, run by UNESCO every three years | PISA is run by the OECD (Organisation for Economic Co-operation and Development). |
+| d2 | The PISA tests, run by UNESCO since 2000 | PISA is run by the OECD (Organisation for Economic Co-operation and Development). |
 
 Borrowed: "He who knows only his own side of the case, knows little of that." from On Liberty by John Stuart Mill (<https://www.gutenberg.org/ebooks/34901>).
 
@@ -396,7 +401,7 @@ Borrowed: "He who knows only his own side of the case, knows little of that." fr
 
 Seeded as true (must hold): "William Willett, a British builder, campaigned for it in a 1907 pamphlet".
 
-Borrowed: "The real price of everything, what everything really costs to the man who wants to acquire it, is the toil and trouble of acquiring it." from An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith (<https://www.gutenberg.org/ebooks/3300>).
+Borrowed: "The real price of every thing, what every thing really costs to the man who wants to acquire it, is the toil and trouble of acquiring it." from An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith (<https://www.gutenberg.org/ebooks/3300>).
 
 ### 23-close-the-libraries
 

@@ -16,7 +16,7 @@ Nobody adopts only Kubernetes. You adopt a control plane, a pile of YAML, an ing
 
 The cost is not hidden, it is just ignored. Teams that adopt Kubernetes spend 60% of their engineering time on infrastructure. That is time not spent talking to customers, fixing bugs or shipping the feature that might have kept the company alive.
 
-Ask a team why they migrated, and you will hear about the scale they are going to need next year. It is a capital mistake to theorize before one has data. Most of these teams have never measured their peak load, and the ones that have could serve it from a single modest machine.
+Ask a team why they migrated, and you will hear about the scale they are going to need next year. It is a capital mistake to theorise before one has data. Most of these teams have never measured their peak load, and the ones that have could serve it from a single modest machine.
 
 ## The argument in one line
 

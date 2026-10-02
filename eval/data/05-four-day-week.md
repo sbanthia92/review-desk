@@ -6,6 +6,6 @@ Employees on a four-day week are twice as productive per hour as those on five. 
 
 Since I personally get more done now that I take Fridays off, every company would benefit from a four-day week. I finish my week sharper, and my clients have never complained.
 
-Managers is often the last to be convinced, but the business case is simple. It is not from the benevolence of the butcher, the brewer, or the baker, that we expect our dinner, but from their regard to their own interest. Firms will adopt the four-day week the moment they see it pays, irregardless of tradition.
+Managers is often the last to be convinced, but the business case is simple. It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own interest. Firms will adopt the four-day week the moment they see it pays, irregardless of tradition.
 
 The office will survive losing a day. Our weekends deserve the upgrade.

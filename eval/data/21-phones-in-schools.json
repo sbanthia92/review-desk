@@ -13,9 +13,9 @@
     {
       "id": "d2",
       "type": "wrong_fact",
-      "quote": "The PISA tests, run by UNESCO every three years",
+      "quote": "The PISA tests, run by UNESCO since 2000",
       "correction": "PISA is run by the OECD (Organisation for Economic Co-operation and Development).",
-      "note": "[multi-part] The three-year cycle is right; only the organisation is wrong."
+      "note": "[multi-part] PISA has run since 2000, which is right; only the organisation is wrong."
     },
     {
       "id": "d3",
