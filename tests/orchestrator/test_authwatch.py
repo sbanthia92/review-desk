@@ -73,3 +73,28 @@ async def test_degraded_review_is_never_called_ready():
     report = await Orchestrator(registry).review(OPINION_DOC, Profile.OPINION, ProgressRecorder())
     assert report.verdict_line.startswith("Incomplete review")
     assert "Ready" not in report.verdict_line
+
+
+async def test_could_not_verify_findings_get_their_own_section():
+    from reviewdesk.contracts import Finding, Severity, Span
+
+    unverified = Finding(
+        id="f_unverified",
+        agent=AgentName.FACTCHECK,
+        severity=Severity.CONSIDER,
+        span=Span(start=0, end=10),
+        message="Could not confirm this claim from retrieved sources.",
+    )
+    registry = _registry(
+        FakeLLM(default={}),
+        FakeSearch(),
+        [
+            FakeAgent(AgentName.EXTRACTOR),
+            FakeAgent(AgentName.FACTCHECK, findings=[unverified]),
+        ],
+    )
+    report = await Orchestrator(registry).review(OPINION_DOC, Profile.OPINION, ProgressRecorder())
+    assert [f.id for f in report.unverified] == ["f_unverified"]
+    assert report.must_fix == []
+    assert report.verdict_line.startswith("Ready")  # unverified claims do not block
+    assert "1 claim could not be verified." in report.verdict_line

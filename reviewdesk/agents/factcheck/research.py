@@ -30,10 +30,13 @@ from reviewdesk.agents.factcheck.sources import (
     Source,
     find_in_page,
     is_http_url,
+    is_reputable,
     looks_like_injection,
     primary_hint,
     relevant,
+    reputably_supported,
     settles,
+    shared_terms,
     verified_quote,
 )
 from reviewdesk.contracts import (
@@ -71,6 +74,16 @@ MAX_QUERIES = 3
 MAX_COUNTER_EVIDENCE = 3
 SEARCH_K = 5
 MAX_NOTE_CHARS = 500
+SINGLE_SOURCE_MIN_CONFIDENCE = 0.75
+"""Judge confidence needed to verify a claim on one reputable source."""
+SINGLE_SOURCE_MAX_CONFIDENCE = 0.7
+"""Confidence recorded for a claim verified on one reputable source."""
+SECOND_LOOK_SOURCES = 3
+"""Pages gathered for other claims that a second look may assess."""
+SECOND_LOOK_MIN_TERMS = 3
+"""Claim terms a page's passages must share to be worth a second look."""
+SECOND_LOOK_TOKENS = 4_000
+"""Extra per-claim token allowance for the second look."""
 
 _OUT_QUERIES = 300
 _OUT_ASSESS = 800
@@ -82,6 +95,31 @@ _T = TypeVar("_T", bound=BaseModel)
 def estimate_tokens(messages: list[Message], max_output: int) -> int:
     """Rough token estimate for a call (4 characters per token plus output)."""
     return sum(len(m.content) for m in messages) // 4 + max_output
+
+
+MAX_CONTEXT_CHARS = 900
+"""Cap on the surrounding passage shown with a claim."""
+
+
+def surrounding_context(text: str, start: int, end: int) -> str:
+    """The document's first line plus the paragraph around ``[start, end)``.
+
+    Tells the model which event or subject a claim is about ("They", "the
+    first leg", "that season"). Clipped around the claim to ``MAX_CONTEXT_CHARS``.
+    """
+    para_start = text.rfind("\n\n", 0, start)
+    para_start = 0 if para_start < 0 else para_start + 2
+    para_end = text.find("\n\n", end)
+    para_end = len(text) if para_end < 0 else para_end
+    if para_end - para_start > MAX_CONTEXT_CHARS:
+        half = max(0, (MAX_CONTEXT_CHARS - (end - start)) // 2)
+        para_start = max(para_start, start - half)
+        para_end = min(para_end, end + half)
+    paragraph = " ".join(text[para_start:para_end].split())
+    title = " ".join(text.strip().split("\n", 1)[0].split())[:200]
+    if title and title not in paragraph:
+        return f"{title}\n{paragraph}"
+    return paragraph
 
 
 def _clip(text: str, limit: int = MAX_NOTE_CHARS) -> str:
@@ -126,6 +164,7 @@ class ClaimResearch:
         self.iteration = 1
         self.sources: dict[str, Source] = {}
         self.outcome = ClaimOutcome(claim_id=claim.id)
+        self.context = surrounding_context(ctx.document.text, claim.span.start, claim.span.end)
 
     # -- metered tools -----------------------------------------------------
 
@@ -189,7 +228,10 @@ class ClaimResearch:
         if not self.deep:
             return [self.claim.checkable_text]
         plan = await self._llm(
-            prompts.queries_messages(self.claim), QueryPlan, prompts.TAG_QUERIES, _OUT_QUERIES
+            prompts.queries_messages(self.claim, self.context),
+            QueryPlan,
+            prompts.TAG_QUERIES,
+            _OUT_QUERIES,
         )
         queries = [" ".join(q.split()) for q in plan.queries if q.strip()]
         return queries[:MAX_QUERIES] or [self.claim.checkable_text]
@@ -268,7 +310,7 @@ class ClaimResearch:
 
     async def _assess(self, batch: list[Source], query: str) -> Assessment:
         assessment = await self._llm(
-            prompts.assess_messages(self.claim, batch, query),
+            prompts.assess_messages(self.claim, batch, query, self.context),
             Assessment,
             prompts.TAG_ASSESS,
             _OUT_ASSESS,
@@ -407,6 +449,56 @@ class ClaimResearch:
             return self.outcome
         return await self._conclude("Re-checked against the devil's advocate's evidence.")
 
+    async def second_look(self, pool: list[Source]) -> ClaimOutcome:
+        """Re-judge an unsettled claim against pages fetched for other claims.
+
+        Claims in one document usually share a subject, so a page retrieved for
+        one claim often settles its neighbours. Costs no searches or fetches:
+        one assessment call, then the verdict rules run again. If nothing in
+        the pool is relevant, or the budget is spent, the outcome is unchanged.
+        """
+        claim_text = self.claim.checkable_text
+        scored: list[tuple[int, Source, list[str]]] = []
+        for candidate in pool:
+            if candidate.url in self.sources or candidate.suspicious or not candidate.text:
+                continue
+            passages = find_in_page(candidate.text, claim_text)
+            score = shared_terms(claim_text, " ".join(passages))
+            if passages and score >= SECOND_LOOK_MIN_TERMS:
+                scored.append((score, candidate, passages))
+        if not scored:
+            return self.outcome
+        scored.sort(key=lambda item: (-item[0], not is_reputable(item[1].url), item[1].url))
+        batch: list[Source] = []
+        for _score, candidate, passages in scored[:SECOND_LOOK_SOURCES]:
+            source = Source(
+                url=candidate.url,
+                title=candidate.title,
+                text=candidate.text,
+                passages=passages,
+                kind=candidate.kind,
+                can_be_primary=candidate.can_be_primary,
+                retrieved_at=candidate.retrieved_at,
+            )
+            self.sources[source.url] = source
+            batch.append(source)
+        self.max_tokens += SECOND_LOOK_TOKENS
+        self._step(
+            ResearchAction.FIND_IN_PAGE,
+            "pages gathered for other claims",
+            f"{len(batch)} page(s) already fetched in this review look relevant.",
+            [source.url for source in batch],
+        )
+        try:
+            await self._assess(batch, "")
+        except BudgetExceeded:
+            return self.outcome
+        if not any(source.evidence is not None for source in batch):
+            return self.outcome
+        self.outcome.updates = [u for u in self.outcome.updates if not isinstance(u, SetVerdict)]
+        self.outcome.findings.clear()
+        return await self._conclude("Checked against sources gathered for other claims.")
+
     # -- verdict -----------------------------------------------------------
 
     async def _conclude(self, reason: str) -> ClaimOutcome:
@@ -425,6 +517,7 @@ class ClaimResearch:
                         self.claim,
                         [s.evidence for s in supporting if s.evidence],
                         [s.evidence for s in contradicting if s.evidence],
+                        self.context,
                     ),
                     Judgment,
                     prompts.TAG_JUDGE,
@@ -458,6 +551,23 @@ class ClaimResearch:
             return self._finish(
                 Verdict.VERIFIED, evidence_of(supporting), confidence, explanation, None
             )
+        if (
+            proposed == "verified"
+            and judgment is not None
+            and confidence >= SINGLE_SOURCE_MIN_CONFIDENCE
+            and reputably_supported(sources)
+        ):
+            # Relaxed rule for uncontested facts: one reputable source is
+            # enough when nothing retrieved contradicts the claim.
+            note = "Supported by one reputable source; nothing retrieved contradicts it."
+            self._step(ResearchAction.STOP, "verified", note, [s.url for s in supporting])
+            return self._finish(
+                Verdict.VERIFIED,
+                evidence_of(supporting),
+                min(confidence, SINGLE_SOURCE_MAX_CONFIDENCE),
+                f"{note} {explanation}".strip(),
+                None,
+            )
         if proposed == "wrong" and con_settled:
             self._step(ResearchAction.STOP, "wrong", reason, [s.url for s in contradicting])
             correction = judgment.correction if judgment is not None else None
@@ -465,19 +575,38 @@ class ClaimResearch:
                 Verdict.WRONG, evidence_of(contradicting), confidence, explanation, correction
             )
 
-        note = reason
-        if proposed != "unsupported":
+        # Not settled. Either the sources we found do not back the claim as
+        # written (a finding the author should act on), or we simply could not
+        # confirm it (a lower-severity note: absence of evidence is not error).
+        could_not_confirm = False
+        if proposed == "wrong":
             note = (
-                f"{reason} The evidence leaned {proposed} (confidence {confidence:.2f}) but "
-                "did not settle it: that needs a primary source or two independent sources."
+                "One source contradicts this claim; a second independent source would settle it. "
+                f"{explanation}"
             )
-            confidence = min(confidence, 0.5)
-        elif explanation:
-            note = f"{reason} {explanation}"
+        elif proposed == "verified":
+            could_not_confirm = True
+            note = (
+                "Only weak sourcing was found: not a primary source, a reputable outlet or "
+                f"two independent sources. {explanation}"
+            )
+        elif (supporting or contradicting) and explanation:
+            note = explanation
+        else:
+            could_not_confirm = True
+            note = "No relevant source was found within the research budget."
+        confidence = min(confidence, 0.5)
         self._step(ResearchAction.STOP, "unsupported", note)
         evidence = evidence_of(supporting) + evidence_of(contradicting)
         evidence.sort(key=lambda e: not e.is_primary)
-        return self._finish(Verdict.UNSUPPORTED, evidence, confidence, note, None)
+        return self._finish(
+            Verdict.UNSUPPORTED,
+            evidence,
+            confidence,
+            note.strip(),
+            None,
+            could_not_confirm=could_not_confirm,
+        )
 
     def fail(self, exc: BaseException) -> ClaimOutcome:
         """Degrade after a provider failure: keep the trail, mark the claim unchecked."""
@@ -498,6 +627,8 @@ class ClaimResearch:
         confidence: float | None,
         note: str,
         correction: str | None,
+        *,
+        could_not_confirm: bool = False,
     ) -> ClaimOutcome:
         note = _clip(note)
         self.outcome.updates.append(
@@ -521,15 +652,29 @@ class ClaimResearch:
                     claim_ids=[self.claim.id],
                 )
             )
+        elif verdict is Verdict.UNSUPPORTED and could_not_confirm:
+            # Lower severity: we could not confirm it, which is not the same as
+            # the claim being unsupported. Reported under "Could not verify".
+            self.outcome.findings.append(
+                Finding(
+                    agent=AgentName.FACTCHECK,
+                    severity=Severity.CONSIDER,
+                    span=self.claim.span,
+                    message=_clip(f"Could not confirm this claim from retrieved sources. {note}"),
+                    evidence=evidence,
+                    suggestion="Double-check this detail, and add a source if you have one.",
+                    claim_ids=[self.claim.id],
+                )
+            )
         elif verdict is Verdict.UNSUPPORTED:
             self.outcome.findings.append(
                 Finding(
                     agent=AgentName.FACTCHECK,
                     severity=Severity.UNSUPPORTED,
                     span=self.claim.span,
-                    message=_clip(f"No retrieved source settles this claim. {note}"),
+                    message=_clip(f"Retrieved sources do not back this claim as written. {note}"),
                     evidence=evidence,
-                    suggestion="Cite a primary source for this claim, or soften it.",
+                    suggestion="Check this against the sources, then correct or soften it.",
                     claim_ids=[self.claim.id],
                 )
             )

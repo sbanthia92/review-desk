@@ -41,6 +41,11 @@ MAX_COUNTER_CASE = 3
 EMPTY_SECTION = "None found."
 """Line rendered for every empty section, in every format."""
 
+UNVERIFIED_NOTE = (
+    "The fact-checker could not confirm these from the sources it found. That is not "
+    "evidence they are wrong: double-check them, and add a source where you have one."
+)
+
 ORIGINALITY_DISCLAIMER = (
     "Heuristic: these are automated possible matches, not plagiarism findings. "
     "Check each source yourself."
@@ -200,6 +205,7 @@ class ReportView:
     generated_at: str
     counts: list[CountView]
     must_fix: list[FindingView]
+    unverified: list[FindingView]
     counter_case: list[RebuttalView]
     should_fix: list[FindingView]
     polish: list[PolishGroup]
@@ -238,6 +244,7 @@ def build_view(report: Report, document: Document | None = None) -> ReportView:
         generated_at=report.generated_at.astimezone(UTC).strftime("%Y-%m-%d %H:%M UTC"),
         counts=_counts(report.counts),
         must_fix=[builder.finding(f) for f in report.must_fix],
+        unverified=[builder.finding(f) for f in report.unverified],
         counter_case=[builder.rebuttal(r) for r in _top_rebuttals(report.counter_case)],
         should_fix=[builder.finding(f) for f in report.should_fix],
         polish=builder.polish_groups(report.polish),

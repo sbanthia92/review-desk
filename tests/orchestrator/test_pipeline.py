@@ -322,11 +322,16 @@ async def test_valid_llm_plan_is_used() -> None:
     )
     fc, da, ce = agents[1], agents[2], agents[3]
     assert len(fc.runs) == 1
-    assert da.runs == [] and ce.runs == []
+    # The planner chooses depth and optional agents (copy edit was not planned);
+    # fact-check, the devil's advocate and originality always run on opinion pieces.
+    assert len(da.runs) == 1 and ce.runs == []
     plan = fc.runs[0].plan
     assert plan is not None
-    # Originality is required for opinion pieces even if the planner omits it.
-    assert plan.agents == [AgentName.FACTCHECK, AgentName.ORIGINALITY]
+    assert plan.agents == [
+        AgentName.FACTCHECK,
+        AgentName.DEVILS_ADVOCATE,
+        AgentName.ORIGINALITY,
+    ]
     assert plan.deep_research_claim_ids == ["claim_goals"]
     assert plan.budget_for("claim_goals").max_search_calls == 5
     [call] = llm.calls_for("orchestrator.plan")

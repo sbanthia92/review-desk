@@ -271,6 +271,17 @@ def sample_report() -> Report:
             claim_ids=["claim_fatigue"],
         ),
     ]
+    unverified = [
+        Finding(
+            id="find_unverified",
+            agent=AgentName.FACTCHECK,
+            severity=Severity.CONSIDER,
+            span=span_of(doc.text, "Critics say pressing exhausts players by February."),
+            message="Could not confirm this claim from retrieved sources. No relevant "
+            "source was found within the research budget.",
+            suggestion="Double-check this detail, and add a source if you have one.",
+        )
+    ]
     should_fix = [
         Finding(
             id="find_structure",
@@ -307,7 +318,7 @@ def sample_report() -> Report:
         Severity.STRONG_REBUTTAL.label: 1,
         Severity.STRUCTURE.label: 1,
         Severity.STYLE.label: 1,
-        Severity.CONSIDER.label: 2,
+        Severity.CONSIDER.label: 3,
     }
     return Report(
         document_id=doc.id,
@@ -315,6 +326,7 @@ def sample_report() -> Report:
         verdict_line="Not ready: one factual error and one unsupported claim to fix.",
         counts=counts,
         must_fix=must_fix,
+        unverified=unverified,
         counter_case=counter_case,
         should_fix=should_fix,
         polish=polish,

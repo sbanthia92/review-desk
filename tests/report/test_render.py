@@ -44,6 +44,7 @@ from reviewdesk.testing.fakes import (
 
 SECTIONS = [
     "Must fix",
+    "Could not verify",
     "Strongest counter-case",
     "Should fix",
     "Polish",

@@ -50,6 +50,15 @@ def _plural(n: int, word: str) -> str:
     return f"{n} {word}" + ("" if n == 1 else "s")
 
 
+def is_unverified(finding: Finding) -> bool:
+    """True for the fact-checker's "could not confirm" findings."""
+    return (
+        finding.agent == AgentName.FACTCHECK
+        and finding.severity is Severity.CONSIDER
+        and not finding.heuristic
+    )
+
+
 def verdict_line(findings: list[Finding], *, partial: bool = False) -> str:
     """One sentence on overall readiness.
 
@@ -80,6 +89,9 @@ def verdict_line(findings: list[Finding], *, partial: bool = False) -> str:
         line = "Ready: only minor suggestions."
     else:
         line = "Ready: no issues found."
+    unverified = sum(1 for f in findings if is_unverified(f))
+    if unverified:
+        line += f" {_plural(unverified, 'claim')} could not be verified."
     if partial:
         line += " Partial review: see notes."
     return line
@@ -104,6 +116,7 @@ def build_report(
     """
     ranked = rank_findings(ledger.findings.values())
     must_fix: list[Finding] = []
+    unverified: list[Finding] = []
     should_fix: list[Finding] = []
     polish: list[Finding] = []
     originality: list[Finding] = []
@@ -112,6 +125,8 @@ def build_report(
             originality.append(finding)
         elif finding.severity in FACT_SEVERITIES:
             must_fix.append(finding)
+        elif is_unverified(finding):
+            unverified.append(finding)
         elif finding.severity is Severity.STRUCTURE:
             should_fix.append(finding)
         elif finding.severity is Severity.STYLE or _has_copy_edit(finding):
@@ -122,6 +137,7 @@ def build_report(
         verdict_line=verdict_line(ranked, partial=partial),
         counts=count_by_severity(ranked),
         must_fix=must_fix,
+        unverified=unverified,
         counter_case=counter_case(ledger),
         should_fix=should_fix,
         polish=polish,

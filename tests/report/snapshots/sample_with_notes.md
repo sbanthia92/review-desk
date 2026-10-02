@@ -2,7 +2,7 @@
 
 **Verdict:** Not ready: one factual error and one unsupported claim to fix.
 
-**Findings by severity:** factual error: 1 · unsupported: 1 · strong rebuttal: 1 · structure: 1 · style: 1 · consider: 2
+**Findings by severity:** factual error: 1 · unsupported: 1 · strong rebuttal: 1 · structure: 1 · style: 1 · consider: 3
 
 ## Must fix
 
@@ -21,6 +21,18 @@
 > That is simply not true
 
 **Problem:** No source supports dismissing pressing fatigue.
+
+## Could not verify
+
+The fact-checker could not confirm these from the sources it found. That is not evidence they are wrong: double-check them, and add a source where you have one.
+
+### 1. Finding
+
+> Critics say pressing exhausts players by February.
+
+**Problem:** Could not confirm this claim from retrieved sources. No relevant source was found within the research budget.
+
+**Suggestion:** Double-check this detail, and add a source if you have one.
 
 ## Strongest counter-case
 
