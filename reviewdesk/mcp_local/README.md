@@ -20,7 +20,9 @@ limit) come back as tool errors with a readable message.
 uv run --directory /path/to/review-desk python -m reviewdesk.mcp_local
 ```
 
-Environment variables (put them in the client's `env` block; never in tool arguments):
+Environment variables. Keep them in the repo's `.env` file (the server loads `.env` from its
+working directory, or the file named by `REVIEWDESK_ENV_FILE`), or put them in the client's
+`env` block. Never pass them as tool arguments:
 
 | Variable | Purpose |
 | --- | --- |
