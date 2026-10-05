@@ -1,0 +1,120 @@
+{
+  "id": "32-national-league-third-place",
+  "title": "Two up is not enough: give the National League a third promotion place",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Rochdale finished second with 104 points",
+      "correction": "Rochdale finished second in the 2025-26 National League with 106 points, two behind York City.",
+      "note": "[needs-source] [multi-part] The first half of the sentence (York City top with 108 points) is true; only Rochdale's total is wrong. True value: 106 points. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final (final table); also https://www.sportinglife.com/football/news/york-promoted-after-stoppage-time-chaos/231702"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "who had finished fifth",
+      "correction": "Boreham Wood finished fourth in the 2025-26 National League with 90 points; Scunthorpe United finished fifth.",
+      "note": "[needs-source] [multi-part] The sixteen-point gap to Rochdale in the same clause is true (106 against 90); only the league position is wrong. True value: fourth. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "The final was played in front of 21,740 people",
+      "correction": "The attendance at the 2026 National League play-off final at Wembley was 17,740.",
+      "note": "[needs-source] True value: 17,740 (Wembley Stadium, 10 May 2026). Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "Matt Rush and Zak Brunt put Boreham Wood two goals up",
+      "correction": "Boreham Wood's goals in the final were scored by Matt Rush (22') and Abdul Abdulmalik (69'); Zak Brunt did not score.",
+      "note": "[needs-source] [multi-part] Matt Rush did score the first goal; only the second scorer is wrong. True value: Abdul Abdulmalik, 69'. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    },
+    {
+      "id": "d5",
+      "type": "wrong_fact",
+      "quote": "Rochdale won the shoot-out 4-2",
+      "correction": "Rochdale won the penalty shoot-out 3-1 after the final finished 2-2 after extra time.",
+      "note": "[needs-source] True value: 3-1 on penalties. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    },
+    {
+      "id": "d6",
+      "type": "unsupported",
+      "quote": "Teams that lose the play-off final take an average of six years to come back up."
+    },
+    {
+      "id": "d7",
+      "type": "weak_argument",
+      "quote": "A team that finished second nearly stayed down, which proves that the play-offs are a lottery and should be abolished.",
+      "known_rebuttal": "One close final does not show that the play-offs are a lottery: Rochdale, the best of the six play-off sides over the season, did win promotion. The argument also confuses two questions. How many clubs go up is separate from how the last place is decided, and a third promotion place can be added while keeping the play-offs. Play-offs keep the season alive for clubs down to seventh place and draw some of the division's biggest crowds, such as the 13,814 at Carlisle's semi-final, so abolishing them would cost the league interest and income."
+    },
+    {
+      "id": "d8",
+      "type": "borrowed_sentence",
+      "quote": "Nothing is so painful to the human mind as a great and sudden change.",
+      "source_url": "https://www.gutenberg.org/ebooks/84",
+      "source_title": "Frankenstein; Or, The Modern Prometheus by Mary Wollstonecraft Shelley"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "were a place in the play-offs",
+      "correction": "was a place in the play-offs"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "the supporters which travelled",
+      "correction": "the supporters who travelled"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "has turn into",
+      "correction": "has turned into"
+    },
+    {
+      "id": "d12",
+      "type": "grammar",
+      "quote": "for it's weakest members",
+      "correction": "for its weakest members"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "A team that finished second nearly stayed down, which proves that the play-offs are a lottery and should be abolished.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "York City finished top with 108 points",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d1; a rebuttal disputing this fact must be discarded. Source: https://en.wikipedia.org/wiki/2025%E2%80%9326_National_League"
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Rochdale had dropped out of the Football League in 2023 after 102 years",
+      "note": "[needs-source] True: Rochdale joined the Football League in 1921 and were relegated at the end of 2022-23. Source: https://en.wikipedia.org/wiki/Rochdale_A.F.C."
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Emmanuel Dieseruvwe headed the equaliser in the seventh minute of stoppage time",
+      "note": "[needs-source] True: Dieseruvwe scored at 90+7' to make it 2-2. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Carlisle United drew 13,814 for their semi-final against Boreham Wood",
+      "note": "[needs-source] True: Carlisle United 1-2 Boreham Wood (after extra time), Brunton Park, 3 May 2026, attendance 13,814. Source: https://en.wikipedia.org/wiki/2026_National_League_play-off_final"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "id": "33-mjallby-model",
+  "title": "Mjällby are not a fairy tale, they are a warning",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "with two games to spare",
+      "correction": "Mjällby secured the 2025 Allsvenskan title on 20 October 2025 with three games remaining.",
+      "note": "[needs-source] [multi-part] The date, the opponent and the score in the same sentence are true; only the number of games left is wrong. True value: three games remaining. Source: https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "They finished on 73 points, which is a league record",
+      "correction": "Mjällby finished the 2025 Allsvenskan on 75 points, a league record (the previous record was 67).",
+      "note": "[needs-source] [multi-part] It was a league record, and the second half of the sentence (one defeat in thirty matches) is true; only the total is wrong. True value: 75 points. Source: https://en.wikipedia.org/wiki/2025_Allsvenskan"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Hammarby were runners-up, nine points behind.",
+      "correction": "Hammarby finished second in the 2025 Allsvenskan on 62 points, 13 points behind Mjällby's 75.",
+      "note": "[needs-source] [multi-part] Hammarby were runners-up; only the margin is wrong. True value: 13 points (75 against 62). Source: https://en.wikipedia.org/wiki/2025_Allsvenskan"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "in front of 29,903 people",
+      "correction": "The attendance at the 2026 Svenska Cupen final in Solna was 39,903.",
+      "note": "[needs-source] [multi-part] The opponent, score and venue in the same sentence are true; only the attendance is wrong. True value: 39,903. Source: https://en.wikipedia.org/wiki/2025%E2%80%9326_Svenska_Cupen"
+    },
+    {
+      "id": "d5",
+      "type": "wrong_fact",
+      "quote": "the Danish coach Karl Marius Aksum",
+      "correction": "Karl Marius Aksum, Mjällby's head coach from December 2025 to September 2026, is Norwegian.",
+      "note": "[needs-source] [multi-part] The sacking in September 2026 after a 4-1 defeat to IFK Göteborg is true; only the nationality is wrong. True value: Norwegian. Source: https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF ; the sacking is reported at https://www.flashscore.com/news/soccer-allsvenskan-swedish-champions-who-shocked-the-football-world-sack-coach-after-disastrous-campaign/YPYIg5Ms/"
+    },
+    {
+      "id": "d6",
+      "type": "unsupported",
+      "quote": "Small clubs that win a title lose half of their squad within a year."
+    },
+    {
+      "id": "d7",
+      "type": "weak_argument",
+      "quote": "Mjällby won the league on a small budget, so wage bills do not matter and the bigger clubs are simply wasting their money.",
+      "known_rebuttal": "One season is an outlier, not a law. Studies of league football consistently find that wage spending explains most of the variation in league position over several seasons, so a low-budget champion is the exception that the pattern allows for. Mjällby's own following year makes the point: after the coach and several key players left, they went out of Champions League qualifying, slid to within a point of the relegation play-off place and sacked their coach in September 2026. Wage bills still decide who can keep a winning team together."
+    },
+    {
+      "id": "d8",
+      "type": "borrowed_sentence",
+      "quote": "He will win who knows when to fight and when not to fight.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "where my argument begin",
+      "correction": "where my argument begins"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "the sum of it's parts",
+      "correction": "the sum of its parts"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "The market notice everything",
+      "correction": "The market notices everything"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Mjällby won the league on a small budget, so wage bills do not matter and the bigger clubs are simply wasting their money.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Mjällby clinched the title on 20 October 2025 by winning 2-0 at IFK Göteborg",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d1; a rebuttal disputing this fact must be discarded. Source: https://en.wikipedia.org/wiki/2025_Allsvenskan"
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "they lost only once in thirty league matches",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d2 (23 wins, 6 draws, 1 defeat). Source: https://en.wikipedia.org/wiki/2025_Allsvenskan"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Elliot Stroud scored after 19 minutes",
+      "note": "[needs-source] True: Stroud 19', Bergström 45' in the 2-1 win over Hammarby. Source: https://en.wikipedia.org/wiki/2025%E2%80%9326_Svenska_Cupen"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Mjällby lost 4-1 on aggregate to Slovan Bratislava in the third qualifying round of the Champions League",
+      "note": "[needs-source] True: 1-2 at home, 0-2 away (second leg 11 August 2026). Source: https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Andreas Brännström took over on 8 September 2026",
+      "note": "[needs-source] True: Brännström, who also coached Mjällby in 2022, replaced Aksum on 8 September 2026. Source: https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF"
+    }
+  ]
+}

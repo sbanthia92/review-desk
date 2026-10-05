@@ -1,0 +1,122 @@
+{
+  "id": "35-postgres-18-upgrade",
+  "title": "What a year on PostgreSQL 18 taught us",
+  "genre": "tech_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "PostgreSQL 18 was released on 18 September 2025",
+      "correction": "PostgreSQL 18 was released on 25 September 2025.",
+      "note": "[needs-source] True value: 2025-09-25. Source: https://www.postgresql.org/docs/release/18.0/"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "io_workers, which defaults to 8",
+      "correction": "The default value of io_workers in PostgreSQL 18 is 3.",
+      "note": "[needs-source] [multi-part] [secondary-source] The first half of the sentence (io_method defaults to worker) is true; only the io_workers default is wrong. True value: 3. Top results may be blog posts; the primary source is the configuration reference. Source: https://www.postgresql.org/docs/18/runtime-config-resource.html"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "The release raised the default of effective_io_concurrency to 32",
+      "correction": "PostgreSQL 18 raised the default of effective_io_concurrency (and of maintenance_io_concurrency) to 16.",
+      "note": "[needs-source] True value: 16. Source: https://www.postgresql.org/docs/release/18.0/ and https://www.postgresql.org/docs/18/runtime-config-resource.html"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "cancel request keys are now 128 bits long",
+      "correction": "PostgreSQL 18 makes cancel request keys 256 bits long when both sides support wire protocol version 3.2.",
+      "note": "[needs-source] [multi-part] The first half of the sentence (wire protocol version 3.2 is introduced in this release) is true; only the key length is wrong. True value: 256 bits. Source: https://www.postgresql.org/docs/release/18.0/"
+    },
+    {
+      "id": "d5",
+      "type": "wrong_fact",
+      "quote": "18.6, shipped on 20 August 2026",
+      "correction": "PostgreSQL 18.6 was released on 13 August 2026.",
+      "note": "[needs-source] True value: 2026-08-13. Source: https://www.postgresql.org/docs/release/18.6/"
+    },
+    {
+      "id": "d6",
+      "type": "unsupported",
+      "quote": "Asynchronous I/O makes sequential scans three times faster on any hardware."
+    },
+    {
+      "id": "d7",
+      "type": "weak_argument",
+      "quote": "Version 18 has been out for a year, so it has no serious bugs left and you can upgrade without testing.",
+      "known_rebuttal": "Age does not make a release bug-free, and the project's own record says so: minor releases of version 18 were still shipping fixes in August 2026, and the 18.6 notes record that 18.5 was never released because of a regression. More importantly, the risk in a major upgrade is mostly in your own workload, not in the server. Version 18 changes behaviour that applications and tooling can depend on, including data checksums on by default (which blocks pg_upgrade against an old cluster without them), VACUUM and ANALYZE processing inheritance children, and MD5 password deprecation warnings, so an upgrade needs a rehearsal against a copy of production whatever the release's age."
+    },
+    {
+      "id": "d8",
+      "type": "borrowed_sentence",
+      "quote": "It is a capital mistake to theorise before one has data.",
+      "source_url": "https://www.gutenberg.org/ebooks/1661",
+      "source_title": "The Adventures of Sherlock Holmes by Arthur Conan Doyle"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "they matters more than they look",
+      "correction": "they matter more than they look"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "Waiting has it's own cost",
+      "correction": "Waiting has its own cost"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Version 18 has been out for a year, so it has no serious bugs left and you can upgrade without testing.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The minor releases has kept coming, and the latest of them, 18.6, shipped on 20 August 2026.",
+      "note": "'has kept' should be 'have kept', but the sentence carries a wrong release date, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The default io_method is worker",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d2; a rebuttal disputing this fact must be discarded. Source: https://www.postgresql.org/docs/18/runtime-config-resource.html"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "initdb now enables data checksums by default",
+      "note": "[needs-source] True: version 18 changed the initdb default, with --no-data-checksums to disable, and pg_upgrade requires matching checksum settings. Source: https://www.postgresql.org/docs/release/18.0/"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "It introduces wire protocol version 3.2",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d4; a rebuttal disputing this fact must be discarded. Source: https://www.postgresql.org/docs/release/18.0/"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "PostgreSQL 14 stops receiving fixes on 12 November 2026",
+      "note": "[needs-source] True as announced by the project. Source: https://www.postgresql.org/ (home page notice)"
+    },
+    {
+      "id": "c7",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "PostgreSQL 19 Beta 4 came out on 24 September 2026",
+      "note": "[needs-source] True: announced on the project's home page on 2026-09-24. Source: https://www.postgresql.org/"
+    }
+  ]
+}
