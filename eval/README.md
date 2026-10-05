@@ -597,3 +597,90 @@ Seeded as true (must hold): "PostgreSQL 14 stops receiving fixes on 12 November 
 Seeded as true (must hold): "PostgreSQL 19 Beta 4 came out on 24 September 2026" (source: <https://www.postgresql.org/>).
 
 Borrowed: "It is a capital mistake to theorise before one has data." from The Adventures of Sherlock Holmes by Arthur Conan Doyle (<https://www.gutenberg.org/ebooks/1661>).
+
+### 36-wsl-fourteen-teams
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | back in the top tier of the women's game after 16 years away | Charlton returned to the top tier after 18 years away; they were relegated from the FA Women's Premier League National Division in 2008. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d2 | drew 39,853 to the Emirates Stadium | The attendance for Arsenal 1-1 Manchester United on 19 September 2026 was 29,853. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d3 | London City Lionesses beat Manchester United 3-1 in the opening round | London City Lionesses beat Manchester United 2-1 in the opening round of the 2026-27 season. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d4 | with Victoria Pelova scoring a hat-trick | Olivia Holdt scored the hat-trick in Tottenham's 7-0 win at Crystal Palace on 20 September 2026; Victoria Pelova did not. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+
+Seeded as true (must hold):
+
+- "beating Leicester City on penalties in a one-off play-off on 23 May 2026" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "only 1,274 people watched Crystal Palace beat Everton 1-0 on 6 September" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "Manchester United appointed Eva Olid as head coach on 5 August 2026" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "Arsenal's 1-1 draw with Manchester United on 19 September" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+
+Borrowed: "Things do not change; we change." from Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau (<https://www.gutenberg.org/ebooks/205>).
+
+### 37-metlife-final
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | Emiliano Martínez made 9 saves | Emiliano Martínez made 11 saves in the 2026 final, a record for a goalkeeper in a World Cup final. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d2 | A crowd of 82,663 | The attendance at the 2026 World Cup final at MetLife Stadium was 80,663. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d3 | Enzo Fernández was sent off in the 82nd minute | Enzo Fernández was sent off in the third minute of second-half stoppage time (90+3); the 82nd minute was his first yellow card. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d4 | Ferran Torres scored in the 109th minute | Ferran Torres scored the only goal of the 2026 World Cup final in the 106th minute. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d5 | the interval lasted 22 minutes | The half-time break at the 2026 final lasted 27 minutes and 22 seconds, against the 15-minute limit in the Laws of the Game. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+
+Seeded as true (must hold):
+
+- "Argentina failed to register a single shot in regulation time, which had never happened in a World Cup final before." (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "Spain had beaten France 2-0 in the semi-final" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "they went into the final unbeaten in 37 matches" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "Spain had 65% of the ball and twenty shots" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+
+Borrowed: "The clever combatant looks to the effect of combined energy, and does not require too much from individuals." from The Art of War by Sun Tzu, translated by Lionel Giles (<https://www.gutenberg.org/ebooks/132>).
+
+### 38-votes-at-sixteen
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | its third reading by 431 votes to 102 | The Commons passed the Representation of the People Bill at third reading on 2 September 2026 by 411 votes to 102. | <https://www.beyondthevote.co.uk/division/2416> |
+| d2 | lost by 146 votes to 128 | The 2005 private member's bill from Stephen Williams was defeated by 136 votes to 128. | <https://en.wikipedia.org/wiki/Voting_age> |
+| d3 | Malta's parliament voted unanimously for the same change in March 2016 | The Maltese parliament voted unanimously on 5 March 2018 to lower the voting age to 16 for general elections, making Malta the second EU member state to do so. | <https://en.wikipedia.org/wiki/Voting_age> |
+| d4 | an Act that received royal assent on 15 January 2021 | The Senedd and Elections (Wales) Act 2020 received royal assent on 15 January 2020. | <https://en.wikipedia.org/wiki/Senedd_and_Elections_(Wales)_Act_2020> |
+
+Seeded as true (must hold):
+
+- "In 1999 an amendment from Simon Hughes to lower the voting age was defeated by 434 votes to 36." (<https://en.wikipedia.org/wiki/Voting_age>)
+- "a Conservative amendment to block the Bill at second reading was defeated by 410 votes to 105 on 2 March" (<https://www.beyondthevote.co.uk/division/2267>)
+- "the House of Keys approved the change by 19 votes to 4" (<https://en.wikipedia.org/wiki/Voting_age>)
+- "Austria followed in 2007 and became the first member of the European Union to do so" (<https://en.wikipedia.org/wiki/Voting_age>)
+
+Borrowed: "Every one is degraded, whether aware of it or not, when other people, without consulting him, take upon themselves unlimited power to regulate his destiny." from Considerations on Representative Government by John Stuart Mill (<https://www.gutenberg.org/ebooks/5669>).
+
+### 39-logical-replication-reporting
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | `max_slot_wal_keep_size` defaults to 1 GB | max_slot_wal_keep_size defaults to -1, which means replication slots may retain an unlimited amount of WAL; a stalled subscriber can fill the primary's disk unless a limit is set. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d2 | `wal_sender_timeout` defaults to 30 seconds | wal_sender_timeout defaults to 60 seconds. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d3 | It defaults to one day | idle_replication_slot_timeout defaults to zero, which disables the idle-timeout invalidation of replication slots; idle slots are kept until someone drops them. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d4 | The default for `max_sync_workers_per_subscription` is 4 | The default for max_sync_workers_per_subscription is 2 (4 is the default of max_logical_replication_workers). | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+
+Seeded as true (must hold):
+
+- "The default for `max_replication_slots` is 10" (<https://www.postgresql.org/docs/18/runtime-config-replication.html>)
+- "`checkpoint_timeout` is five minutes by default" (<https://www.postgresql.org/docs/18/runtime-config-wal.html>)
+- "the default for `max_logical_replication_workers` is 4" (<https://www.postgresql.org/docs/18/runtime-config-replication.html>)
+- "From PostgreSQL 18 the default `streaming` option for a new subscription is `parallel`" (<https://www.postgresql.org/docs/18/sql-createsubscription.html>)
+
+### 40-hpa-ingest-workers
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | That version was released on 19 August 2026 | Kubernetes v1.37 (Garhwal) was released on 26 August 2026. | <https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/> |
+| d2 | The autoscaler evaluates its metrics every 30 seconds by default | The HorizontalPodAutoscaler controller's default sync period (--horizontal-pod-autoscaler-sync-period) is 15 seconds. | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+| d3 | The per-autoscaler `tolerance` field has been stable since v1.36 | Configurable HPA tolerance (the HPAConfigurableTolerance feature) has been stable since Kubernetes v1.37; it was first available in v1.33. | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+| d4 | By default the stabilization window for scaling down is 600 seconds | The default stabilization window for scaling down is 300 seconds (5 minutes). | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+
+Seeded as true (must hold):
+
+- "it is the release in which the `metrics.k8s.io` API graduated to Stable" (<https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/>)
+- "within a tolerance of 10% by default" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)
+- "the default policy adds at most 4 pods or 100% of the current replicas every 15 seconds" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)
+- "the CPU initialization period, which is 5 minutes by default" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)

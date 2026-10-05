@@ -1,0 +1,120 @@
+{
+  "id": "39-logical-replication-reporting",
+  "title": "Design: A reporting database fed by logical replication",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "`max_slot_wal_keep_size` defaults to 1 GB",
+      "correction": "max_slot_wal_keep_size defaults to -1, which means replication slots may retain an unlimited amount of WAL; a stalled subscriber can fill the primary's disk unless a limit is set.",
+      "note": "[needs-source] [secondary-source] True value: -1 (unlimited); 1 GB is the default of max_wal_size, a different setting. Top results are likely blog posts on slot bloat; the primary source is the PostgreSQL documentation. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "`wal_sender_timeout` defaults to 30 seconds",
+      "correction": "wal_sender_timeout defaults to 60 seconds.",
+      "note": "[needs-source] True value: 60 seconds. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "It defaults to one day",
+      "correction": "idle_replication_slot_timeout defaults to zero, which disables the idle-timeout invalidation of replication slots; idle slots are kept until someone drops them.",
+      "note": "[needs-source] [multi-part] True value: 0 (disabled). The neighbouring claims are true: the setting is new in PostgreSQL 18 and invalidation happens at a checkpoint. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "The default for `max_sync_workers_per_subscription` is 4",
+      "correction": "The default for max_sync_workers_per_subscription is 2 (4 is the default of max_logical_replication_workers).",
+      "note": "[needs-source] True value: 2. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "The reporting queries will run three times faster on the new server."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "Logical replication has been part of PostgreSQL since version 10, so it is mature and we do not need to monitor replication lag.",
+      "known_rebuttal": "The age of a feature does not remove the need to watch it. A logical replication slot makes the primary keep every WAL segment the subscriber has not confirmed, and by default there is no limit on that retention, so a subscriber that stalls for a day can fill the primary's disk and take down the very database this design is meant to protect. Apply also stops on the first conflict or on a schema change that was not applied to the subscriber, and it stays stopped until someone notices. Lag and slot retention (pg_replication_slots, pg_stat_subscription) are the standard things to alert on, and the design's own goal of being under one minute behind cannot be checked without them."
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "less then one minute",
+      "correction": "less than one minute"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "The initial copy of each table are done",
+      "correction": "The initial copy of each table is done"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "have not been written",
+      "correction": "has not been written"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "If the row counts differs",
+      "correction": "If the row counts differ"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "The procedure for applying migrations to the subscriber have not been written.",
+      "note": "Copy editor (grammar) and structure reviewer (DDL is not replicated, so an unwritten migration procedure is a gap that will break replication) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Logical replication has been part of PostgreSQL since version 10, so it is mature and we do not need to monitor replication lag.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "`max_slot_wal_keep_size` defaults to 1 GB, so a stalled subscriber can never fill the primary's disk and we does not need to set it.",
+      "note": "'we does not' should be 'we do not', but the sentence carries a wrong default, so the fact finding wins."
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "The default for `max_replication_slots` is 10",
+      "note": "[needs-source] True: max_replication_slots defaults to 10. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "`checkpoint_timeout` is five minutes by default",
+      "note": "[needs-source] True: checkpoint_timeout defaults to five minutes, and idle-slot invalidation happens during a checkpoint. Source: https://www.postgresql.org/docs/18/runtime-config-wal.html"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "the default for `max_logical_replication_workers` is 4",
+      "note": "[needs-source] True: max_logical_replication_workers defaults to 4. Source: https://www.postgresql.org/docs/18/runtime-config-replication.html"
+    },
+    {
+      "id": "c7",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "From PostgreSQL 18 the default `streaming` option for a new subscription is `parallel`",
+      "note": "[needs-source] True: PostgreSQL 18 changed the default CREATE SUBSCRIPTION streaming option from off to parallel. Source: https://www.postgresql.org/docs/18/sql-createsubscription.html"
+    }
+  ]
+}
