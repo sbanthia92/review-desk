@@ -60,6 +60,11 @@ ACCEPTED_ROLES: dict[DefectType, frozenset[Role]] = {
 }
 """Item roles that count as catching each defect type."""
 
+NEEDS_SOURCE_TAG = "[needs-source]"
+"""Answer-key tag for facts that cannot be judged from memory."""
+
+FACT_SEVERITIES = frozenset({Severity.FACTUAL_ERROR, Severity.UNSUPPORTED})
+
 SPAN_SLACK_CHARS = 80
 SPAN_MAX_FACTOR = 4
 MAX_REBUTTAL_CANDIDATES = 3
@@ -85,6 +90,11 @@ class DefectOutcome(BaseModel):
     matched_item_ids: list[str] = Field(default_factory=list)
     rebuttal_score: int | None = None
     """Best judge score (1–5) among matched rebuttals; weak arguments only."""
+    needs_source: bool = False
+    """The answer key tags this defect ``[needs-source]``: it cannot be caught
+    from memory, only by checking a source."""
+    sourced: bool = False
+    """Caught by at least one item that cites a well-formed source."""
 
 
 class ConflictOutcome(BaseModel):
@@ -118,6 +128,14 @@ class DocScore(BaseModel):
     citations_judged: int = 0
     citations_supported: int = 0
     conflicts: list[ConflictOutcome] = Field(default_factory=list)
+    fact_items: int = 0
+    """Must-fix fact findings (factual error or unsupported)."""
+    fact_items_sourced: int = 0
+    """Of those, the ones citing at least one well-formed source."""
+    true_facts: int = 0
+    """Facts the answer key seeds as true (``rebuttal_on_verified_fact`` spans)."""
+    true_facts_flagged: int = 0
+    """Of those, the ones a factual-error finding wrongly flags."""
     usage: Usage = Field(default_factory=Usage)
     seconds: float = 0.0
     judged: bool = False
@@ -350,6 +368,8 @@ async def score_report(
             type=defect.type,
             caught=bool(hits),
             matched_item_ids=[i.id for i in hits],
+            needs_source=NEEDS_SOURCE_TAG in defect.note,
+            sourced=any(evidence_wellformed(e) for i in hits for e in i.evidence),
         )
         if judge is not None and hits and defect.type is DefectType.WEAK_ARGUMENT:
             scores = [
@@ -393,6 +413,19 @@ async def score_report(
             if supported is not None:
                 score.citations_judged += 1
                 score.citations_supported += int(supported)
+
+    fact_items = [i for i in items if i.kind is ItemKind.FINDING and i.severity in FACT_SEVERITIES]
+    score.fact_items = len(fact_items)
+    score.fact_items_sourced = sum(
+        any(evidence_wellformed(e) for e in i.evidence) for i in fact_items
+    )
+    wrong_items = [i for i in fact_items if i.severity is Severity.FACTUAL_ERROR]
+    for defect in seeded.of_type(DefectType.CONFLICT):
+        if defect.rule is ConflictRule.REBUTTAL_ON_VERIFIED_FACT:
+            score.true_facts += 1
+            score.true_facts_flagged += any(
+                span_matches(s, defect.located) for i in wrong_items for s in i.spans
+            )
 
     score.conflicts = [check_conflict(d, report) for d in seeded.of_type(DefectType.CONFLICT)]
     return score

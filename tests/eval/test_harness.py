@@ -403,3 +403,85 @@ def test_cli_import_specs_and_baseline(capsys: pytest.CaptureFixture[str]) -> No
     assert code == 0 and "baseline" in out and "spec" in out
     pipes = resolve_pipelines([f"{mod}:fake_pipeline_spec"], DATASET, None)
     assert list(pipes) == ["fake_pipeline_spec"]
+
+
+# -- checkpointing, fatal errors and source-based metrics --------------------------
+
+
+async def test_fatal_provider_error_stops_the_run_and_keeps_scores(tmp_path: Path) -> None:
+    import json
+
+    from eval.harness import is_fatal, run_eval
+    from reviewdesk.contracts import AuthError, Report
+
+    dataset = load_dataset()[:4]
+    calls: list[str] = []
+
+    async def flaky(doc: Any, profile: Any, on_progress: Any) -> Report:
+        calls.append(doc.id)
+        if len(calls) >= 3:
+            raise AuthError("anthropic account has insufficient credit")
+        return Report(document_id=doc.id, profile=profile, verdict_line="ok")
+
+    checkpoint = tmp_path / "run.partial.jsonl"
+    results = await run_eval({"flaky": flaky}, dataset, checkpoint=checkpoint)
+
+    assert results.aborted is not None and results.aborted.startswith("AuthError")
+    assert len(calls) == 3  # the fourth document was never started
+    assert [s.doc_id for s in results.scores] == [d.id for d in dataset[:2]]
+    assert "INCOMPLETE" in results.table()
+    lines = [json.loads(line) for line in checkpoint.read_text().splitlines()]
+    assert len(lines) == 3  # every finished run is on disk, including the failed one
+    assert is_fatal(lines[-1]["error"]) and not is_fatal("timeout") and not is_fatal(None)
+
+
+async def test_ordinary_failure_does_not_stop_the_run() -> None:
+    from eval.harness import run_eval
+
+    dataset = load_dataset()[:3]
+
+    async def broken(doc: Any, profile: Any, on_progress: Any) -> Any:
+        raise RuntimeError("boom")
+
+    results = await run_eval({"broken": broken}, dataset)
+    assert results.aborted is None
+    assert len(results.scores) == 3 and all(s.error for s in results.scores)
+
+
+async def test_source_metrics_and_missed_list() -> None:
+    from eval.dataset import DefectType
+    from eval.harness import run_eval
+    from eval.metrics import NEEDS_SOURCE_TAG
+    from eval.results import run_metrics
+    from reviewdesk.contracts import AgentName, Evidence, Finding, Report, Severity
+
+    seeded = load_dataset()[0]
+    wrong = seeded.of_type(DefectType.WRONG_FACT)[0]
+    wrong.note = f"{NEEDS_SOURCE_TAG} test"
+    source = Evidence(url="https://example.org/a", title="A", excerpt="the true value")
+
+    def reviewer(evidence: list[Any]) -> Any:
+        async def run(doc: Any, profile: Any, on_progress: Any) -> Report:
+            finding = Finding(
+                agent=AgentName.FACTCHECK,
+                severity=Severity.FACTUAL_ERROR,
+                span=wrong.located,
+                message="wrong",
+                evidence=evidence,
+            )
+            return Report(document_id=doc.id, profile=profile, verdict_line="x", must_fix=[finding])
+
+        return run
+
+    results = await run_eval({"sourced": reviewer([source]), "memory": reviewer([])}, [seeded])
+    by_pipeline = {s.pipeline: s for s in results.scores}
+    sourced, memory = run_metrics([by_pipeline["sourced"]]), run_metrics([by_pipeline["memory"]])
+    # Both catch the planted error; only one can show where it learned the truth.
+    assert sourced["recall.needs_source"] == memory["recall.needs_source"] == 1.0
+    assert sourced["fact_findings_sourced"] == 1.0 and memory["fact_findings_sourced"] == 0.0
+    n_wrong = len(seeded.of_type(DefectType.WRONG_FACT))
+    assert sourced["recall.wrong_fact_sourced"] == 1 / n_wrong
+    assert memory["recall.wrong_fact_sourced"] == 0.0
+    assert sourced["true_facts_flagged"] == 0.0
+    missed = results.missed()["sourced"]
+    assert missed and all(wrong.id not in entry.split(" ")[0].split(":")[1] for entry in missed)

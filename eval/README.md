@@ -60,6 +60,11 @@ original and invented) and `<id>.json` (the answer key):
     be secondary (blog posts, explainers, news retellings), and the note names
     the primary source (an RFC, a paper, official documentation, the laws of
     the game) that a checker should follow through to.
+  - `[needs-source]`: the fact is obscure or recent enough that it cannot
+    be judged from memory; only checking a source settles it. The note gives
+    the true value and the URL it was verified against. Documents 31–40 are
+    built around these, because a single-prompt reviewer catches famous
+    errors (documents 1–30) from memory as well as the pipeline does.
 
 ## The seeded set
 
@@ -122,6 +127,10 @@ Pooled over documents per run, then mean ± stdev across repeats.
 | Metric | Definition |
 | --- | --- |
 | Recall per type | caught defects / seeded defects of that type |
+| Recall: wrong facts that need a source | caught / seeded `wrong_fact` defects tagged `[needs-source]` |
+| Wrong facts caught with a cited source | `wrong_fact` defects caught by an item citing a well-formed source / all `wrong_fact` defects. A reviewer working from memory scores 0 |
+| Fact findings that cite a source | must-fix fact findings (factual error, unsupported) with at least one well-formed source / all of them |
+| True facts called wrong | facts seeded as true (`rebuttal_on_verified_fact` spans) that a factual-error finding flags / all of them (lower is better) |
 | Precision (matched + judge) | (matched items + unmatched items the judge calls real) / (matched + judged) |
 | Precision (matched only) | matched items / all items (lower bound, no judge) |
 | Citation validity | cited (url, excerpt) pairs the judge says support the statement / judged pairs; malformed ones count as unsupported |
@@ -129,6 +138,11 @@ Pooled over documents per run, then mean ± stdev across repeats.
 | Rebuttal strength | judge score 1–5 of the best matched rebuttal (up to 3 tried) vs the known strongest rebuttal |
 | Conflict accuracy | resolved / (resolved + violated); `not_triggered` conflicts are excluded and reported as "Conflicts triggered" |
 | Cost and latency | tokens, search and LLM calls from `Report.usage`; wall-clock seconds measured by the harness |
+
+A run writes each score to `eval/results/<stamp>.partial.jsonl` as it
+completes, and stops early (exit code 3, results kept) if the provider rejects
+the key or the account has no credit. The CLI also lists every missed defect
+per pipeline.
 
 Conflict checks:
 
