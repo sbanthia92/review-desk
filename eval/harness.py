@@ -57,8 +57,13 @@ async def run_one(
     judge: EvalJudge | None = None,
     time_limit: float | None = None,
     auto_profile: bool = False,
+    reports_dir: Path | None = None,
 ) -> DocScore:
-    """Run one pipeline once on one document and score the report."""
+    """Run one pipeline once on one document and score the report.
+
+    With ``reports_dir``, the report itself is saved there as
+    ``<pipeline>-<doc id>-r<repeat>.json`` so findings can be inspected later.
+    """
     doc = seeded.document
     profile = Profile.AUTO if auto_profile else seeded.profile
     error: str | None = None
@@ -69,6 +74,10 @@ async def run_one(
         error = "timeout" if isinstance(exc, TimeoutError) else _error_text(exc)
         report = Report(document_id=doc.id, profile=seeded.profile, verdict_line="(failed)")
     seconds = time.monotonic() - started
+    if reports_dir is not None and error is None:
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        path = reports_dir / f"{name}-{seeded.id}-r{repeat}.json"
+        path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
     return await score_report(
         seeded, report, pipeline=name, repeat=repeat, seconds=seconds, error=error, judge=judge
     )
@@ -85,6 +94,7 @@ async def run_eval(
     auto_profile: bool = False,
     on_score: Callable[[DocScore], None] | None = None,
     checkpoint: Path | None = None,
+    reports_dir: Path | None = None,
 ) -> EvalResults:
     """Run every pipeline ``repeats`` times over ``dataset`` and collect scores.
 
@@ -117,6 +127,7 @@ async def run_eval(
                 judge=judge,
                 time_limit=time_limit,
                 auto_profile=auto_profile,
+                reports_dir=reports_dir,
             )
         if is_fatal(score.error):
             aborted.append(score.error or "fatal error")

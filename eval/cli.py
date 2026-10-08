@@ -130,10 +130,11 @@ def cmd_run(args: argparse.Namespace) -> int:
         raise CLIError("--judge needs --llm module:factory")
     pipelines = resolve_pipelines(args.pipeline or ["oracle"], dataset, llm)
     judge = LLMJudge(llm) if args.judge and llm is not None else None
-    checkpoint = None
+    checkpoint = reports_dir = None
     if not args.no_save:
         stamp = utcnow().strftime("%Y%m%dT%H%M%SZ")
         checkpoint = args.out / f"{stamp}.partial.jsonl"
+        reports_dir = args.out / f"{stamp}-reports"
     results = asyncio.run(
         run_eval(
             pipelines,
@@ -145,6 +146,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             auto_profile=args.auto_profile,
             on_score=None if args.quiet else _progress,
             checkpoint=checkpoint,
+            reports_dir=reports_dir,
         )
     )
     print(results.table())

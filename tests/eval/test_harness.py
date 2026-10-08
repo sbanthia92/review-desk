@@ -485,3 +485,19 @@ async def test_source_metrics_and_missed_list() -> None:
     assert sourced["true_facts_flagged"] == 0.0
     missed = results.missed()["sourced"]
     assert missed and all(wrong.id not in entry.split(" ")[0].split(":")[1] for entry in missed)
+
+
+async def test_reports_are_saved_for_inspection(tmp_path: Path) -> None:
+    from eval.harness import run_eval
+    from reviewdesk.contracts import Report
+
+    dataset = load_dataset()[:2]
+
+    async def reviewer(doc: Any, profile: Any, on_progress: Any) -> Report:
+        return Report(document_id=doc.id, profile=profile, verdict_line="ok")
+
+    await run_eval({"p": reviewer}, dataset, reports_dir=tmp_path / "reports")
+    saved = sorted(p.name for p in (tmp_path / "reports").iterdir())
+    assert saved == [f"p-{d.id}-r0.json" for d in dataset]
+    first = Report.model_validate_json((tmp_path / "reports" / saved[0]).read_text())
+    assert first.document_id == dataset[0].id
