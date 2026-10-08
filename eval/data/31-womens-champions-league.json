@@ -1,0 +1,114 @@
+{
+  "id": "31-womens-champions-league",
+  "title": "The Women's Champions League has a Barcelona problem",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "The official attendance was 26,258",
+      "correction": "The attendance at the 2026 UEFA Women's Champions League final in Oslo was 24,258.",
+      "note": "[needs-source] True value: 24,258 (Ullevaal Stadion, 23 May 2026). Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "Alexia Putellas added two more at the very end",
+      "correction": "Salma Paralluelo scored Barcelona's third and fourth goals (90' and 90+3') in the 2026 final; Alexia Putellas did not score.",
+      "note": "[needs-source] [multi-part] The first half of the sentence (Ewa Pajor scoring twice after the break) is true; only the scorer of the last two goals is wrong. True value: Salma Paralluelo, 90' and 90+3'. Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "OL Lyonnes knocked out Chelsea 4-3 on aggregate in the other semi-final",
+      "correction": "OL Lyonnes beat Arsenal 4-3 on aggregate (1-2 away, 3-1 at home) in the 2025-26 semi-final, not Chelsea.",
+      "note": "[needs-source] [multi-part] The aggregate score (4-3) and the second fact in the sentence (a twelfth final) are true; only the opponent is wrong. True value: Arsenal. Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "Arsenal beat them 1-0 in Bilbao",
+      "correction": "Arsenal beat Barcelona 1-0 in the 2025 final at the Estádio José Alvalade in Lisbon; Bilbao hosted the 2024 final.",
+      "note": "[needs-source] [multi-part] The score and the scorer in the same sentence are true; only the host city is wrong. True value: Lisbon (Estádio José Alvalade, 24 May 2025). Source: https://en.wikipedia.org/wiki/2025_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Television audiences for the final have fallen by a third since 2022."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "One club keeps winning the trophy, so the competition is broken and UEFA must cap what every club can spend.",
+      "known_rebuttal": "The premise is overstated and the remedy does not follow from it. Arsenal beat Barcelona in the 2025 final, and Barcelona's 2026 semi-final against Bayern Munich was level after the first leg and finished 5-3 on aggregate. Dominant spells have ended before without a spending cap: Lyon won eight titles, including five in a row, and that run was broken by clubs that invested more, not by a rule that stopped anyone investing. A cap would also limit the investment by other clubs that is most likely to close the gap."
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "there was plenty of people",
+      "correction": "there were plenty of people"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "deserves there weekends",
+      "correction": "deserves their weekends"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "the less clubs will think",
+      "correction": "the fewer clubs will think"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "The one interruption come a year earlier, when Arsenal beat them 1-0 in Bilbao",
+      "note": "'come' should be 'came', but the clause carries a wrong host city, so the fact finding wins."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "One club keeps winning the trophy, so the competition is broken and UEFA must cap what every club can spend.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Barcelona beat OL Lyonnes 4-0 at the Ullevaal Stadion in Oslo on 23 May 2026",
+      "note": "[needs-source] True as stated; a rebuttal disputing this fact must be discarded. Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Barcelona put twelve goals past Real Madrid over the two legs of the quarter-final",
+      "note": "[needs-source] True: Barcelona beat Real Madrid 12-2 on aggregate (6-2 away, 6-0 at home). Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "They had needed a 5-3 aggregate win over Bayern Munich to get there",
+      "note": "[needs-source] True: 1-1 away, 4-2 at home in the 2025-26 semi-final. Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "a single goal from Stina Blackstenius in the 74th minute",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d4; a rebuttal disputing this fact must be discarded. Source: https://en.wikipedia.org/wiki/2025_UEFA_Women%27s_Champions_League_final"
+    },
+    {
+      "id": "c7",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "they were playing in their twelfth final, more than any other club",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d3 (a record-extending twelfth final for OL Lyonnes). Source: https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final"
+    }
+  ]
+}

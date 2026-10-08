@@ -16,7 +16,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from eval.dataset import RECALL_TYPES
+from eval.dataset import RECALL_TYPES, DefectType
 from eval.metrics import ConflictStatus, DocScore
 from reviewdesk.contracts import utcnow
 
@@ -27,6 +27,10 @@ COUNT = "count"
 METRICS: list[tuple[str, str, str]] = [
     *[(f"recall.{t.value}", f"Recall: {t.value}", RATIO) for t in RECALL_TYPES],
     ("recall.overall", "Recall: overall", RATIO),
+    ("recall.needs_source", "Recall: wrong facts that need a source", RATIO),
+    ("recall.wrong_fact_sourced", "Wrong facts caught with a cited source", RATIO),
+    ("fact_findings_sourced", "Fact findings that cite a source", RATIO),
+    ("true_facts_flagged", "True facts called wrong", RATIO),
     ("precision", "Precision (matched + judge)", RATIO),
     ("precision_matched", "Precision (matched only)", RATIO),
     ("citation_validity", "Citation validity (judge)", RATIO),
@@ -58,6 +62,18 @@ def run_metrics(scores: list[DocScore]) -> dict[str, float | None]:
         caught_all += caught
         total_all += len(outcomes)
     out["recall.overall"] = _ratio(caught_all, total_all)
+    wrong = [o for s in scores for o in s.defects if o.type is DefectType.WRONG_FACT]
+    hard = [o for o in wrong if o.needs_source]
+    out["recall.needs_source"] = _ratio(sum(o.caught for o in hard), len(hard))
+    out["recall.wrong_fact_sourced"] = _ratio(
+        sum(o.caught and o.sourced for o in wrong), len(wrong)
+    )
+    out["fact_findings_sourced"] = _ratio(
+        sum(s.fact_items_sourced for s in scores), sum(s.fact_items for s in scores)
+    )
+    out["true_facts_flagged"] = _ratio(
+        sum(s.true_facts_flagged for s in scores), sum(s.true_facts for s in scores)
+    )
 
     items = sum(s.items for s in scores)
     matched = sum(s.items_matched for s in scores)
@@ -124,6 +140,22 @@ class EvalResults(BaseModel):
     judged: bool
     started_at: datetime = Field(default_factory=utcnow)
     scores: list[DocScore] = Field(default_factory=list)
+    aborted: str | None = None
+    """Why the run stopped early (e.g. the provider rejected the key), if it did."""
+
+    def missed(self) -> dict[str, list[str]]:
+        """Pipeline → ``doc:defect (type)`` for every seeded defect a run missed."""
+        out: dict[str, list[str]] = {p: [] for p in self.pipelines}
+        for s in self.scores:
+            if s.error is not None:
+                continue
+            for o in s.defects:
+                if not o.caught:
+                    tag = ", needs source" if o.needs_source else ""
+                    out.setdefault(s.pipeline, []).append(
+                        f"{s.doc_id}:{o.defect_id} ({o.type.value}{tag}) r{s.repeat}"
+                    )
+        return out
 
     def per_run(self) -> dict[str, list[dict[str, float | None]]]:
         """Pipeline → one metrics dict per repeat."""
@@ -177,4 +209,7 @@ def render_table(results: EvalResults) -> str:
         f"{len(results.doc_ids)} documents x {results.repeats} repeat(s); "
         f"judge {'on' if results.judged else 'off'}; mean ± stdev across repeats."
     )
+    if results.aborted:
+        done = len(results.scores)
+        caption += f" INCOMPLETE: stopped early after {done} run(s) ({results.aborted})."
     return "\n".join([caption, "", line(header), sep, *(line(r) for r in rows)])

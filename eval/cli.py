@@ -35,7 +35,7 @@ from eval.fake_pipeline import builtin_pipelines
 from eval.harness import RESULTS_DIR, run_eval, save_results
 from eval.judge import LLMJudge
 from eval.metrics import DocScore
-from reviewdesk.contracts import LLMClient, ReviewPipeline
+from reviewdesk.contracts import LLMClient, ReviewPipeline, utcnow
 
 
 class CLIError(Exception):
@@ -130,6 +130,11 @@ def cmd_run(args: argparse.Namespace) -> int:
         raise CLIError("--judge needs --llm module:factory")
     pipelines = resolve_pipelines(args.pipeline or ["oracle"], dataset, llm)
     judge = LLMJudge(llm) if args.judge and llm is not None else None
+    checkpoint = reports_dir = None
+    if not args.no_save:
+        stamp = utcnow().strftime("%Y%m%dT%H%M%SZ")
+        checkpoint = args.out / f"{stamp}.partial.jsonl"
+        reports_dir = args.out / f"{stamp}-reports"
     results = asyncio.run(
         run_eval(
             pipelines,
@@ -140,12 +145,25 @@ def cmd_run(args: argparse.Namespace) -> int:
             time_limit=args.timeout,
             auto_profile=args.auto_profile,
             on_score=None if args.quiet else _progress,
+            checkpoint=checkpoint,
+            reports_dir=reports_dir,
         )
     )
     print(results.table())
+    missed = {p: m for p, m in results.missed().items() if m}
+    if missed:
+        print("\nMissed defects:")
+        for pipeline, entries in missed.items():
+            print(f"- {pipeline}: " + "; ".join(entries))
     if not args.no_save:
         json_path, md_path = save_results(results, args.out)
         print(f"\nwrote {json_path} and {md_path}", file=sys.stderr)
+    if results.aborted:
+        print(
+            f"\nerror: run stopped early: {results.aborted}. Results so far were kept.",
+            file=sys.stderr,
+        )
+        return 3
     return 0
 
 

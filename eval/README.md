@@ -60,6 +60,11 @@ original and invented) and `<id>.json` (the answer key):
     be secondary (blog posts, explainers, news retellings), and the note names
     the primary source (an RFC, a paper, official documentation, the laws of
     the game) that a checker should follow through to.
+  - `[needs-source]`: the fact is obscure or recent enough that it cannot
+    be judged from memory; only checking a source settles it. The note gives
+    the true value and the URL it was verified against. Documents 31–40 are
+    built around these, because a single-prompt reviewer catches famous
+    errors (documents 1–30) from memory as well as the pipeline does.
 
 ## The seeded set
 
@@ -122,6 +127,10 @@ Pooled over documents per run, then mean ± stdev across repeats.
 | Metric | Definition |
 | --- | --- |
 | Recall per type | caught defects / seeded defects of that type |
+| Recall: wrong facts that need a source | caught / seeded `wrong_fact` defects tagged `[needs-source]` |
+| Wrong facts caught with a cited source | `wrong_fact` defects caught by an item citing a well-formed source / all `wrong_fact` defects. A reviewer working from memory scores 0 |
+| Fact findings that cite a source | must-fix fact findings (factual error, unsupported) with at least one well-formed source / all of them |
+| True facts called wrong | facts seeded as true (`rebuttal_on_verified_fact` spans) that a factual-error finding flags / all of them (lower is better) |
 | Precision (matched + judge) | (matched items + unmatched items the judge calls real) / (matched + judged) |
 | Precision (matched only) | matched items / all items (lower bound, no judge) |
 | Citation validity | cited (url, excerpt) pairs the judge says support the statement / judged pairs; malformed ones count as unsupported |
@@ -129,6 +138,11 @@ Pooled over documents per run, then mean ± stdev across repeats.
 | Rebuttal strength | judge score 1–5 of the best matched rebuttal (up to 3 tried) vs the known strongest rebuttal |
 | Conflict accuracy | resolved / (resolved + violated); `not_triggered` conflicts are excluded and reported as "Conflicts triggered" |
 | Cost and latency | tokens, search and LLM calls from `Report.usage`; wall-clock seconds measured by the harness |
+
+A run writes each score to `eval/results/<stamp>.partial.jsonl` as it
+completes, and stops early (exit code 3, results kept) if the provider rejects
+the key or the account has no credit. The CLI also lists every missed defect
+per pipeline.
 
 Conflict checks:
 
@@ -480,3 +494,193 @@ Seeded as true (must hold): "an entry is committed once a majority of nodes have
 
 Seeded as true (must hold): "TLS 1.0 and 1.1 were formally deprecated by RFC 8996 in 2021".
 
+
+### 31-womens-champions-league
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | The official attendance was 26,258 | The attendance at the 2026 UEFA Women's Champions League final in Oslo was 24,258. | <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final> |
+| d2 | Alexia Putellas added two more at the very end | Salma Paralluelo scored Barcelona's third and fourth goals (90' and 90+3') in the 2026 final; Alexia Putellas did not score. | <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final> |
+| d3 | OL Lyonnes knocked out Chelsea 4-3 on aggregate in the other semi-final | OL Lyonnes beat Arsenal 4-3 on aggregate (1-2 away, 3-1 at home) in the 2025-26 semi-final, not Chelsea. | <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final> |
+| d4 | Arsenal beat them 1-0 in Bilbao | Arsenal beat Barcelona 1-0 in the 2025 final at the Estádio José Alvalade in Lisbon; Bilbao hosted the 2024 final. | <https://en.wikipedia.org/wiki/2025_UEFA_Women%27s_Champions_League_final> |
+
+Seeded as true (must hold): "Barcelona beat OL Lyonnes 4-0 at the Ullevaal Stadion in Oslo on 23 May 2026" (source: <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final>).
+
+Seeded as true (must hold): "Barcelona put twelve goals past Real Madrid over the two legs of the quarter-final" (source: <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final>).
+
+Seeded as true (must hold): "They had needed a 5-3 aggregate win over Bayern Munich to get there" (source: <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final>).
+
+Seeded as true (must hold): "a single goal from Stina Blackstenius in the 74th minute" (source: <https://en.wikipedia.org/wiki/2025_UEFA_Women%27s_Champions_League_final>).
+
+Seeded as true (must hold): "they were playing in their twelfth final, more than any other club" (source: <https://en.wikipedia.org/wiki/2026_UEFA_Women%27s_Champions_League_final>).
+
+### 32-national-league-third-place
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | Rochdale finished second with 104 points | Rochdale finished second in the 2025-26 National League with 106 points, two behind York City. | <https://en.wikipedia.org/wiki/2026_National_League_play-off_final> ; <https://www.sportinglife.com/football/news/york-promoted-after-stoppage-time-chaos/231702> |
+| d2 | who had finished fifth | Boreham Wood finished fourth in the 2025-26 National League with 90 points; Scunthorpe United finished fifth. | <https://en.wikipedia.org/wiki/2026_National_League_play-off_final> |
+| d3 | The final was played in front of 21,740 people | The attendance at the 2026 National League play-off final at Wembley was 17,740. | <https://en.wikipedia.org/wiki/2026_National_League_play-off_final> |
+| d4 | Matt Rush and Zak Brunt put Boreham Wood two goals up | Boreham Wood's goals in the final were scored by Matt Rush (22') and Abdul Abdulmalik (69'); Zak Brunt did not score. | <https://en.wikipedia.org/wiki/2026_National_League_play-off_final> |
+| d5 | Rochdale won the shoot-out 4-2 | Rochdale won the penalty shoot-out 3-1 after the final finished 2-2 after extra time. | <https://en.wikipedia.org/wiki/2026_National_League_play-off_final> |
+
+Seeded as true (must hold): "York City finished top with 108 points" (source: <https://en.wikipedia.org/wiki/2025%E2%80%9326_National_League>).
+
+Seeded as true (must hold): "Rochdale had dropped out of the Football League in 2023 after 102 years" (source: <https://en.wikipedia.org/wiki/Rochdale_A.F.C.>).
+
+Seeded as true (must hold): "Emmanuel Dieseruvwe headed the equaliser in the seventh minute of stoppage time" (source: <https://en.wikipedia.org/wiki/2026_National_League_play-off_final>).
+
+Seeded as true (must hold): "Carlisle United drew 13,814 for their semi-final against Boreham Wood" (source: <https://en.wikipedia.org/wiki/2026_National_League_play-off_final>).
+
+Borrowed: "Nothing is so painful to the human mind as a great and sudden change." from Frankenstein; Or, The Modern Prometheus by Mary Wollstonecraft Shelley (<https://www.gutenberg.org/ebooks/84>).
+
+### 33-mjallby-model
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | with two games to spare | Mjällby secured the 2025 Allsvenskan title on 20 October 2025 with three games remaining. | <https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF> |
+| d2 | They finished on 73 points, which is a league record | Mjällby finished the 2025 Allsvenskan on 75 points, a league record (the previous record was 67). | <https://en.wikipedia.org/wiki/2025_Allsvenskan> |
+| d3 | Hammarby were runners-up, nine points behind. | Hammarby finished second in the 2025 Allsvenskan on 62 points, 13 points behind Mjällby's 75. | <https://en.wikipedia.org/wiki/2025_Allsvenskan> |
+| d4 | in front of 29,903 people | The attendance at the 2026 Svenska Cupen final in Solna was 39,903. | <https://en.wikipedia.org/wiki/2025%E2%80%9326_Svenska_Cupen> |
+| d5 | the Danish coach Karl Marius Aksum | Karl Marius Aksum, Mjällby's head coach from December 2025 to September 2026, is Norwegian. | <https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF> ; <https://www.flashscore.com/news/soccer-allsvenskan-swedish-champions-who-shocked-the-football-world-sack-coach-after-disastrous-campaign/YPYIg5Ms/> |
+
+Seeded as true (must hold): "Mjällby clinched the title on 20 October 2025 by winning 2-0 at IFK Göteborg" (source: <https://en.wikipedia.org/wiki/2025_Allsvenskan>).
+
+Seeded as true (must hold): "they lost only once in thirty league matches" (source: <https://en.wikipedia.org/wiki/2025_Allsvenskan>).
+
+Seeded as true (must hold): "Elliot Stroud scored after 19 minutes" (source: <https://en.wikipedia.org/wiki/2025%E2%80%9326_Svenska_Cupen>).
+
+Seeded as true (must hold): "Mjällby lost 4-1 on aggregate to Slovan Bratislava in the third qualifying round of the Champions League" (source: <https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF>).
+
+Seeded as true (must hold): "Andreas Brännström took over on 8 September 2026" (source: <https://en.wikipedia.org/wiki/Mj%C3%A4llby_AIF>).
+
+Borrowed: "He will win who knows when to fight and when not to fight." from The Art of War by Sun Tzu, translated by Lionel Giles (<https://www.gutenberg.org/ebooks/132>).
+
+### 34-congestion-charge
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | Number plates are read at 210 detection points around the zone | New York's congestion pricing zone has 110 detection points, carrying more than 1,400 scanners. | <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City> |
+| d2 | reported 23% fewer vehicles entering the zone than a year earlier | In March 2025 the MTA reported a 13% decrease in vehicles entering the congestion zone compared with March 2024. | <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City> |
+| d3 | an estimated 17 million fewer vehicle entries | The MTA estimated 27 million fewer vehicle entries into the zone in the first year, a fall of about 11%. | <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City> ; <https://www.amny.com/news/congestion-pricing-27-million-fewer-vehicles> |
+| d4 | The toll brought in $38.6 million in its first month | The congestion toll raised $48.6 million in its first month (5 to 31 January 2025), and about $52 million in February. | <https://www.6sqft.com/congestion-pricing-raised-48-6m-in-first-month-mta-says/> ; <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City> |
+| d5 | On 13 March 2026 a federal judge ruled that the revocation was unlawful | Judge Lewis Liman ruled on 3 March 2026 that the federal revocation of approval for congestion pricing was unlawful. | <https://politicsny.com/2026/03/03/congestion-pricing-lives-on-as-judge-rules-that-trump-admins-effort-to-kill-it-was-unlawful/> ; <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City> |
+
+Seeded as true (must hold): "the charge drops to $2.25 overnight" (source: <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City>).
+
+Seeded as true (must hold): "subway ridership rose 7.7% from 2024 to 2025" (source: <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City>).
+
+Seeded as true (must hold): "in October 2025 the MTA sold $230 million of bonds" (source: <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City>).
+
+Seeded as true (must hold): "revoked the scheme's federal approval on 19 February 2025" (source: <https://en.wikipedia.org/wiki/Congestion_pricing_in_New_York_City>).
+
+Borrowed: "The real price of every thing, what every thing really costs to the man who wants to acquire it, is the toil and trouble of acquiring it." from An Inquiry into the Nature and Causes of the Wealth of Nations by Adam Smith (<https://www.gutenberg.org/ebooks/3300>).
+
+### 35-postgres-18-upgrade
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | PostgreSQL 18 was released on 18 September 2025 | PostgreSQL 18 was released on 25 September 2025. | <https://www.postgresql.org/docs/release/18.0/> |
+| d2 | io_workers, which defaults to 8 | The default value of io_workers in PostgreSQL 18 is 3. | <https://www.postgresql.org/docs/18/runtime-config-resource.html> |
+| d3 | The release raised the default of effective_io_concurrency to 32 | PostgreSQL 18 raised the default of effective_io_concurrency (and of maintenance_io_concurrency) to 16. | <https://www.postgresql.org/docs/release/18.0/> ; <https://www.postgresql.org/docs/18/runtime-config-resource.html> |
+| d4 | cancel request keys are now 128 bits long | PostgreSQL 18 makes cancel request keys 256 bits long when both sides support wire protocol version 3.2. | <https://www.postgresql.org/docs/release/18.0/> |
+| d5 | 18.6, shipped on 20 August 2026 | PostgreSQL 18.6 was released on 13 August 2026. | <https://www.postgresql.org/docs/release/18.6/> |
+
+Seeded as true (must hold): "The default io_method is worker" (source: <https://www.postgresql.org/docs/18/runtime-config-resource.html>).
+
+Seeded as true (must hold): "initdb now enables data checksums by default" (source: <https://www.postgresql.org/docs/release/18.0/>).
+
+Seeded as true (must hold): "It introduces wire protocol version 3.2" (source: <https://www.postgresql.org/docs/release/18.0/>).
+
+Seeded as true (must hold): "PostgreSQL 14 stops receiving fixes on 12 November 2026" (source: <https://www.postgresql.org/>).
+
+Seeded as true (must hold): "PostgreSQL 19 Beta 4 came out on 24 September 2026" (source: <https://www.postgresql.org/>).
+
+Borrowed: "It is a capital mistake to theorise before one has data." from The Adventures of Sherlock Holmes by Arthur Conan Doyle (<https://www.gutenberg.org/ebooks/1661>).
+
+### 36-wsl-fourteen-teams
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | back in the top tier of the women's game after 16 years away | Charlton returned to the top tier after 18 years away; they were relegated from the FA Women's Premier League National Division in 2008. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d2 | drew 39,853 to the Emirates Stadium | The attendance for Arsenal 1-1 Manchester United on 19 September 2026 was 29,853. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d3 | London City Lionesses beat Manchester United 3-1 in the opening round | London City Lionesses beat Manchester United 2-1 in the opening round of the 2026-27 season. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+| d4 | with Victoria Pelova scoring a hat-trick | Olivia Holdt scored the hat-trick in Tottenham's 7-0 win at Crystal Palace on 20 September 2026; Victoria Pelova did not. | <https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League> |
+
+Seeded as true (must hold):
+
+- "beating Leicester City on penalties in a one-off play-off on 23 May 2026" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "only 1,274 people watched Crystal Palace beat Everton 1-0 on 6 September" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "Manchester United appointed Eva Olid as head coach on 5 August 2026" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+- "Arsenal's 1-1 draw with Manchester United on 19 September" (<https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League>)
+
+Borrowed: "Things do not change; we change." from Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau (<https://www.gutenberg.org/ebooks/205>).
+
+### 37-metlife-final
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | Emiliano Martínez made 9 saves | Emiliano Martínez made 11 saves in the 2026 final, a record for a goalkeeper in a World Cup final. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d2 | A crowd of 82,663 | The attendance at the 2026 World Cup final at MetLife Stadium was 80,663. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d3 | Enzo Fernández was sent off in the 82nd minute | Enzo Fernández was sent off in the third minute of second-half stoppage time (90+3); the 82nd minute was his first yellow card. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d4 | Ferran Torres scored in the 109th minute | Ferran Torres scored the only goal of the 2026 World Cup final in the 106th minute. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+| d5 | the interval lasted 22 minutes | The half-time break at the 2026 final lasted 27 minutes and 22 seconds, against the 15-minute limit in the Laws of the Game. | <https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final> |
+
+Seeded as true (must hold):
+
+- "Argentina failed to register a single shot in regulation time, which had never happened in a World Cup final before." (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "Spain had beaten France 2-0 in the semi-final" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "they went into the final unbeaten in 37 matches" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+- "Spain had 65% of the ball and twenty shots" (<https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final>)
+
+Borrowed: "The clever combatant looks to the effect of combined energy, and does not require too much from individuals." from The Art of War by Sun Tzu, translated by Lionel Giles (<https://www.gutenberg.org/ebooks/132>).
+
+### 38-votes-at-sixteen
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | its third reading by 431 votes to 102 | The Commons passed the Representation of the People Bill at third reading on 2 September 2026 by 411 votes to 102. | <https://www.beyondthevote.co.uk/division/2416> |
+| d2 | lost by 146 votes to 128 | The 2005 private member's bill from Stephen Williams was defeated by 136 votes to 128. | <https://en.wikipedia.org/wiki/Voting_age> |
+| d3 | Malta's parliament voted unanimously for the same change in March 2016 | The Maltese parliament voted unanimously on 5 March 2018 to lower the voting age to 16 for general elections, making Malta the second EU member state to do so. | <https://en.wikipedia.org/wiki/Voting_age> |
+| d4 | an Act that received royal assent on 15 January 2021 | The Senedd and Elections (Wales) Act 2020 received royal assent on 15 January 2020. | <https://en.wikipedia.org/wiki/Senedd_and_Elections_(Wales)_Act_2020> |
+
+Seeded as true (must hold):
+
+- "In 1999 an amendment from Simon Hughes to lower the voting age was defeated by 434 votes to 36." (<https://en.wikipedia.org/wiki/Voting_age>)
+- "a Conservative amendment to block the Bill at second reading was defeated by 410 votes to 105 on 2 March" (<https://www.beyondthevote.co.uk/division/2267>)
+- "the House of Keys approved the change by 19 votes to 4" (<https://en.wikipedia.org/wiki/Voting_age>)
+- "Austria followed in 2007 and became the first member of the European Union to do so" (<https://en.wikipedia.org/wiki/Voting_age>)
+
+Borrowed: "Every one is degraded, whether aware of it or not, when other people, without consulting him, take upon themselves unlimited power to regulate his destiny." from Considerations on Representative Government by John Stuart Mill (<https://www.gutenberg.org/ebooks/5669>).
+
+### 39-logical-replication-reporting
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | `max_slot_wal_keep_size` defaults to 1 GB | max_slot_wal_keep_size defaults to -1, which means replication slots may retain an unlimited amount of WAL; a stalled subscriber can fill the primary's disk unless a limit is set. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d2 | `wal_sender_timeout` defaults to 30 seconds | wal_sender_timeout defaults to 60 seconds. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d3 | It defaults to one day | idle_replication_slot_timeout defaults to zero, which disables the idle-timeout invalidation of replication slots; idle slots are kept until someone drops them. | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+| d4 | The default for `max_sync_workers_per_subscription` is 4 | The default for max_sync_workers_per_subscription is 2 (4 is the default of max_logical_replication_workers). | <https://www.postgresql.org/docs/18/runtime-config-replication.html> |
+
+Seeded as true (must hold):
+
+- "The default for `max_replication_slots` is 10" (<https://www.postgresql.org/docs/18/runtime-config-replication.html>)
+- "`checkpoint_timeout` is five minutes by default" (<https://www.postgresql.org/docs/18/runtime-config-wal.html>)
+- "the default for `max_logical_replication_workers` is 4" (<https://www.postgresql.org/docs/18/runtime-config-replication.html>)
+- "From PostgreSQL 18 the default `streaming` option for a new subscription is `parallel`" (<https://www.postgresql.org/docs/18/sql-createsubscription.html>)
+
+### 40-hpa-ingest-workers
+
+| Defect | Seeded (wrong) text | True value | Source |
+| --- | --- | --- | --- |
+| d1 | That version was released on 19 August 2026 | Kubernetes v1.37 (Garhwal) was released on 26 August 2026. | <https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/> |
+| d2 | The autoscaler evaluates its metrics every 30 seconds by default | The HorizontalPodAutoscaler controller's default sync period (--horizontal-pod-autoscaler-sync-period) is 15 seconds. | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+| d3 | The per-autoscaler `tolerance` field has been stable since v1.36 | Configurable HPA tolerance (the HPAConfigurableTolerance feature) has been stable since Kubernetes v1.37; it was first available in v1.33. | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+| d4 | By default the stabilization window for scaling down is 600 seconds | The default stabilization window for scaling down is 300 seconds (5 minutes). | <https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/> |
+
+Seeded as true (must hold):
+
+- "it is the release in which the `metrics.k8s.io` API graduated to Stable" (<https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/>)
+- "within a tolerance of 10% by default" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)
+- "the default policy adds at most 4 pods or 100% of the current replicas every 15 seconds" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)
+- "the CPU initialization period, which is 5 minutes by default" (<https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/>)

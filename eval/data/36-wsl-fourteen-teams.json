@@ -1,0 +1,114 @@
+{
+  "id": "36-wsl-fourteen-teams",
+  "title": "Fourteen teams was the right call for the WSL",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "back in the top tier of the women's game after 16 years away",
+      "correction": "Charlton returned to the top tier after 18 years away; they were relegated from the FA Women's Premier League National Division in 2008.",
+      "note": "[needs-source] True value: 18 years (relegated in 2008, promoted in May 2026). Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "drew 39,853 to the Emirates Stadium",
+      "correction": "The attendance for Arsenal 1-1 Manchester United on 19 September 2026 was 29,853.",
+      "note": "[needs-source] [multi-part] True value: 29,853. The score and the date in the same sentence are right; only the attendance is wrong. Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "London City Lionesses beat Manchester United 3-1 in the opening round",
+      "correction": "London City Lionesses beat Manchester United 2-1 in the opening round of the 2026-27 season.",
+      "note": "[needs-source] True value: 2-1. Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "with Victoria Pelova scoring a hat-trick",
+      "correction": "Olivia Holdt scored the hat-trick in Tottenham's 7-0 win at Crystal Palace on 20 September 2026; Victoria Pelova did not.",
+      "note": "[needs-source] [multi-part] True value: Olivia Holdt. The score and the date in the first half of the sentence are right; only the hat-trick scorer is wrong (Pelova is a Tottenham team-mate). Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Clubs who move there women's team into the main stadium sell four times as many season tickets within two years."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "Attendances are up at the biggest clubs, so the expansion has plainly worked for every club in the league.",
+      "known_rebuttal": "Crowds at the biggest clubs say nothing about the clubs the expansion added. After five rounds the three promoted sides had one win between them from fifteen games, and Charlton had lost all five with two goals scored and fifteen conceded. The same weekend that produced a five-figure crowd at the Emirates produced one of 1,274 at Crystal Palace. Arsenal were already filling the Emirates before the league grew, so the big gates are not an effect of expansion, and five rounds is far too small a sample to judge a structural change."
+    },
+    {
+      "id": "d7",
+      "type": "borrowed_sentence",
+      "quote": "Things do not change; we change.",
+      "source_url": "https://www.gutenberg.org/ebooks/205",
+      "source_title": "Walden, and On The Duty Of Civil Disobedience by Henry David Thoreau"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "the doubters owes the league",
+      "correction": "the doubters owe the league"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "There are less empty seats",
+      "correction": "There are fewer empty seats"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "could of called",
+      "correction": "could have called"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Attendances are up at the biggest clubs, so the expansion has plainly worked for every club in the league.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "Clubs who move there women's team into the main stadium sell four times as many season tickets within two years.",
+      "note": "'there' should be 'their', but the sentence is an unsupported claim, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "beating Leicester City on penalties in a one-off play-off on 23 May 2026",
+      "note": "[needs-source] True: Charlton (3rd in WSL2) beat Leicester City (12th in the WSL) on penalties in a one-game play-off on 23 May 2026. Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "only 1,274 people watched Crystal Palace beat Everton 1-0 on 6 September",
+      "note": "[needs-source] True: attendance 1,274, Crystal Palace 1-0 Everton, 6 September 2026. Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Manchester United appointed Eva Olid as head coach on 5 August 2026",
+      "note": "[needs-source] True: Marc Skinner left on 3 August 2026 and Eva Olid was appointed on 5 August 2026. Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Arsenal's 1-1 draw with Manchester United on 19 September",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d2 (score and date are right). Source: https://en.wikipedia.org/wiki/2026%E2%80%9327_Women%27s_Super_League"
+    }
+  ]
+}

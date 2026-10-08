@@ -1,0 +1,114 @@
+{
+  "id": "38-votes-at-sixteen",
+  "title": "Sixteen is old enough to vote",
+  "genre": "op_ed",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "its third reading by 431 votes to 102",
+      "correction": "The Commons passed the Representation of the People Bill at third reading on 2 September 2026 by 411 votes to 102.",
+      "note": "[needs-source] [multi-part] True value: 411 ayes to 102 noes (Division No. 64). The date is right; only the number of ayes is wrong. Source: https://www.beyondthevote.co.uk/division/2416"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "lost by 146 votes to 128",
+      "correction": "The 2005 private member's bill from Stephen Williams was defeated by 136 votes to 128.",
+      "note": "[needs-source] True value: 136 to 128. Source: https://en.wikipedia.org/wiki/Voting_age"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Malta's parliament voted unanimously for the same change in March 2016",
+      "correction": "The Maltese parliament voted unanimously on 5 March 2018 to lower the voting age to 16 for general elections, making Malta the second EU member state to do so.",
+      "note": "[needs-source] [multi-part] True value: March 2018. The first half of the sentence (Austria in 2007, the first EU member) is true. Source: https://en.wikipedia.org/wiki/Voting_age"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "an Act that received royal assent on 15 January 2021",
+      "correction": "The Senedd and Elections (Wales) Act 2020 received royal assent on 15 January 2020.",
+      "note": "[needs-source] True value: 15 January 2020 (the franchise was first used at the 2021 Senedd election, which makes 2021 a plausible near-miss). Source: https://en.wikipedia.org/wiki/Senedd_and_Elections_(Wales)_Act_2020"
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Young people who vote at sixteen are twice as likely to still be voting at thirty."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "Sixteen-year-olds can work and pay tax, so nobody can honestly object to them voting.",
+      "known_rebuttal": "Paying tax has never been the test for the vote: children of any age pay VAT and can pay income tax on earnings, and adults who pay no tax keep the vote. The law also treats sixteen as short of full adulthood in most other respects. In England a young person must stay in education or training until 18, the minimum age for marriage in England and Wales has been 18 since 2023, and sixteen-year-olds cannot buy alcohol or serve on a jury. An honest objection is therefore available: the voting age should match the age at which the law grants the other rights of adulthood."
+    },
+    {
+      "id": "d7",
+      "type": "borrowed_sentence",
+      "quote": "Every one is degraded, whether aware of it or not, when other people, without consulting him, take upon themselves unlimited power to regulate his destiny.",
+      "source_url": "https://www.gutenberg.org/ebooks/5669",
+      "source_title": "Considerations on Representative Government by John Stuart Mill"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "the objections to it has not improved",
+      "correction": "the objections to it have not improved"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "A sixteen-year-old who's first election",
+      "correction": "A sixteen-year-old whose first election"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "less young people would drift away",
+      "correction": "fewer young people would drift away"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Sixteen-year-olds can work and pay tax, so nobody can honestly object to them voting.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "In 2005 a private member's bill from Stephen Williams come much closer and lost by 146 votes to 128.",
+      "note": "'come' should be 'came', but the sentence carries a wrong vote count, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "In 1999 an amendment from Simon Hughes to lower the voting age was defeated by 434 votes to 36.",
+      "note": "[needs-source] True: the 1999 Simon Hughes amendment was defeated by 434 votes to 36. Source: https://en.wikipedia.org/wiki/Voting_age"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "a Conservative amendment to block the Bill at second reading was defeated by 410 votes to 105 on 2 March",
+      "note": "[needs-source] True: the reasoned amendment was defeated by 410 votes to 105 on 2 March 2026 (Division No. 435). Source: https://www.beyondthevote.co.uk/division/2267"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "the House of Keys approved the change by 19 votes to 4",
+      "note": "[needs-source] True: the Isle of Man lowered its voting age to 16 in 2006, the House of Keys approving by 19 votes to 4. Source: https://en.wikipedia.org/wiki/Voting_age"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Austria followed in 2007 and became the first member of the European Union to do so",
+      "note": "[multi-part] The true half of the sentence that also carries d3. Source: https://en.wikipedia.org/wiki/Voting_age"
+    }
+  ]
+}

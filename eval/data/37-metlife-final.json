@@ -1,0 +1,121 @@
+{
+  "id": "37-metlife-final",
+  "title": "The MetLife final was a verdict on parking the bus",
+  "genre": "football_blog",
+  "profile": "opinion",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "Emiliano Martínez made 9 saves",
+      "correction": "Emiliano Martínez made 11 saves in the 2026 final, a record for a goalkeeper in a World Cup final.",
+      "note": "[needs-source] [multi-part] True value: 11 saves. The claim that it was a record for a final is true; only the number is wrong. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "A crowd of 82,663",
+      "correction": "The attendance at the 2026 World Cup final at MetLife Stadium was 80,663.",
+      "note": "[needs-source] True value: 80,663 (82,500 is the stadium's maximum capacity). Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "Enzo Fernández was sent off in the 82nd minute",
+      "correction": "Enzo Fernández was sent off in the third minute of second-half stoppage time (90+3); the 82nd minute was his first yellow card.",
+      "note": "[needs-source] [multi-part] True value: 90+3'. The second yellow card is right; only the minute is wrong (82' was the first yellow). Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "Ferran Torres scored in the 109th minute",
+      "correction": "Ferran Torres scored the only goal of the 2026 World Cup final in the 106th minute.",
+      "note": "[needs-source] [multi-part] True value: 106th minute. The scorer and the Nico Williams header are right; only the minute is wrong. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "d5",
+      "type": "wrong_fact",
+      "quote": "the interval lasted 22 minutes",
+      "correction": "The half-time break at the 2026 final lasted 27 minutes and 22 seconds, against the 15-minute limit in the Laws of the Game.",
+      "note": "[needs-source] True value: 27 minutes 22 seconds. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "d6",
+      "type": "unsupported",
+      "quote": "Teams that have more than 60% of possession win four out of every five knockout matches at major tournaments."
+    },
+    {
+      "id": "d7",
+      "type": "weak_argument",
+      "quote": "Spain won the final with 65% of the ball, so possession football is the only way to win a World Cup from now on.",
+      "known_rebuttal": "One match cannot establish a rule. Spain needed 106 minutes and an extra man to score once, and Argentina missed chances to equalise in the last minutes of extra time, so the same game could easily have gone to penalties. France won the 2018 final with well under half of the ball, and Spain themselves went out of the 2018 and 2022 tournaments on penalties after dominating possession against the deep defences of Russia and Morocco. The evidence across tournaments is that several styles win."
+    },
+    {
+      "id": "d8",
+      "type": "borrowed_sentence",
+      "quote": "The clever combatant looks to the effect of combined energy, and does not require too much from individuals.",
+      "source_url": "https://www.gutenberg.org/ebooks/132",
+      "source_title": "The Art of War by Sun Tzu, translated by Lionel Giles"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "Each of the Argentina midfielders were chasing",
+      "correction": "Each of the Argentina midfielders was chasing"
+    },
+    {
+      "id": "d10",
+      "type": "grammar",
+      "quote": "it done exactly",
+      "correction": "it did exactly"
+    },
+    {
+      "id": "d11",
+      "type": "grammar",
+      "quote": "build there teams",
+      "correction": "build their teams"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "Spain won the final with 65% of the ball, so possession football is the only way to win a World Cup from now on.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "A crowd of 82,663 seen nothing but a siege.",
+      "note": "'seen' should be 'saw', but the sentence carries a wrong attendance, so the fact finding wins."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Argentina failed to register a single shot in regulation time, which had never happened in a World Cup final before.",
+      "note": "[needs-source] True: Argentina had no shot in the 90 minutes, a first for a World Cup final. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Spain had beaten France 2-0 in the semi-final",
+      "note": "[needs-source] True: Spain beat France 2-0 in the semi-final. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "they went into the final unbeaten in 37 matches",
+      "note": "[needs-source] True: Spain went into the final on a 37-match unbeaten run, level with Italy's record. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "Spain had 65% of the ball and twenty shots",
+      "note": "[needs-source] True: match statistics give Spain 65% possession and 20 shots (12 on target) to Argentina's 2. Source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final"
+    }
+  ]
+}

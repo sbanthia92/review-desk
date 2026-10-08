@@ -264,3 +264,23 @@ def test_load_document_reads_text_file_and_checks_id(tmp_path: Path) -> None:
     (tmp_path / "doc-c.json").write_text("{not json", encoding="utf-8")
     with pytest.raises(DatasetError, match="cannot read"):
         load_document(tmp_path / "doc-c.json")
+
+
+def test_hard_documents_need_a_source() -> None:
+    """Documents 31-40: errors a reviewer cannot catch from memory."""
+    from eval.dataset import ConflictRule
+    from eval.metrics import NEEDS_SOURCE_TAG
+
+    hard = [d for d in load_dataset() if 31 <= int(d.id.split("-")[0]) <= 40]
+    assert len(hard) == 10
+    for doc in hard:
+        wrong = [x for x in doc.of_type(DefectType.WRONG_FACT) if NEEDS_SOURCE_TAG in x.note]
+        true = [
+            x
+            for x in doc.of_type(DefectType.CONFLICT)
+            if x.rule is ConflictRule.REBUTTAL_ON_VERIFIED_FACT and NEEDS_SOURCE_TAG in x.note
+        ]
+        assert len(wrong) >= 4, doc.id
+        assert len(true) >= 3, doc.id
+        for item in (*wrong, *true):
+            assert "http" in item.note, f"{doc.id}:{item.id} has no source URL"

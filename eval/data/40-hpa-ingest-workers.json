@@ -1,0 +1,114 @@
+{
+  "id": "40-hpa-ingest-workers",
+  "title": "Design: Autoscaling the ingest workers",
+  "genre": "design_doc",
+  "profile": "design_doc",
+  "defects": [
+    {
+      "id": "d1",
+      "type": "wrong_fact",
+      "quote": "That version was released on 19 August 2026",
+      "correction": "Kubernetes v1.37 (Garhwal) was released on 26 August 2026.",
+      "note": "[needs-source] [multi-part] True value: Wednesday 26 August 2026. The second half of the sentence (metrics.k8s.io graduating to Stable in v1.37) is true. Source: https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/"
+    },
+    {
+      "id": "d2",
+      "type": "wrong_fact",
+      "quote": "The autoscaler evaluates its metrics every 30 seconds by default",
+      "correction": "The HorizontalPodAutoscaler controller's default sync period (--horizontal-pod-autoscaler-sync-period) is 15 seconds.",
+      "note": "[needs-source] True value: 15 seconds (30 seconds is the default of the initial readiness delay). Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "id": "d3",
+      "type": "wrong_fact",
+      "quote": "The per-autoscaler `tolerance` field has been stable since v1.36",
+      "correction": "Configurable HPA tolerance (the HPAConfigurableTolerance feature) has been stable since Kubernetes v1.37; it was first available in v1.33.",
+      "note": "[needs-source] True value: stable since v1.37. Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "id": "d4",
+      "type": "wrong_fact",
+      "quote": "By default the stabilization window for scaling down is 600 seconds",
+      "correction": "The default stabilization window for scaling down is 300 seconds (5 minutes).",
+      "note": "[needs-source] True value: 300 seconds. Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "id": "d5",
+      "type": "unsupported",
+      "quote": "Autoscaling will cut the cost of the ingest tier by 45%."
+    },
+    {
+      "id": "d6",
+      "type": "weak_argument",
+      "quote": "CPU is the metric that every other team uses for autoscaling, so it is the right signal for the ingest workers.",
+      "known_rebuttal": "What other teams use says nothing about this workload. The ingest workers are queue consumers, and the stated goal is about how long a file waits, which CPU does not measure: workers blocked on warehouse writes or on large downloads show low CPU while the backlog grows, and an idle fleet with an empty queue and a fleet starved of work look the same. The autoscaler supports external and object metrics, so the design can scale directly on queue depth or on the age of the oldest file, which is the quantity the goal is written in."
+    },
+    {
+      "id": "d7",
+      "type": "grammar",
+      "quote": "no more then five minutes",
+      "correction": "no more than five minutes"
+    },
+    {
+      "id": "d8",
+      "type": "grammar",
+      "quote": "Each of the workers handle one file",
+      "correction": "Each of the workers handles one file"
+    },
+    {
+      "id": "d9",
+      "type": "grammar",
+      "quote": "have not been decided",
+      "correction": "has not been decided"
+    },
+    {
+      "id": "c1",
+      "type": "conflict",
+      "rule": "same_span_merge",
+      "quote": "The behaviour when the metrics server is unavailable have not been decided.",
+      "note": "Copy editor (grammar) and structure reviewer (the failure-mode section is empty) both flag this sentence; they should be merged into one finding."
+    },
+    {
+      "id": "c2",
+      "type": "conflict",
+      "rule": "evidence_free_rebuttal",
+      "quote": "CPU is the metric that every other team uses for autoscaling, so it is the right signal for the ingest workers.",
+      "note": "Any rebuttal of this claim that cites no retrieved source must be downgraded to consider."
+    },
+    {
+      "id": "c3",
+      "type": "conflict",
+      "rule": "copyedit_yields_to_fact",
+      "quote": "By default the stabilization window for scaling down is 600 seconds, so the fleet will not shrinks the moment the queue empties.",
+      "note": "'will not shrinks' should be 'will not shrink', but the sentence carries a wrong default, so the fact finding wins."
+    },
+    {
+      "id": "c4",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "it is the release in which the `metrics.k8s.io` API graduated to Stable",
+      "note": "[needs-source] [multi-part] The true half of the sentence that also carries d1: the metrics.k8s.io API graduated to Stable in v1.37. Source: https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/"
+    },
+    {
+      "id": "c5",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "within a tolerance of 10% by default",
+      "note": "[needs-source] True: the default cluster-wide HPA tolerance is 10% (0.1). Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "id": "c6",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "the default policy adds at most 4 pods or 100% of the current replicas every 15 seconds",
+      "note": "[needs-source] True: the default scale-up behaviour allows 4 pods or 100% of the running replicas every 15 seconds, with no stabilization window. Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    },
+    {
+      "id": "c7",
+      "type": "conflict",
+      "rule": "rebuttal_on_verified_fact",
+      "quote": "the CPU initialization period, which is 5 minutes by default",
+      "note": "[needs-source] True: --horizontal-pod-autoscaler-cpu-initialization-period defaults to 5 minutes. Source: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"
+    }
+  ]
+}
