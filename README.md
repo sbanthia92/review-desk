@@ -42,8 +42,8 @@ it.
 | `TAVILY_API_KEY` | Sign up at <https://app.tavily.com>; the key is shown on the dashboard |
 
 The Anthropic key is pay-as-you-go: reviews fail with a clear message if the
-account has no credit. Keep keys out of chats and out of version control; put them in
-the MCP client's `env` block or in a `.env` file as shown below.
+account has no credit. Keep keys out of chats and out of version control; put
+them in the MCP client's `env` block or in a `.env` file as shown below.
 
 A review of a 700-word article takes about two minutes and uses roughly
 150,000–180,000 tokens on your model key (about $0.60–$1.20 at Anthropic's
@@ -142,8 +142,7 @@ file (the server reads `.env` from its working directory, or the file named by
 
 - **Your document** goes to Anthropic, under your key and their terms.
 - **Search queries** built from your document's claims, and up to eight
-  sentences quoted exactly for the originality check, go to your search
-  provider.
+  sentences quoted exactly for the originality check, go to Tavily.
 - **Web pages** named in search results are fetched directly from your machine.
   The fetcher refuses private and local network addresses.
 
@@ -185,8 +184,8 @@ An orchestrator runs specialist agents and settles their disagreements:
    claims and checkable facts.
 2. In parallel: a **fact-checker** researches each fact in a bounded loop
    (search, fetch, read, assess; at most three rounds per claim); a **devil's
-   advocate** gathers counter-evidence; a **copy editor**; an **originality
-   checker**; and, for design docs, a **structure reviewer**.
+   advocate** gathers counter-evidence; a **copy editor**; for articles, an
+   **originality checker**; and, for design docs, a **structure reviewer**.
 3. A reaction round: a verified fact the devil's advocate disputes is
    re-checked, and the two argue once over the most important disagreements.
 4. Fixed rules settle what is left (for example, a grammar fix on a sentence
@@ -211,3 +210,7 @@ against real providers spends money on your keys.
 The local MCP server and command-line tool work. A hosted version (sign in,
 add a key once, get the report by email) is designed in `DESIGN.md` but not
 built.
+
+## License
+
+MIT. See `LICENSE`.
