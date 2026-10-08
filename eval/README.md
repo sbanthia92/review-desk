@@ -130,7 +130,7 @@ Pooled over documents per run, then mean ± stdev across repeats.
 | Recall: wrong facts that need a source | caught / seeded `wrong_fact` defects tagged `[needs-source]` |
 | Wrong facts caught with a cited source | `wrong_fact` defects caught by an item citing a well-formed source / all `wrong_fact` defects. A reviewer working from memory scores 0 |
 | Fact findings that cite a source | must-fix fact findings (factual error, unsupported) with at least one well-formed source / all of them |
-| True facts called wrong | facts seeded as true (`rebuttal_on_verified_fact` spans) that a factual-error finding flags / all of them (lower is better) |
+| True facts called wrong | facts seeded as true (`rebuttal_on_verified_fact` spans) flagged by a factual-error finding that catches no planted wrong fact / all of them (lower is better). A finding on a sentence that also holds a planted error does not count |
 | Precision (matched + judge) | (matched items + unmatched items the judge calls real) / (matched + judged) |
 | Precision (matched only) | matched items / all items (lower bound, no judge) |
 | Citation validity | cited (url, excerpt) pairs the judge says support the statement / judged pairs; malformed ones count as unsupported |

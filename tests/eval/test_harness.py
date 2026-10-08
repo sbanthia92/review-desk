@@ -501,3 +501,34 @@ async def test_reports_are_saved_for_inspection(tmp_path: Path) -> None:
     assert saved == [f"p-{d.id}-r0.json" for d in dataset]
     first = Report.model_validate_json((tmp_path / "reports" / saved[0]).read_text())
     assert first.document_id == dataset[0].id
+
+
+async def test_finding_on_a_sentence_with_a_planted_error_is_not_a_false_alarm() -> None:
+    from eval.dataset import ConflictRule
+    from eval.harness import run_eval
+    from reviewdesk.contracts import AgentName, Finding, Report, Severity, Span
+
+    seeded = next(d for d in load_dataset() if d.id.startswith("33"))
+    true_half = next(
+        d
+        for d in seeded.of_type(DefectType.CONFLICT)
+        if d.rule is ConflictRule.REBUTTAL_ON_VERIFIED_FACT and "clinched the title" in d.quote
+    )
+    planted = next(d for d in seeded.of_type(DefectType.WRONG_FACT) if "two games" in d.quote)
+    whole = Span(start=true_half.located.start, end=planted.located.end)
+
+    def reviewer(span: Span) -> Any:
+        async def run(doc: Any, profile: Any, on_progress: Any) -> Report:
+            finding = Finding(
+                agent=AgentName.FACTCHECK, severity=Severity.FACTUAL_ERROR, span=span, message="x"
+            )
+            return Report(document_id=doc.id, profile=profile, verdict_line="x", must_fix=[finding])
+
+        return run
+
+    results = await run_eval(
+        {"whole_sentence": reviewer(whole), "true_half_only": reviewer(true_half.located)},
+        [seeded],
+    )
+    flagged = {s.pipeline: s.true_facts_flagged for s in results.scores}
+    assert flagged == {"whole_sentence": 0, "true_half_only": 1}

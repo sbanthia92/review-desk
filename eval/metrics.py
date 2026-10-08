@@ -135,7 +135,9 @@ class DocScore(BaseModel):
     true_facts: int = 0
     """Facts the answer key seeds as true (``rebuttal_on_verified_fact`` spans)."""
     true_facts_flagged: int = 0
-    """Of those, the ones a factual-error finding wrongly flags."""
+    """Of those, the ones flagged by a factual-error finding that catches no
+    planted wrong fact (a finding on a sentence that also holds a planted
+    error is correct, not a false alarm)."""
     usage: Usage = Field(default_factory=Usage)
     seconds: float = 0.0
     judged: bool = False
@@ -419,7 +421,17 @@ async def score_report(
     score.fact_items_sourced = sum(
         any(evidence_wellformed(e) for e in i.evidence) for i in fact_items
     )
-    wrong_items = [i for i in fact_items if i.severity is Severity.FACTUAL_ERROR]
+    # A factual-error finding that catches a planted wrong fact is right, even
+    # when its span also covers a true half of the same sentence ("won 2-0 at
+    # Göteborg" is true, "with two games to spare" is the planted error). Only
+    # factual-error findings that match no planted wrong fact can be false alarms.
+    planted_wrong = seeded.of_type(DefectType.WRONG_FACT)
+    wrong_items = [
+        i
+        for i in fact_items
+        if i.severity is Severity.FACTUAL_ERROR
+        and not any(item_matches(i, d) for d in planted_wrong)
+    ]
     for defect in seeded.of_type(DefectType.CONFLICT):
         if defect.rule is ConflictRule.REBUTTAL_ON_VERIFIED_FACT:
             score.true_facts += 1
