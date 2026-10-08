@@ -27,7 +27,7 @@ working directory, or the file named by `REVIEWDESK_ENV_FILE`), or put them in t
 | Variable | Purpose |
 | --- | --- |
 | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | LLM provider key (read by `reviewdesk.registry`) |
-| `BRAVE_SEARCH_API_KEY`, `TAVILY_API_KEY` or `EXA_API_KEY` | Search provider key |
+| `TAVILY_API_KEY` | Web search key |
 | `REVIEWDESK_FAKE=1` | Offline demo: fake agents, no keys, no model calls (URL input still fetches the page) |
 | `REVIEWDESK_MAX_WORDS` | Word cap (default 20000) |
 | `REVIEWDESK_LOG_LEVEL` | stderr log level (default `INFO`) |
@@ -52,7 +52,7 @@ use the absolute path from `which uv` as `command`.
       ],
       "env": {
         "ANTHROPIC_API_KEY": "sk-ant-...",
-        "BRAVE_SEARCH_API_KEY": "..."
+        "TAVILY_API_KEY": "..."
       }
     }
   }
@@ -66,7 +66,7 @@ To try it without keys, replace the `env` block with `{"REVIEWDESK_FAKE": "1"}`.
 ```sh
 claude mcp add review-desk \
   -e ANTHROPIC_API_KEY=sk-ant-... \
-  -e BRAVE_SEARCH_API_KEY=... \
+  -e TAVILY_API_KEY=... \
   -- uv run --directory /path/to/review-desk python -m reviewdesk.mcp_local
 ```
 

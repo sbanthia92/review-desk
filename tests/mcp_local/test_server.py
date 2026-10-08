@@ -270,7 +270,7 @@ async def test_missing_setup_mentions_search_key_and_fake_mode() -> None:
         pipeline=RecordingPipeline(raises=MissingSetup("")), fetcher=FakeFetcher()
     )
     message = text_of(await call(server, {"content": OPINION_DOC.text}))
-    assert "search key" in message
+    assert "TAVILY_API_KEY" in message
     assert "REVIEWDESK_FAKE=1" in message
 
 

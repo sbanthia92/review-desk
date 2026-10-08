@@ -29,11 +29,7 @@ A finding looks like this:
 
 - [uv](https://docs.astral.sh/uv/) (it installs Python 3.12 for you).
 - A model API key: `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`.
-- One search API key: `TAVILY_API_KEY`, `BRAVE_SEARCH_API_KEY` or
-  `EXA_API_KEY`.
-
-The recommended setup is Anthropic with Tavily, which is what the examples
-below use.
+- A [Tavily](https://tavily.com) search key: `TAVILY_API_KEY`.
 
 ### Getting your keys
 
@@ -45,8 +41,6 @@ sign up, create a key, copy it.
 | `ANTHROPIC_API_KEY` | Sign in at <https://platform.claude.com>, add credit under Billing, then create a key under **API keys** (<https://platform.claude.com/settings/keys>) |
 | `OPENAI_API_KEY` | Sign in at <https://platform.openai.com>, add credit under Billing, then create a key at <https://platform.openai.com/api-keys> |
 | `TAVILY_API_KEY` | Sign up at <https://app.tavily.com>; the key is shown on the dashboard |
-| `BRAVE_SEARCH_API_KEY` | Subscribe to a plan at <https://brave.com/search/api/>, then create a key in the API dashboard |
-| `EXA_API_KEY` | Sign up at <https://dashboard.exa.ai> and create a key under **API keys** |
 
 Model keys are pay-as-you-go: reviews fail with a clear message if the account
 has no credit. Keep keys out of chats and out of version control; put them in
@@ -140,9 +134,8 @@ file (the server reads `.env` from its working directory, or the file named by
 | Variable | Purpose |
 | --- | --- |
 | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | Model provider key. Anthropic is used if both are set |
-| `TAVILY_API_KEY`, `BRAVE_SEARCH_API_KEY` or `EXA_API_KEY` | Search provider key |
+| `TAVILY_API_KEY` | Web search key |
 | `REVIEWDESK_LLM_PROVIDER` | `anthropic` or `openai`, to force one |
-| `REVIEWDESK_SEARCH_PROVIDER` | `tavily`, `brave` or `exa`, to force one |
 | `REVIEWDESK_MODEL_CHEAP`, `_MID`, `_STRONG` | Override the model used for each tier |
 | `REVIEWDESK_MAX_WORDS` | Document size cap (default 20000) |
 | `REVIEWDESK_FAKE=1` | Demo mode: no keys, no model calls |

@@ -17,7 +17,7 @@ from reviewdesk.mcp_local.wiring import load_registry_builder
 from reviewdesk.orchestrator import AgentRegistry
 from reviewdesk.providers.fetch import HttpFetcher
 from reviewdesk.providers.llm import AnthropicLLM, OpenAILLM
-from reviewdesk.providers.search import PROVIDERS, BraveSearch, ExaSearch, TavilySearch
+from reviewdesk.providers.search import PROVIDERS, TavilySearch
 from reviewdesk.registry import (
     SEARCH_KEY_VARS,
     aclose_registry,
@@ -54,18 +54,17 @@ async def _build(env: dict[str, str]) -> AgentRegistry:
     return build_registry_from_env(env)
 
 
-async def test_anthropic_and_brave_by_default(caplog: pytest.LogCaptureFixture) -> None:
+async def test_anthropic_and_tavily_by_default(caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level(logging.DEBUG)
     env = {
         "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
         "OPENAI_API_KEY": OPENAI_KEY,
-        "BRAVE_SEARCH_API_KEY": BRAVE_KEY,
-        "EXA_API_KEY": EXA_KEY,
+        "TAVILY_API_KEY": TAVILY_KEY,
     }
     registry = await _build(env)
     try:
         assert isinstance(registry.llm, AnthropicLLM)
-        assert isinstance(registry.search, BraveSearch)
+        assert isinstance(registry.search, TavilySearch)
         assert isinstance(registry.fetcher, HttpFetcher)
         assert set(registry.agents) == SIX
         assert isinstance(registry.get(AgentName.EXTRACTOR), ExtractorAgent)
@@ -95,15 +94,14 @@ async def test_explicit_provider_overrides() -> None:
     env = {
         "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
         "OPENAI_API_KEY": OPENAI_KEY,
-        "BRAVE_SEARCH_API_KEY": BRAVE_KEY,
-        "EXA_API_KEY": EXA_KEY,
+        "TAVILY_API_KEY": TAVILY_KEY,
         "REVIEWDESK_LLM_PROVIDER": " OpenAI ",
-        "REVIEWDESK_SEARCH_PROVIDER": "exa",
+        "REVIEWDESK_SEARCH_PROVIDER": " Tavily ",
     }
     registry = await _build(env)
     try:
         assert isinstance(registry.llm, OpenAILLM)
-        assert isinstance(registry.search, ExaSearch)
+        assert isinstance(registry.search, TavilySearch)
     finally:
         await aclose_registry(registry)
 
@@ -111,7 +109,7 @@ async def test_explicit_provider_overrides() -> None:
 async def test_model_overrides() -> None:
     env = {
         "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
-        "BRAVE_SEARCH_API_KEY": BRAVE_KEY,
+        "TAVILY_API_KEY": TAVILY_KEY,
         "REVIEWDESK_MODEL_CHEAP": "claude-tiny",
         "REVIEWDESK_MODEL_STRONG": "claude-huge",
     }
@@ -126,9 +124,9 @@ async def test_model_overrides() -> None:
 
 
 def test_config_repr_hides_keys() -> None:
-    config = resolve_env_config({"ANTHROPIC_API_KEY": ANTHROPIC_KEY, "EXA_API_KEY": EXA_KEY})
+    config = resolve_env_config({"ANTHROPIC_API_KEY": ANTHROPIC_KEY, "TAVILY_API_KEY": TAVILY_KEY})
     assert config.llm_provider == "anthropic"
-    assert config.search_provider == "exa"
+    assert config.search_provider == "tavily"
     _assert_no_keys(repr(config))
 
 
@@ -145,22 +143,35 @@ def test_missing_everything_names_all_variables() -> None:
     for var in [
         "ANTHROPIC_API_KEY",
         "OPENAI_API_KEY",
-        "BRAVE_SEARCH_API_KEY",
         "TAVILY_API_KEY",
-        "EXA_API_KEY",
     ]:
         assert var in message
+    # Providers not yet verified live are not offered.
+    assert "BRAVE" not in message and "EXA" not in message
+
+
+def test_unverified_search_providers_are_not_accepted() -> None:
+    message = _missing({"ANTHROPIC_API_KEY": ANTHROPIC_KEY, "BRAVE_SEARCH_API_KEY": BRAVE_KEY})
+    assert "TAVILY_API_KEY" in message
+    message = _missing(
+        {
+            "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
+            "EXA_API_KEY": EXA_KEY,
+            "REVIEWDESK_SEARCH_PROVIDER": "exa",
+        }
+    )
+    assert "REVIEWDESK_SEARCH_PROVIDER must be one of: tavily" in message
 
 
 def test_missing_llm_key_only() -> None:
-    message = _missing({"BRAVE_SEARCH_API_KEY": BRAVE_KEY, "ANTHROPIC_API_KEY": "   "})
+    message = _missing({"TAVILY_API_KEY": TAVILY_KEY, "ANTHROPIC_API_KEY": "   "})
     assert "ANTHROPIC_API_KEY" in message
     assert "search" not in message
 
 
 def test_missing_search_key_only() -> None:
     message = _missing({"ANTHROPIC_API_KEY": ANTHROPIC_KEY})
-    assert "BRAVE_SEARCH_API_KEY" in message
+    assert "set TAVILY_API_KEY" in message
     assert "LLM" not in message
 
 
@@ -168,7 +179,7 @@ def test_requested_provider_without_its_key() -> None:
     message = _missing(
         {
             "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
-            "BRAVE_SEARCH_API_KEY": BRAVE_KEY,
+            "TAVILY_API_KEY": TAVILY_KEY,
             "REVIEWDESK_LLM_PROVIDER": "openai",
         }
     )
@@ -180,12 +191,12 @@ def test_unknown_provider_names() -> None:
     message = _missing(
         {
             "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
-            "BRAVE_SEARCH_API_KEY": BRAVE_KEY,
+            "TAVILY_API_KEY": TAVILY_KEY,
             "REVIEWDESK_SEARCH_PROVIDER": "bing",
         }
     )
     assert "REVIEWDESK_SEARCH_PROVIDER" in message
-    assert "brave" in message
+    assert "tavily" in message
 
 
 def test_reads_os_environ_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -202,7 +213,9 @@ def test_reads_os_environ_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_search_key_vars_match_provider_table() -> None:
-    assert {name: var for name, (var, _cls) in PROVIDERS.items()} == SEARCH_KEY_VARS
+    table = {name: var for name, (var, _cls) in PROVIDERS.items()}
+    assert SEARCH_KEY_VARS.items() <= table.items()
+    assert list(SEARCH_KEY_VARS) == ["tavily"]
 
 
 def test_default_agents_are_six_distinct() -> None:
@@ -223,13 +236,13 @@ async def test_build_registry_with_explicit_keys() -> None:
     registry = build_registry(
         llm_provider="openai",
         llm_api_key=OPENAI_KEY,
-        search_provider="brave",
-        search_api_key=BRAVE_KEY,
+        search_provider="tavily",
+        search_api_key=TAVILY_KEY,
         fetcher=FakeFetcher(),
     )
     try:
         assert isinstance(registry.llm, OpenAILLM)
-        assert isinstance(registry.search, BraveSearch)
+        assert isinstance(registry.search, TavilySearch)
         _assert_no_keys(repr(registry))
     finally:
         await aclose_registry(registry)
