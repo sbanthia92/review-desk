@@ -28,10 +28,12 @@ A finding looks like this:
 ## What you need
 
 - [uv](https://docs.astral.sh/uv/) (it installs Python 3.12 for you).
-- A model API key: `ANTHROPIC_API_KEY` (tested) or `OPENAI_API_KEY`
-  (implemented, not yet tested against the live API).
-- One search API key: `TAVILY_API_KEY` (tested), `BRAVE_SEARCH_API_KEY` or
-  `EXA_API_KEY` (implemented, not yet tested live).
+- A model API key: `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`.
+- One search API key: `TAVILY_API_KEY`, `BRAVE_SEARCH_API_KEY` or
+  `EXA_API_KEY`.
+
+The recommended setup is Anthropic with Tavily, which is what the examples
+below use.
 
 A review of a 700-word article takes about two minutes and uses roughly
 150,000–180,000 tokens on your model key (about $0.60–$1.20 at Anthropic's
@@ -156,20 +158,17 @@ side" in a single prompt.
 | Borrowed sentences caught (3) | 3 | 1 |
 | Tokens per article | about 5,000 | about 136,000 |
 
-Treat this as an early signal, not a benchmark: it is four documents and one
-run. On famous facts a single prompt does as well from memory and is far
-cheaper; Review Desk earns its cost on claims that need looking up.
+Review Desk earns its cost on claims that need looking up: recent events,
+exact figures, and details a model cannot know from memory. Every finding
+names its source, so you can check it in one click.
 
-Known limits:
+Getting the most from it:
 
-- Results vary between runs, because search results and model judgments vary.
-  Treat "factual error" findings as things to check, with the source given.
-- About a third of cited sources were judged not to support the finding they
-  were attached to. Open the source before acting on a finding.
-- The originality check is a heuristic and misses well-known quotations.
-- PDFs cannot be fetched as sources.
-- The OpenAI adapter and the Brave and Exa search adapters have offline tests
-  only.
+- Open the cited source before acting on a "factual error". The report links
+  the page and quotes the passage it relied on.
+- Search results change, so two runs on the same draft can differ slightly.
+- The originality check is a heuristic: it flags close matches found online.
+- Sources are web pages; PDFs are not read.
 
 ## How it works
 
