@@ -48,6 +48,11 @@ def _error_text(exc: BaseException) -> str:
     return f"{type(exc).__name__}: {message}"[:200] if message else type(exc).__name__
 
 
+def _save_report(path: Path, report: Report) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+
+
 async def run_one(
     name: str,
     pipeline: ReviewPipeline,
@@ -75,9 +80,7 @@ async def run_one(
         report = Report(document_id=doc.id, profile=seeded.profile, verdict_line="(failed)")
     seconds = time.monotonic() - started
     if reports_dir is not None and error is None:
-        reports_dir.mkdir(parents=True, exist_ok=True)
-        path = reports_dir / f"{name}-{seeded.id}-r{repeat}.json"
-        path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+        _save_report(reports_dir / f"{name}-{seeded.id}-r{repeat}.json", report)
     return await score_report(
         seeded, report, pipeline=name, repeat=repeat, seconds=seconds, error=error, judge=judge
     )
