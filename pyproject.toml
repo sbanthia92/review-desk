@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 reviewdesk = "reviewdesk.cli:main"
+reviewdesk-mcp = "reviewdesk.mcp_local.main:main"
 
 [build-system]
 requires = ["hatchling"]
