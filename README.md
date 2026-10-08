@@ -35,6 +35,23 @@ A finding looks like this:
 The recommended setup is Anthropic with Tavily, which is what the examples
 below use.
 
+### Getting your keys
+
+You need one model key and one search key. Each takes a couple of minutes:
+sign up, create a key, copy it.
+
+| Key | Where to get it |
+| --- | --- |
+| `ANTHROPIC_API_KEY` | Sign in at <https://platform.claude.com>, add credit under Billing, then create a key under **API keys** (<https://platform.claude.com/settings/keys>) |
+| `OPENAI_API_KEY` | Sign in at <https://platform.openai.com>, add credit under Billing, then create a key at <https://platform.openai.com/api-keys> |
+| `TAVILY_API_KEY` | Sign up at <https://app.tavily.com>; the key is shown on the dashboard |
+| `BRAVE_SEARCH_API_KEY` | Subscribe to a plan at <https://brave.com/search/api/>, then create a key in the API dashboard |
+| `EXA_API_KEY` | Sign up at <https://dashboard.exa.ai> and create a key under **API keys** |
+
+Model keys are pay-as-you-go: reviews fail with a clear message if the account
+has no credit. Keep keys out of chats and out of version control; put them in
+the MCP client's `env` block or in a `.env` file as shown below.
+
 A review of a 700-word article takes about two minutes and uses roughly
 150,000–180,000 tokens on your model key (about $0.60–$1.20 at Anthropic's
 list prices in October 2026) plus about 30 searches.
