@@ -33,7 +33,7 @@ EXIT_INTERRUPTED = 130
 MAX_DETAIL_CHARS = 300
 
 SETUP_HINT = (
-    "Set ANTHROPIC_API_KEY (or OPENAI_API_KEY) and TAVILY_API_KEY in the environment "
+    "Set ANTHROPIC_API_KEY and TAVILY_API_KEY in the environment "
     "or in a .env file "
     "(see .env.example; pass another file with --env-file)."
 )

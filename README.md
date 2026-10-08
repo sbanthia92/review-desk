@@ -28,22 +28,21 @@ A finding looks like this:
 ## What you need
 
 - [uv](https://docs.astral.sh/uv/) (it installs Python 3.12 for you).
-- A model API key: `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`.
+- An [Anthropic](https://platform.claude.com) API key: `ANTHROPIC_API_KEY`.
 - A [Tavily](https://tavily.com) search key: `TAVILY_API_KEY`.
 
 ### Getting your keys
 
-You need one model key and one search key. Each takes a couple of minutes:
-sign up, create a key, copy it.
+You need two keys. Each takes a couple of minutes: sign up, create a key, copy
+it.
 
 | Key | Where to get it |
 | --- | --- |
 | `ANTHROPIC_API_KEY` | Sign in at <https://platform.claude.com>, add credit under Billing, then create a key under **API keys** (<https://platform.claude.com/settings/keys>) |
-| `OPENAI_API_KEY` | Sign in at <https://platform.openai.com>, add credit under Billing, then create a key at <https://platform.openai.com/api-keys> |
 | `TAVILY_API_KEY` | Sign up at <https://app.tavily.com>; the key is shown on the dashboard |
 
-Model keys are pay-as-you-go: reviews fail with a clear message if the account
-has no credit. Keep keys out of chats and out of version control; put them in
+The Anthropic key is pay-as-you-go: reviews fail with a clear message if the
+account has no credit. Keep keys out of chats and out of version control; put them in
 the MCP client's `env` block or in a `.env` file as shown below.
 
 A review of a 700-word article takes about two minutes and uses roughly
@@ -133,17 +132,15 @@ file (the server reads `.env` from its working directory, or the file named by
 
 | Variable | Purpose |
 | --- | --- |
-| `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | Model provider key. Anthropic is used if both are set |
+| `ANTHROPIC_API_KEY` | Anthropic model key |
 | `TAVILY_API_KEY` | Web search key |
-| `REVIEWDESK_LLM_PROVIDER` | `anthropic` or `openai`, to force one |
 | `REVIEWDESK_MODEL_CHEAP`, `_MID`, `_STRONG` | Override the model used for each tier |
 | `REVIEWDESK_MAX_WORDS` | Document size cap (default 20000) |
 | `REVIEWDESK_FAKE=1` | Demo mode: no keys, no model calls |
 
 ## What leaves your machine
 
-- **Your document** goes to your model provider (Anthropic or OpenAI), under
-  your key and their terms.
+- **Your document** goes to Anthropic, under your key and their terms.
 - **Search queries** built from your document's claims, and up to eight
   sentences quoted exactly for the originality check, go to your search
   provider.

@@ -26,7 +26,7 @@ working directory, or the file named by `REVIEWDESK_ENV_FILE`), or put them in t
 
 | Variable | Purpose |
 | --- | --- |
-| `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | LLM provider key (read by `reviewdesk.registry`) |
+| `ANTHROPIC_API_KEY` | Anthropic model key (read by `reviewdesk.registry`) |
 | `TAVILY_API_KEY` | Web search key |
 | `REVIEWDESK_FAKE=1` | Offline demo: fake agents, no keys, no model calls (URL input still fetches the page) |
 | `REVIEWDESK_MAX_WORDS` | Word cap (default 20000) |

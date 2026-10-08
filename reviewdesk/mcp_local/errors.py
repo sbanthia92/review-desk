@@ -22,7 +22,7 @@ from reviewdesk.contracts import (
 MAX_DETAIL_CHARS = 300
 
 SETUP_HINT = (
-    "set ANTHROPIC_API_KEY (or OPENAI_API_KEY) and TAVILY_API_KEY in the environment "
+    "set ANTHROPIC_API_KEY and TAVILY_API_KEY in the environment "
     "of the Review Desk MCP server "
     "(the `env` block of your MCP client config), then restart the server. "
     "To try the server without keys, set REVIEWDESK_FAKE=1."
