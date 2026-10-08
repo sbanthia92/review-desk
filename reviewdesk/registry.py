@@ -5,15 +5,15 @@ local MCP server (``reviewdesk.mcp_local.wiring``) call. It reads:
 
 | Variable | Meaning |
 | --- | --- |
-| ``ANTHROPIC_API_KEY`` / ``OPENAI_API_KEY`` | LLM key (one is required) |
+| ``ANTHROPIC_API_KEY`` | LLM key (required) |
 | ``TAVILY_API_KEY`` | search key (required) |
-| ``REVIEWDESK_LLM_PROVIDER`` | ``anthropic`` or ``openai`` (default below) |
 | ``REVIEWDESK_MODEL_CHEAP`` / ``_MID`` / ``_STRONG`` | per-tier model overrides |
 
-Default LLM provider: whichever key is set, Anthropic first. Search uses
-Tavily. Adapters for other search providers exist in
-``reviewdesk.providers.search`` but are not offered here until they have been
-verified against the live services.
+The model provider is Anthropic and search uses Tavily. Adapters for OpenAI
+(``reviewdesk.providers.llm``) and for other search providers
+(``reviewdesk.providers.search``) exist but are not offered here until they
+have been verified against the live services; ``build_registry`` still accepts
+them explicitly.
 
 Missing keys raise ``MissingSetup`` naming the variables, never their values.
 Nothing built here puts a key in its ``repr``; keys are never logged.
@@ -67,9 +67,10 @@ SEARCH_PROVIDER_ENV = "REVIEWDESK_SEARCH_PROVIDER"
 
 LLM_KEY_VARS: dict[str, str] = {
     "anthropic": "ANTHROPIC_API_KEY",
-    "openai": "OPENAI_API_KEY",
 }
-"""LLM provider -> env var holding its key, in default preference order."""
+"""Supported LLM provider -> env var holding its key.
+
+Only providers verified against the live service are offered."""
 
 SEARCH_KEY_VARS: dict[str, str] = {
     "tavily": "TAVILY_API_KEY",

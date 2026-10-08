@@ -252,7 +252,7 @@ def test_max_words_must_be_positive() -> None:
 @pytest.mark.parametrize(
     ("error", "expected"),
     [
-        (MissingSetup("no LLM key"), "Missing setup: set ANTHROPIC_API_KEY (or OPENAI_API_KEY)"),
+        (MissingSetup("no LLM key"), "Missing setup: set ANTHROPIC_API_KEY and TAVILY_API_KEY"),
         (AuthError("anthropic: API key rejected (HTTP 401)"), "Invalid or out-of-credit"),
         (RateLimitError("anthropic: rate limited"), "Rate limit exceeded"),
         (ProviderError("upstream 503", retryable=True), "A provider call failed"),

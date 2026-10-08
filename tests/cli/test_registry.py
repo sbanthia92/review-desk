@@ -80,14 +80,10 @@ async def test_anthropic_and_tavily_by_default(caplog: pytest.LogCaptureFixture)
         await aclose_registry(registry)
 
 
-async def test_openai_when_only_openai_key() -> None:
-    registry = await _build({"OPENAI_API_KEY": OPENAI_KEY, "TAVILY_API_KEY": TAVILY_KEY})
-    try:
-        assert isinstance(registry.llm, OpenAILLM)
-        assert isinstance(registry.search, TavilySearch)
-        _assert_no_keys(repr(registry))
-    finally:
-        await aclose_registry(registry)
+def test_unverified_llm_provider_is_not_accepted() -> None:
+    message = _missing({"OPENAI_API_KEY": OPENAI_KEY, "TAVILY_API_KEY": TAVILY_KEY})
+    assert "set ANTHROPIC_API_KEY" in message
+    assert "OPENAI" not in message
 
 
 async def test_explicit_provider_overrides() -> None:
@@ -95,12 +91,12 @@ async def test_explicit_provider_overrides() -> None:
         "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
         "OPENAI_API_KEY": OPENAI_KEY,
         "TAVILY_API_KEY": TAVILY_KEY,
-        "REVIEWDESK_LLM_PROVIDER": " OpenAI ",
+        "REVIEWDESK_LLM_PROVIDER": " Anthropic ",
         "REVIEWDESK_SEARCH_PROVIDER": " Tavily ",
     }
     registry = await _build(env)
     try:
-        assert isinstance(registry.llm, OpenAILLM)
+        assert isinstance(registry.llm, AnthropicLLM)
         assert isinstance(registry.search, TavilySearch)
     finally:
         await aclose_registry(registry)
@@ -142,12 +138,11 @@ def test_missing_everything_names_all_variables() -> None:
     message = _missing({})
     for var in [
         "ANTHROPIC_API_KEY",
-        "OPENAI_API_KEY",
         "TAVILY_API_KEY",
     ]:
         assert var in message
     # Providers not yet verified live are not offered.
-    assert "BRAVE" not in message and "EXA" not in message
+    assert "BRAVE" not in message and "EXA" not in message and "OPENAI" not in message
 
 
 def test_unverified_search_providers_are_not_accepted() -> None:
@@ -175,7 +170,7 @@ def test_missing_search_key_only() -> None:
     assert "LLM" not in message
 
 
-def test_requested_provider_without_its_key() -> None:
+def test_unverified_llm_provider_cannot_be_requested() -> None:
     message = _missing(
         {
             "ANTHROPIC_API_KEY": ANTHROPIC_KEY,
@@ -183,7 +178,12 @@ def test_requested_provider_without_its_key() -> None:
             "REVIEWDESK_LLM_PROVIDER": "openai",
         }
     )
-    assert "OPENAI_API_KEY" in message
+    assert "REVIEWDESK_LLM_PROVIDER must be one of: anthropic" in message
+
+
+def test_requested_provider_without_its_key() -> None:
+    message = _missing({"TAVILY_API_KEY": TAVILY_KEY, "REVIEWDESK_LLM_PROVIDER": "anthropic"})
+    assert "ANTHROPIC_API_KEY" in message
     assert "REVIEWDESK_LLM_PROVIDER" in message
 
 
@@ -206,10 +206,10 @@ def test_reads_os_environ_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("REVIEWDESK_SEARCH_PROVIDER", raising=False)
     with pytest.raises(MissingSetup):
         build_registry_from_env()
-    monkeypatch.setenv("OPENAI_API_KEY", OPENAI_KEY)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", ANTHROPIC_KEY)
     monkeypatch.setenv("TAVILY_API_KEY", TAVILY_KEY)
     config = resolve_env_config()
-    assert (config.llm_provider, config.search_provider) == ("openai", "tavily")
+    assert (config.llm_provider, config.search_provider) == ("anthropic", "tavily")
 
 
 def test_search_key_vars_match_provider_table() -> None:
