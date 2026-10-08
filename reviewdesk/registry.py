@@ -6,13 +6,14 @@ local MCP server (``reviewdesk.mcp_local.wiring``) call. It reads:
 | Variable | Meaning |
 | --- | --- |
 | ``ANTHROPIC_API_KEY`` / ``OPENAI_API_KEY`` | LLM key (one is required) |
-| ``BRAVE_SEARCH_API_KEY`` / ``TAVILY_API_KEY`` / ``EXA_API_KEY`` | search key (one is required) |
+| ``TAVILY_API_KEY`` | search key (required) |
 | ``REVIEWDESK_LLM_PROVIDER`` | ``anthropic`` or ``openai`` (default below) |
-| ``REVIEWDESK_SEARCH_PROVIDER`` | ``brave``, ``tavily`` or ``exa`` (default below) |
 | ``REVIEWDESK_MODEL_CHEAP`` / ``_MID`` / ``_STRONG`` | per-tier model overrides |
 
-Default providers: whichever LLM key is set, Anthropic first; the first
-search provider with a key, in the order brave, tavily, exa.
+Default LLM provider: whichever key is set, Anthropic first. Search uses
+Tavily. Adapters for other search providers exist in
+``reviewdesk.providers.search`` but are not offered here until they have been
+verified against the live services.
 
 Missing keys raise ``MissingSetup`` naming the variables, never their values.
 Nothing built here puts a key in its ``repr``; keys are never logged.
@@ -71,13 +72,12 @@ LLM_KEY_VARS: dict[str, str] = {
 """LLM provider -> env var holding its key, in default preference order."""
 
 SEARCH_KEY_VARS: dict[str, str] = {
-    "brave": "BRAVE_SEARCH_API_KEY",
     "tavily": "TAVILY_API_KEY",
-    "exa": "EXA_API_KEY",
 }
-"""Search provider -> env var holding its key, in default preference order.
+"""Supported search provider -> env var holding its key.
 
-Mirrors ``reviewdesk.providers.search.config.PROVIDERS`` (checked in tests).
+A subset of ``reviewdesk.providers.search.config.PROVIDERS`` (checked in
+tests): only providers verified against the live service are offered.
 """
 
 MODEL_ENV: dict[ModelTier, str] = {
@@ -129,7 +129,9 @@ def _choose(
         key = _get(env, var)
         if key:
             return provider, key
-    problems.append(f"no {kind} key: set one of {', '.join(key_vars.values())}")
+    names = list(key_vars.values())
+    wanted = names[0] if len(names) == 1 else "one of " + ", ".join(names)
+    problems.append(f"no {kind} key: set {wanted}")
     return None
 
 

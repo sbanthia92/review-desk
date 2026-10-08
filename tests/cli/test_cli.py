@@ -317,7 +317,7 @@ def test_real_factory_missing_setup(draft: Path) -> None:
     out, err = io.StringIO(), io.StringIO()
     code = run(["review", str(draft), "--no-env-file"], environ={}, stdout=out, stderr=err)
     assert code == EXIT_SETUP
-    assert "BRAVE_SEARCH_API_KEY" in err.getvalue()
+    assert "TAVILY_API_KEY" in err.getvalue()
     assert "Traceback" not in err.getvalue()
 
 
